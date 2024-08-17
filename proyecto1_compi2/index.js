@@ -1,4 +1,4 @@
-import { parse } from './JS_Analyzer_parts/analyzer.js';
+import { parse } from './analyzer.js';
 import { InterpreterVisitor } from './JS_Analyzer_parts/interpreter.js';
 
 document.addEventListener('DOMContentLoaded', () => {

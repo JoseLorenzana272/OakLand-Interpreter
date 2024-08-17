@@ -26,6 +26,7 @@ programa = _ dcl:Declaracion* _ { return dcl }
 Declaracion = dcl:VarDcl _ { return dcl }
             / stmt:Stmt _ { return stmt }
 
+
 VarDcl = "var" _ id:Identificador _ "=" _ exp:Expresion _ ";" { return crearNodo('declaracionVariable', { id, exp }) }
 
 Stmt = "print(" _ exp:Expresion _ ")" _ ";" { return crearNodo('print', { exp }) }
@@ -42,10 +43,22 @@ Identificador = [a-zA-Z][a-zA-Z0-9]* { return text() }
 Expresion = Asignacion
 
 Asignacion = id:Identificador _ "=" _ asgn:Asignacion { return crearNodo('asignacion', { id, asgn }) }
-          / Comparacion
+          / Igualdad
+
+Igualdad = izq:Comparacion expansion:(  
+  _ op:("==" / "!=") _ der:Comparacion { return { tipo: op, der } } )*
+{
+  return expansion.reduce(
+    (operacionAnterior, operacionActual) => {
+      const { tipo, der } = operacionActual
+      return crearNodo('binaria', { op:tipo, izq: operacionAnterior, der })
+    },
+    izq
+  )
+}
 
 Comparacion = izq:Suma expansion:(
-  _ op:("<=") _ der:Suma { return { tipo: op, der } }
+  _ op:("<=" / "<" / ">=" / ">") _ der:Suma { return { tipo: op, der } }
 )* {
   return expansion.reduce(
     (operacionAnterior, operacionActual) => {

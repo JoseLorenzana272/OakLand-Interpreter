@@ -32,6 +32,17 @@ export class InterpreterVisitor extends BaseVisitor {
                 return izq / der;
             case '<=':
                 return izq <= der;
+            case '<':
+                return izq < der;
+            case '>=':
+                return izq >= der;
+            case '>':
+                return izq > der;
+            case '==':
+                return izq === der;
+            case '!=':
+                return izq !== der;
+
             default:
                 throw new Error(`Operador no soportado: ${node.op}`);
         }
