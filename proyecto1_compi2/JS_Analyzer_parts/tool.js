@@ -34,23 +34,36 @@ const types = [
 ]
 
 const configuracionNodos = [
-    // Configuracion del nodo inicial
     {
-        name: 'Expresion',
-        base: true,
-        props: [
+        name: 'Literal',
+        extends: 'Expresion',
+        props:[
             {
-                name: 'location',
-                type: 'Location|null',
-                description: 'Ubicacion del nodo en el codigo fuente',
-                default: 'null'
+                name: 'value',
+                type: 'any',
+                description: 'Value of the literal'
+            },
+            {
+                name: 'type',
+                type: 'string',
+                description: 'Type of the literal'
             }
         ]
     },
-    // Configuracion de los nodos secundarios
     {
-        name: 'OperacionBinaria',
-        extends: 'Expresion',
+        name: 'Print',
+        extends: 'Expression',
+        props: [
+            {
+                name: 'exp',
+                type: 'Expresion',
+                description: 'Expression to print'
+            }
+        ]
+    },
+    {
+        name: 'Arithmetic',
+        extends: 'Expression',
         props: [
             {
                 name: 'izq',
@@ -66,164 +79,6 @@ const configuracionNodos = [
                 name: 'op',
                 type: 'string',
                 description: 'Operador de la operacion'
-            }
-        ]
-    },
-    {
-        name: 'OperacionUnaria',
-        extends: 'Expresion',
-        props: [
-            {
-                name: 'exp',
-                type: 'Expresion',
-                description: 'Expresion de la operacion'
-            },
-            {
-                name: 'op',
-                type: 'string',
-                description: 'Operador de la operacion'
-            }
-        ]
-    },
-    {
-        name: 'Agrupacion',
-        extends: 'Expresion',
-        props: [
-            {
-                name: 'exp',
-                type: 'Expresion',
-                description: 'Expresion agrupada'
-            }
-        ]
-    },
-    {
-        name: 'Numero',
-        extends: 'Expresion',
-        props: [
-            {
-                name: 'valor',
-                type: 'number',
-                description: 'Valor del numero'
-            }
-        ]
-    },
-    //     DeclaracionVariable
-    {
-        name: 'DeclaracionVariable',
-        extends: 'Expresion',
-        props: [
-            {
-                name: 'id',
-                type: 'string',
-                description: 'Identificador de la variable'
-            },
-            {
-                name: 'exp',
-                type: 'Expresion',
-                description: 'Expresion de la variable'
-            }
-        ]
-    },
-    // ReferenciaVariable
-    {
-        name: 'ReferenciaVariable',
-        extends: 'Expresion',
-        props: [
-            {
-                name: 'id',
-                type: 'string',
-                description: 'Identificador de la variable'
-            }
-        ]
-    },
-    // Print
-    {
-        name: 'Print',
-        extends: 'Expresion',
-        props: [
-            {
-                name: 'exp',
-                type: 'Expresion',
-                description: 'Expresion a imprimir'
-            }
-        ]
-    },
-    // ExpresionStmt 1+2;
-    {
-        name: 'ExpresionStmt',
-        extends: 'Expresion',
-        props: [
-            {
-                name: 'exp',
-                type: 'Expresion',
-                description: 'Expresion a evaluar'
-            }
-        ]
-    },
-    // Asignacion
-    {
-        name: 'Asignacion',
-        extends: 'Expresion',
-        props: [
-            {
-                name: 'id',
-                type: 'string',
-                description: 'Identificador de la variable'
-            },
-            {
-                name: 'asgn',
-                type: 'Expresion',
-                description: 'Expresion a asignar'
-            }
-        ]
-    },
-    // Bloque
-    {
-        name: 'Bloque',
-        extends: 'Expresion',
-        props: [
-            {
-                name: 'dcls',
-                type: 'Expresion[]',
-                description: 'Sentencias del bloque'
-            }
-        ]
-    },
-    {
-        name: 'If',
-        extends: 'Expresion',
-        props: [
-            {
-                name: 'cond',
-                type: 'Expresion',
-                description: 'Condicion del if'
-            },
-            {
-                name: 'stmtTrue',
-                type: 'Expresion',
-                description: 'Cuerpo del if'
-            },
-            {
-                name: 'stmtFalse',
-                type: 'Expresion|undefined',
-                description: 'Cuerpo del else'
-            }
-        ]
-    },
-    // While
-    {
-        name: 'While',
-        extends: 'Expresion',
-        props: [
-            {
-                name: 'cond',
-                type: 'Expresion',
-                description: 'Condicion del while'
-            },
-            {
-                name: 'stmt',
-                type: 'Expresion',
-                description: 'Cuerpo del while'
             }
         ]
     }

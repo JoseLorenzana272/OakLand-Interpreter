@@ -1,4 +1,4 @@
-import { parse } from './analyzer.js';
+import { parse } from './gramatica/analyzer.js';
 import { InterpreterVisitor } from './JS_Analyzer_parts/interpreter.js';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -14,15 +14,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Función para ejecutar el código en la textarea
     runButton.addEventListener('click', () => {
-        const codigoFuente = textarea.value; // Usa .value para textarea
-        const sentencias = parse(codigoFuente);
+        const content = textarea.value; // Se usa textarea directamente
+        const exp = parse(content);
+        const interpreter = new InterpreterVisitor();
+        const result = exp.accept(interpreter);
+        const response = interpreter.salida;
 
-        const interprete = new InterpreterVisitor();
-
-        console.log({ sentencias });
-        sentencias.forEach(sentencia => sentencia.accept(interprete));
-
-        consoleOutput.innerHTML = interprete.salida;
+        consoleOutput.textContent = response; // Actualiza el contenido del div
     });
 
     // Función para limpiar la textarea y la consola

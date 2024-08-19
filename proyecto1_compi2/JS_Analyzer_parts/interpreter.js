@@ -1,5 +1,7 @@
 import { Entorno } from "/environments/environments.js";
 import { BaseVisitor } from "./visitor.js";
+import { ArithmeticOp } from "../Expressions/ArithmeticOp.js";
+import { Literal } from "./nodos.js";
 
 
 export class InterpreterVisitor extends BaseVisitor {
@@ -15,150 +17,41 @@ export class InterpreterVisitor extends BaseVisitor {
     }
 
     /**
-     * @type {BaseVisitor['visitOperacionBinaria']}
+     * @type [BaseVisitor['visitLiteral']]
      */
-    visitOperacionBinaria(node) {
-        const izq = node.izq.accept(this);
-        const der = node.der.accept(this);
-
-        switch (node.op) {
-            case '+':
-                return izq + der;
-            case '-':
-                return izq - der;
-            case '*':
-                return izq * der;
-            case '/':
-                return izq / der;
-            case '<=':
-                return izq <= der;
-            case '<':
-                return izq < der;
-            case '>=':
-                return izq >= der;
-            case '>':
-                return izq > der;
-            case '==':
-                return izq === der;
-            case '!=':
-                return izq !== der;
-
-            default:
-                throw new Error(`Operador no soportado: ${node.op}`);
-        }
+    visitLiteral(nodo) {
+        return nodo;
     }
 
     /**
-     * @type {BaseVisitor['visitOperacionUnaria']}
+     * @type [BaseVisitor['visitPrint']]
      */
-    visitOperacionUnaria(node) {
-        const exp = node.exp.accept(this);
+    visitPrint(node){
+        let resultados = '';
 
-        switch (node.op) {
-            case '-':
-                return -exp;
-            default:
-                throw new Error(`Operador no soportado: ${node.op}`);
-        }
-    }
+        for (let i = 0; i < node.exp.length; i++) {
+            const valor = node.exp[i].accept(this);
 
-    /**
-     * @type {BaseVisitor['visitAgrupacion']}
-     */
-    visitAgrupacion(node) {
-        return node.exp.accept(this);
-    }
-
-    /**
-     * @type {BaseVisitor['visitNumero']}
-     */
-    visitNumero(node) {
-        return node.valor;
-    }
-
-
-    /**
-     * @type {BaseVisitor['visitDeclaracionVariable']}
-     */
-    visitDeclaracionVariable(node) {
-        const nombreVariable = node.id;
-        const valorVariable = node.exp.accept(this);
-
-        this.entornoActual.setVariable(nombreVariable, valorVariable);
-    }
-
-
-    /**
-     * @type {BaseVisitor['visitReferenciaVariable']}
-     */
-    visitReferenciaVariable(node) {
-        const nombreVariable = node.id;
-        return this.entornoActual.getVariable(nombreVariable);
-    }
-
-
-    /**
-     * @type {BaseVisitor['visitPrint']}
-     */
-    visitPrint(node) {
-        const valor = node.exp.accept(this);
-        this.salida += valor + '\n';
-    }
-
-
-    /**
-     * @type {BaseVisitor['visitExpresionStmt']}
-     */
-    visitExpresionStmt(node) {
-        node.exp.accept(this);
-    }
-
-    /**
-     * @type {BaseVisitor['visitAsignacion']}
-     */
-    visitAsignacion(node) {
-        // const valor = this.interpretar(node.asgn);
-        const valor = node.asgn.accept(this);
-        this.entornoActual.assignVariable(node.id, valor);
-
-        return valor;
-    }
-
-    /**
-     * @type {BaseVisitor['visitBloque']}
-     */
-    visitBloque(node) {
-        const entornoAnterior = this.entornoActual;
-        this.entornoActual = new Entorno(entornoAnterior);
-
-        node.dcls.forEach(dcl => dcl.accept(this));
-
-        this.entornoActual = entornoAnterior;
-    }
-
-    /**
-     * @type {BaseVisitor['visitIf']}
-     */
-    visitIf(node) {
-        const cond = node.cond.accept(this);
-
-        if (cond) {
-            node.stmtTrue.accept(this);
-            return;
+            resultados += valor.value + '\n';
         }
 
-        if (node.stmtFalse) {
-            node.stmtFalse.accept(this);
-        }
-
+        this.salida += resultados;
+        console.log(resultados);
     }
 
     /**
-     * @type {BaseVisitor['visitWhile']}
+     * @type [BaseVisitor['visitArithmetic']]
      */
-    visitWhile(node) {
-        while (node.cond.accept(this)) {
-            node.stmt.accept(this);
+    visitArithmetic(node) {
+        const left = node.izq.accept(this);
+        const right = node.der.accept(this);
+
+        if (!(left instanceof Literal) || !(right instanceof Literal)) {
+            throw new Error('Ambas expresiones deben ser literales');
         }
+
+        return ArithmeticOp(node.op, left, right);
+
     }
+    
 }
