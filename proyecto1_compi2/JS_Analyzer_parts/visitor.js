@@ -9,6 +9,12 @@
 
  * @typedef {import('./nodos').Arithmetic} Arithmetic
 
+
+ * @typedef {import('./nodos').Grouping} Grouping
+
+
+ * @typedef {import('./nodos').Relational} Relational
+
  */
 
 
@@ -43,6 +49,24 @@ export class BaseVisitor {
      */
     visitArithmetic(node) {
         throw new Error('Metodo visitArithmetic no implementado');
+    }
+    
+
+    /**
+     * @param {Grouping} node
+     * @returns {any}
+     */
+    visitGrouping(node) {
+        throw new Error('Metodo visitGrouping no implementado');
+    }
+    
+
+    /**
+     * @param {Relational} node
+     * @returns {any}
+     */
+    visitRelational(node) {
+        throw new Error('Metodo visitRelational no implementado');
     }
     
 }

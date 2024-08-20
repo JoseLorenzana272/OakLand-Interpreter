@@ -2,6 +2,7 @@ import { Entorno } from "/environments/environments.js";
 import { BaseVisitor } from "./visitor.js";
 import { ArithmeticOp } from "../Expressions/ArithmeticOp.js";
 import { Literal } from "./nodos.js";
+import { RelationalOp } from "../Expressions/RelationalOp.js";
 
 
 export class InterpreterVisitor extends BaseVisitor {
@@ -53,5 +54,25 @@ export class InterpreterVisitor extends BaseVisitor {
         return ArithmeticOp(node.op, left, right);
 
     }
+
+    /**
+     * @type [BaseVisitor['visitGrouping']]
+     */
+    visitGrouping(node) {
+        return node.exp.accept(this);
+    }
     
+    /**
+     * @type [BaseVisitor['visitRelational']]
+     */
+    visitRelational(node) {
+        const left = node.izq.accept(this);
+        const right = node.der.accept(this);
+
+        if (!(left instanceof Literal) || !(right instanceof Literal)) {
+            throw new Error('Ambas expresiones deben ser literales');
+        }
+
+        return RelationalOp(node.op, left, right)
+    }
 }

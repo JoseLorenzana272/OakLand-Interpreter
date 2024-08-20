@@ -17,7 +17,11 @@ export function ArithmeticOp(op, izq, der){
 
     switch (op) {
         case '+':
-            resultado = leftValue + rightValue;
+            if (izq.type === 'string' || der.type === 'string') {
+                resultado = izq.value + der.value;
+            } else {
+                resultado = leftValue + rightValue;
+            }
             break;
         case '-':
             resultado = leftValue - rightValue;
@@ -27,16 +31,24 @@ export function ArithmeticOp(op, izq, der){
             break;
         case '/':
             if (rightValue === 0) {
-                throw new Error('División por cero no permitida');
+                console.warn('División por cero, resultado será null');
+                return new Literal({ value: null, type: 'null' });
             }
             resultado = leftValue / rightValue;
+            break;
+        case '%':
+            if (rightValue === 0) {
+                console.warn('Módulo por cero, resultado será null');
+                return new Literal({ value: null, type: 'null' });
+            }
+            resultado = leftValue % rightValue;
             break;
         default:
             throw new Error(`Operador no soportado: ${op}`);
     }
 
     // Determinar el tipo de resultado
-    const resultType = comprobarTipo(izq.type, der.type);
+    const resultType = comprobarTipo(izq.type, der.type, op);
 
     console.log(resultType);
     
@@ -44,15 +56,43 @@ export function ArithmeticOp(op, izq, der){
     
 }
 
-function comprobarTipo(tipo1, tipo2) {
-    if (tipo1 === 'int' && tipo2 === 'int') {
-        return 'int';
+function comprobarTipo(tipo1, tipo2, op) {
+    if (op === '+') {
+        if (tipo1 === 'string' && tipo2 === 'string') {
+            return 'string';
+        }
+        if (tipo1 === 'int' && tipo2 === 'int') {
+            return 'int';
+        }
+        if (tipo1 === 'int' || tipo2 === 'float' || tipo1 === 'float' || tipo2 === 'int') {
+            return 'float';
+        }
+    } else if (op === '-') {
+        if (tipo1 === 'int' && tipo2 === 'int') {
+            return 'int';
+        }
+        if (tipo1 === 'int' || tipo2 === 'float' || tipo1 === 'float' || tipo2 === 'int') {
+            return 'float';
+        }
+    } else if (op === '*') {
+        if (tipo1 === 'int' && tipo2 === 'int') {
+            return 'int';
+        }
+        if (tipo1 === 'int' || tipo2 === 'float' || tipo1 === 'float' || tipo2 === 'int') {
+            return 'float';
+        }
+    } else if (op === '/') {
+        if (tipo1 === 'int' && tipo2 === 'int') {
+            return 'int';
+        }
+        if (tipo1 === 'int' || tipo2 === 'float' || tipo1 === 'float' || tipo2 === 'int') {
+            return 'float';
+        }
+    } else if (op === '%') {
+        if (tipo1 === 'int' && tipo2 === 'int') {
+            return 'int';
+        }
     }
-    if (tipo1 === 'int' || tipo2 === 'float') {
-        return 'float';
-    }
-    if (tipo1 === 'float' || tipo2 === 'int') {
-        return 'float';
-    }
+
     return false;
 }

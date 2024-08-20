@@ -81,6 +81,38 @@ const configuracionNodos = [
                 description: 'Operador de la operacion'
             }
         ]
+    },
+    {
+        name: 'Grouping',
+        extends: 'Expression',
+        props: [
+            {
+                name: 'exp',
+                type: 'Expresion',
+                description: 'Expresion agrupada'
+            }
+        ]
+    },
+    {
+        name: 'Relational',
+        extends: 'Expression',
+        props: [
+            {
+                name: 'izq',
+                type: 'Expresion',
+                description: 'Expresion izquierda de la operacion'
+            },
+            {
+                name: 'der',
+                type: 'Expresion',
+                description: 'Expresion derecha de la operacion'
+            },
+            {
+                name: 'op',
+                type: 'string',
+                description: 'Operador de la operacion'
+            }
+        ]
     }
 ]
 

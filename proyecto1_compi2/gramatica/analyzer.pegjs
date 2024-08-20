@@ -3,7 +3,9 @@
     const type = {
       'Literal': nodos.Literal,
       'Print': nodos.Print,
-      'Arithmetic': nodos.Arithmetic
+      'Arithmetic': nodos.Arithmetic,
+      'Relational': nodos.Relational,
+      'Grouping': nodos.Grouping
     }
 
     const node = new type[typeNode](props);
@@ -13,7 +15,22 @@
 
 Text = Sentence
 
-Operations = ArithmeticOperations
+Operations = RelationalOperations/ArithmeticOperations
+
+/*--------------------Operaciones Relacionales------------------------*/
+RelationalOperations = izq:ArithmeticOperations expansion:(
+  _ op:("<="/">="/">" / "<") _ der:ArithmeticOperations { return { tipo: op, der } }
+)* { 
+  return expansion.reduce(
+    (operacionAnterior, operacionActual) => {
+      const { tipo, der } = operacionActual
+      return createNode('Relational', { op:tipo, izq: operacionAnterior, der })
+    },
+    izq
+  )
+}
+
+
 /*--------------------Operaciones Arimeticas----------------------*/
 
 
@@ -59,16 +76,18 @@ Modulus = izq:Number expansion:(
 /*---------------------- Print ---------------------------*/
 Sentence = p:Print { return p; }
 
-Print = "system.out.println" _ "(" _ expressions:Expression  _ ")" _ ";"  { return createNode('Print', {exp: expressions}); }
+Print = "system.out.println" _ "(" _ expressions:ExpressionPrint  _ ")" _ ";"  { return createNode('Print', {exp: expressions}); }
 
-Expression = head:Operations tail:(_ "," _ Operations)* { return [head, ...tail.map(t => t[3])]; }
+ExpressionPrint = head:Operations tail:(_ "," _ Operations)* { return [head, ...tail.map(t => t[3])]; }
 
 /*-------------------------------------------------------- */
 
 
 /*----------- Tipos de datos ---------------------------- */
 
-DataType = Number/Boolean/String/Char/Null
+DataType = Number/Boolean/String/Char/Null/Grouping
+
+Grouping = "[" _ exp:Operations _ "]" {return createNode('Grouping', { exp })}
 
 Number = Float/Integer
 
