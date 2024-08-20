@@ -18,6 +18,9 @@
 
  * @typedef {import('./nodos').Igualation} Igualation
 
+
+ * @typedef {import('./nodos').Logical} Logical
+
  */
 
 
@@ -79,6 +82,15 @@ export class BaseVisitor {
      */
     visitIgualation(node) {
         throw new Error('Metodo visitIgualation no implementado');
+    }
+    
+
+    /**
+     * @param {Logical} node
+     * @returns {any}
+     */
+    visitLogical(node) {
+        throw new Error('Metodo visitLogical no implementado');
     }
     
 }

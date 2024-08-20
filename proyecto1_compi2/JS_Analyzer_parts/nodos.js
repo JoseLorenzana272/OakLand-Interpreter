@@ -222,4 +222,45 @@ export class Igualation  {
     }
 }
     
-export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation }
+export class Logical  {
+
+    /**
+    * @param {Object} options
+    * @param {Expresion} options.izq Expresion izquierda de la operacion
+ * @param {Expresion} options.der Expresion derecha de la operacion
+ * @param {string} options.op Operador de la operacion
+    */
+    constructor({ izq, der, op }) {
+        
+        
+        /**
+         * Expresion izquierda de la operacion
+         * @type {Expresion}
+        */
+        this.izq = izq;
+
+
+        /**
+         * Expresion derecha de la operacion
+         * @type {Expresion}
+        */
+        this.der = der;
+
+
+        /**
+         * Operador de la operacion
+         * @type {string}
+        */
+        this.op = op;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitLogical(this);
+    }
+}
+    
+export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical }

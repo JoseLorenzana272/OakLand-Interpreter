@@ -3,6 +3,7 @@ import { BaseVisitor } from "./visitor.js";
 import { ArithmeticOp } from "../Expressions/ArithmeticOp.js";
 import { Literal } from "./nodos.js";
 import { RelationalOp } from "../Expressions/RelationalOp.js";
+import { LogicalOp } from "../Expressions/LogicalOp.js";
 
 
 export class InterpreterVisitor extends BaseVisitor {
@@ -93,5 +94,21 @@ export class InterpreterVisitor extends BaseVisitor {
         console.log(left, right, node.op);
 
         return RelationalOp(node.op, left, right)
+    }
+
+    /**
+     * @type [BaseVisitor['visitLogical']]
+     */
+    visitLogical(node) {
+        const left = node.izq.accept(this);
+        const right = node.der.accept(this);
+
+        if (!(left instanceof Literal) || !(right instanceof Literal)) {
+            throw new Error('Ambas expresiones deben ser literales');
+        }
+
+        console.log(left, right, node.op);
+
+        return LogicalOp(node.op, left, right)
     }
 }

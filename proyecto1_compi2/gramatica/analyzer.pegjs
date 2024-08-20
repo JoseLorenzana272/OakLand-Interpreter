@@ -6,7 +6,8 @@
       'Arithmetic': nodos.Arithmetic,
       'Relational': nodos.Relational,
       'Grouping': nodos.Grouping,
-      'Igualation': nodos.Igualation
+      'Igualation': nodos.Igualation,
+      'Logical': nodos.Logical
     }
 
     const node = new type[typeNode](props);
@@ -16,8 +17,38 @@
 
 Text = Sentence
 
-Operations = Igualation/RelationalOperations/ArithmeticOperations
+Operations = LogicalOperations/Igualation/RelationalOperations/ArithmeticOperations
 
+/*---------------------Operaciones Logicas----------------------*/
+LogicalOperations = And/Or
+
+And = izq:Or expansion:(
+  _ op:"&&" _ der:Or { return { tipo: op, der } }
+)* {
+  return expansion.reduce(
+    (operacionAnterior, operacionActual) => {
+      const { tipo, der } = operacionActual;
+      return createNode('Logical', { op: tipo, izq: operacionAnterior, der });
+    },
+    izq
+  );
+}
+
+Or = izq:Igualation expansion:(
+  _ op:"||" _ der:Igualation { return { tipo: op, der } }
+)* {
+  return expansion.reduce(
+    (operacionAnterior, operacionActual) => {
+      const { tipo, der } = operacionActual;
+      return createNode('Logical', { op: tipo, izq: operacionAnterior, der });
+    },
+    izq
+  );
+}
+
+
+
+/*--------------------------------------------------------------------*/
 /*--------------------Operaciones Relacionales------------------------*/
 Igualation = izq:RelationalOperations expansion:(
   _ op:("==" / "!=") _ der:RelationalOperations { return { tipo: op, der } }
