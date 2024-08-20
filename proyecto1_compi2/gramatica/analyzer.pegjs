@@ -5,7 +5,8 @@
       'Print': nodos.Print,
       'Arithmetic': nodos.Arithmetic,
       'Relational': nodos.Relational,
-      'Grouping': nodos.Grouping
+      'Grouping': nodos.Grouping,
+      'Igualation': nodos.Igualation
     }
 
     const node = new type[typeNode](props);
@@ -15,20 +16,34 @@
 
 Text = Sentence
 
-Operations = RelationalOperations/ArithmeticOperations
+Operations = Igualation/RelationalOperations/ArithmeticOperations
 
 /*--------------------Operaciones Relacionales------------------------*/
-RelationalOperations = izq:ArithmeticOperations expansion:(
-  _ op:("<="/">="/">" / "<") _ der:ArithmeticOperations { return { tipo: op, der } }
+Igualation = izq:RelationalOperations expansion:(
+  _ op:("==" / "!=") _ der:RelationalOperations { return { tipo: op, der } }
 )* { 
   return expansion.reduce(
     (operacionAnterior, operacionActual) => {
-      const { tipo, der } = operacionActual
-      return createNode('Relational', { op:tipo, izq: operacionAnterior, der })
+      const { tipo, der } = operacionActual;
+      return createNode('Igualation', { op: tipo, izq: operacionAnterior, der });
     },
     izq
-  )
+  );
 }
+
+RelationalOperations = izq:ArithmeticOperations expansion:(
+  _ op:("<=" / ">=" / "<" / ">" ) _ der:ArithmeticOperations { return { tipo: op, der } }
+)* { 
+  return expansion.reduce(
+    (operacionAnterior, operacionActual) => {
+      const { tipo, der } = operacionActual;
+      return createNode('Relational', { op: tipo, izq: operacionAnterior, der });
+    },
+    izq
+  );
+}
+
+
 
 
 /*--------------------Operaciones Arimeticas----------------------*/

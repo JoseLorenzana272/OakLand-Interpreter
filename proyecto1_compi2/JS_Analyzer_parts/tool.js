@@ -113,6 +113,27 @@ const configuracionNodos = [
                 description: 'Operador de la operacion'
             }
         ]
+    },
+    {
+        name: 'Igualation',
+        extends: 'Expression',
+        props: [
+            {
+                name: 'izq',
+                type: 'Expresion',
+                description: 'Expresion izquierda de la operacion'
+            },
+            {
+                name: 'der',
+                type: 'Expresion',
+                description: 'Expresion derecha de la operacion'
+            },
+            {
+                name: 'op',
+                type: 'string',
+                description: 'Operador de la operacion'
+            }
+        ]
     }
 ]
 

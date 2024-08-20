@@ -15,6 +15,9 @@
 
  * @typedef {import('./nodos').Relational} Relational
 
+
+ * @typedef {import('./nodos').Igualation} Igualation
+
  */
 
 
@@ -67,6 +70,15 @@ export class BaseVisitor {
      */
     visitRelational(node) {
         throw new Error('Metodo visitRelational no implementado');
+    }
+    
+
+    /**
+     * @param {Igualation} node
+     * @returns {any}
+     */
+    visitIgualation(node) {
+        throw new Error('Metodo visitIgualation no implementado');
     }
     
 }

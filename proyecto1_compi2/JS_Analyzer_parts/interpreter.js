@@ -73,6 +73,25 @@ export class InterpreterVisitor extends BaseVisitor {
             throw new Error('Ambas expresiones deben ser literales');
         }
 
+        console.log(left, right, node.op);
+
+        return RelationalOp(node.op, left, right)
+    }
+
+
+    /**
+     * @type [BaseVisitor['visitIgualation']]
+     */
+    visitIgualation(node) {
+        const left = node.izq.accept(this);
+        const right = node.der.accept(this);
+
+        if (!(left instanceof Literal) || !(right instanceof Literal)) {
+            throw new Error('Ambas expresiones deben ser literales');
+        }
+
+        console.log(left, right, node.op);
+
         return RelationalOp(node.op, left, right)
     }
 }
