@@ -15,8 +15,9 @@
   }
 }
 
-Text = Sentence
-
+Program = statements:Statements* _ { return statements; }
+Statements = Statement
+Statement = s:Sentence _ { return s; }
 Operations = LogicalOperations/Igualation/RelationalOperations/ArithmeticOperations
 
 /*---------------------Operaciones Logicas----------------------*/
@@ -106,8 +107,8 @@ Multiply = izq:Modulus expansion:(
     )
 }
 
-Modulus = izq:Number expansion:(
-  _ op:"%" _ der:Number { return { tipo: op, der } }
+Modulus = izq:DataType expansion:(
+  _ op:"%" _ der:DataType { return { tipo: op, der } }
 )* {
     return expansion.reduce(
       (operacionAnterior, operacionActual) => {
@@ -131,9 +132,13 @@ ExpressionPrint = head:Operations tail:(_ "," _ Operations)* { return [head, ...
 
 /*----------- Tipos de datos ---------------------------- */
 
-DataType = Number/Boolean/String/Char/Null/Grouping
+DataType = "(" _ exp:Operations _ ")" {return createNode('Grouping', { exp })}
+            /dato:Number { return dato; }
+            /dato:Boolean { return dato; }
+            /dato:String { return dato; }
+            /dato:Char { return dato; }
+            /Null
 
-Grouping = "[" _ exp:Operations _ "]" {return createNode('Grouping', { exp })}
 
 Number = Float/Integer
 

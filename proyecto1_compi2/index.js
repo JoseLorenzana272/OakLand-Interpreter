@@ -14,13 +14,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Función para ejecutar el código en la textarea
     runButton.addEventListener('click', () => {
-        const content = textarea.value; // Se usa textarea directamente
-        const exp = parse(content);
-        const interpreter = new InterpreterVisitor();
-        const result = exp.accept(interpreter);
-        const response = interpreter.salida;
-
-        consoleOutput.textContent = response; // Actualiza el contenido del div
+        try {
+            const expresions = parse(textarea.value);
+            console.log(expresions);
+            const interpreter = new InterpreterVisitor();
+            expresions.forEach(exp => {
+                const result = exp.accept(interpreter);
+            });
+            const output = interpreter.salida.replace(/\n/g, '<br>'); 
+        consoleOutput.innerHTML = output;
+            
+        } catch (error) {
+            consoleOutput.innerHTML = `Error: ${error.message}`;
+        }
     });
 
     // Función para limpiar la textarea y la consola
