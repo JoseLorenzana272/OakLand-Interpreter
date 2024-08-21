@@ -171,6 +171,38 @@ const configuracionNodos = [
                 description: 'Operador unario'
             }
         ]
+    },
+    {
+        name: 'VariableValue',
+        extends: 'Expression',
+        props: [
+            {
+                name: 'id',
+                type: 'string',
+                description: 'Identifier of the variable'
+            }
+        ]
+    },
+    {
+        name: 'VariableDeclaration',
+        extends: 'Expression',
+        props: [
+            {
+                name: 'id',
+                type: 'string',
+                description: 'Identifier of the variable'
+            },
+            {
+                name: 'type',
+                type: 'string',
+                description: 'Type of the variable'
+            },
+            {
+                name: 'value',
+                type: 'Expresion',
+                description: 'Value of the variable'
+            }
+        ]
     }
 ]
 

@@ -1,3 +1,5 @@
+import { Literal } from "../JS_Analyzer_parts/nodos.js";
+
 export class Entorno {
 
     /**
@@ -9,23 +11,28 @@ export class Entorno {
     }
 
     /**
+     * @param {string} tipo
      * @param {string} nombre
      * @param {any} valor
      */
-    setVariable(nombre, valor) {
-        // TODO: si algo ya está definido, lanzar error
-        this.valores[nombre] = valor;
+    setVariable(tipo, nombre, valor) {
+        if (this.valores[nombre]) {
+            throw new Error(`Variable ${nombre} ya definida`);
+        }
+
+        this.valores[nombre] = new Literal({ value: valor, type: tipo });
     }
 
     /**
      * @param {string} nombre
+     * @returns {{ tipo: string, valor: any }}
      */
     getVariable(nombre) {
-        const valorActual = this.valores[nombre];
+        const variable = this.valores[nombre];
 
-        if (valorActual) return valorActual;
+        if (variable) return variable;
 
-        if (!valorActual && this.padre) {
+        if (this.padre) {
             return this.padre.getVariable(nombre);
         }
 
@@ -37,14 +44,15 @@ export class Entorno {
      * @param {any} valor
      */
     assignVariable(nombre, valor) {
-        const valorActual = this.valores[nombre];
+        const variable = this.valores[nombre];
 
-        if (valorActual) {
-            this.valores[nombre] = valor;
+        if (variable) {
+            // Asignar nuevo valor manteniendo el tipo original
+            this.valores[nombre] = { tipo: variable.tipo, valor };
             return;
         }
 
-        if (!valorActual && this.padre) {
+        if (this.padre) {
             this.padre.assignVariable(nombre, valor);
             return;
         }

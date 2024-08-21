@@ -24,6 +24,12 @@
 
  * @typedef {import('./nodos').Unario} Unario
 
+
+ * @typedef {import('./nodos').VariableValue} VariableValue
+
+
+ * @typedef {import('./nodos').VariableDeclaration} VariableDeclaration
+
  */
 
 
@@ -103,6 +109,24 @@ export class BaseVisitor {
      */
     visitUnario(node) {
         throw new Error('Metodo visitUnario no implementado');
+    }
+    
+
+    /**
+     * @param {VariableValue} node
+     * @returns {any}
+     */
+    visitVariableValue(node) {
+        throw new Error('Metodo visitVariableValue no implementado');
+    }
+    
+
+    /**
+     * @param {VariableDeclaration} node
+     * @returns {any}
+     */
+    visitVariableDeclaration(node) {
+        throw new Error('Metodo visitVariableDeclaration no implementado');
     }
     
 }

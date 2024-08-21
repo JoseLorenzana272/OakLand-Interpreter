@@ -132,4 +132,24 @@ export class InterpreterVisitor extends BaseVisitor {
         }
 
     }
+
+    /**
+     * @type [BaseVisitor['visitVariableValue']]
+     */
+    visitVariableValue(node) {
+        const variableName = node.id;
+        const variable = this.entornoActual.getVariable(variableName);
+        return variable.valor; // Retorna solo el valor
+    }    
+
+    /**
+     * @type [BaseVisitor['visitVariableDeclaration']]
+     */
+    visitVariableDeclaration(node) {
+        const variableName = node.id;
+        const variableValue = node.value.accept(this);
+        const variableType = node.type;
+
+        this.entornoActual.setVariable(variableType, variableName, variableValue);
+    }
 }

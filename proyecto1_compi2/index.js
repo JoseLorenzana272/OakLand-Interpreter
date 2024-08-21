@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Función para ejecutar el código en la textarea
     runButton.addEventListener('click', () => {
-        try {
             const expresions = parse(textarea.value);
             console.log(expresions);
             const interpreter = new InterpreterVisitor();
@@ -23,10 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const output = interpreter.salida.replace(/\n/g, '<br>'); 
         consoleOutput.innerHTML = output;
-            
-        } catch (error) {
-            consoleOutput.innerHTML = `Error: ${error.message}`;
-        }
+
     });
 
     // Función para limpiar la textarea y la consola

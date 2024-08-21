@@ -296,4 +296,70 @@ export class Unario  {
     }
 }
     
-export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario }
+export class VariableValue  {
+
+    /**
+    * @param {Object} options
+    * @param {string} options.id Identifier of the variable
+    */
+    constructor({ id }) {
+        
+        
+        /**
+         * Identifier of the variable
+         * @type {string}
+        */
+        this.id = id;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitVariableValue(this);
+    }
+}
+    
+export class VariableDeclaration  {
+
+    /**
+    * @param {Object} options
+    * @param {string} options.id Identifier of the variable
+ * @param {string} options.type Type of the variable
+ * @param {Expresion} options.value Value of the variable
+    */
+    constructor({ id, type, value }) {
+        
+        
+        /**
+         * Identifier of the variable
+         * @type {string}
+        */
+        this.id = id;
+
+
+        /**
+         * Type of the variable
+         * @type {string}
+        */
+        this.type = type;
+
+
+        /**
+         * Value of the variable
+         * @type {Expresion}
+        */
+        this.value = value;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitVariableDeclaration(this);
+    }
+}
+    
+export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration }

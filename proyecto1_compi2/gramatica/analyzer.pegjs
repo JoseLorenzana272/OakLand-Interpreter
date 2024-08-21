@@ -8,7 +8,9 @@
       'Grouping': nodos.Grouping,
       'Igualation': nodos.Igualation,
       'Logical': nodos.Logical,
-      'Unario': nodos.Unario
+      'Unario': nodos.Unario,
+      'VariableDeclaration': nodos.VariableDeclaration,
+      'VariableValue': nodos.VariableValue
     }
 
     const node = new type[typeNode](props);
@@ -17,8 +19,20 @@
 }
 
 Program = statements:Statements* _ { return statements; }
+
 Statements = Statement
-Statement = s:Sentence _ { return s; }
+
+Statement =  vard:VariableDeclaration _ { return vard; }
+            /s:Sentence _ { return s; }
+
+/*---------------------Declaracion de variables----------------------*/
+VariableDeclaration = type:(Types / "var") _ id:Id _ exp:("=" _ exp:Operations {return exp})? _ ";" 
+                      { return createNode('VariableDeclaration', { type, id, value: exp || null }); }
+
+
+
+/*-------------------------------------------------------------------*/
+
 Operations = LogicalOperations/Igualation/RelationalOperations/ArithmeticOperations
 
 /*---------------------Operaciones Logicas----------------------*/
@@ -141,6 +155,7 @@ DataType = "(" _ exp:Operations _ ")" {return createNode('Grouping', { exp })}
             /dato:String { return dato; }
             /dato:Char { return dato; }
             /Null
+            /id:Id { return createNode('VariableValue', { id }) }
 
 
 Number = Float/Integer
@@ -158,7 +173,9 @@ Char = "'" [^']* "'" { return createNode('Literal', {value: text().slice(1,-1), 
 Null = 'null' { return createNode('Literal', {value: null, type: 'null'}); }
 
 /*----------------------------------------------------- */
+Types = ("int" / "float" / "string" / "char" / "bool") { return text(); }
 
 Id = [a-zA-Z_][a-zA-Z0-9_]* { return text(); }
+
 
 _ = [ \t\n\r]*
