@@ -139,7 +139,8 @@ export class InterpreterVisitor extends BaseVisitor {
     visitVariableValue(node) {
         const variableName = node.id;
         const variable = this.entornoActual.getVariable(variableName);
-        return variable.valor; // Retorna solo el valor
+        console.log(variable);
+        return variable.value; // Retorna solo el valor
     }    
 
     /**
