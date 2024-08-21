@@ -19,7 +19,7 @@ export class Entorno {
         if (this.valores[nombre]) {
             throw new Error(`Variable ${nombre} ya definida`);
         }
-
+        
         this.valores[nombre] = new Literal({ value: valor, type: tipo });
     }
 
