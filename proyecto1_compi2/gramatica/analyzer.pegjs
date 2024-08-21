@@ -7,7 +7,8 @@
       'Relational': nodos.Relational,
       'Grouping': nodos.Grouping,
       'Igualation': nodos.Igualation,
-      'Logical': nodos.Logical
+      'Logical': nodos.Logical,
+      'Unario': nodos.Unario
     }
 
     const node = new type[typeNode](props);
@@ -107,8 +108,8 @@ Multiply = izq:Modulus expansion:(
     )
 }
 
-Modulus = izq:DataType expansion:(
-  _ op:"%" _ der:DataType { return { tipo: op, der } }
+Modulus = izq:Unary expansion:(
+  _ op:"%" _ der:Unary { return { tipo: op, der } }
 )* {
     return expansion.reduce(
       (operacionAnterior, operacionActual) => {
@@ -128,7 +129,9 @@ Print = "system.out.println" _ "(" _ expressions:ExpressionPrint  _ ")" _ ";"  {
 ExpressionPrint = head:Operations tail:(_ "," _ Operations)* { return [head, ...tail.map(t => t[3])]; }
 
 /*-------------------------------------------------------- */
-
+Unary = "-" _ un:DataType { return createNode('Unario', { op: '-', exp: un }); }
+      / "!" _ un:DataType { return createNode('Unario', { op: '!', exp: un }); }
+      /DataType
 
 /*----------- Tipos de datos ---------------------------- */
 

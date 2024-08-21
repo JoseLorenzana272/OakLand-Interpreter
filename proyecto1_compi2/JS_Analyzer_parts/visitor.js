@@ -21,6 +21,9 @@
 
  * @typedef {import('./nodos').Logical} Logical
 
+
+ * @typedef {import('./nodos').Unario} Unario
+
  */
 
 
@@ -91,6 +94,15 @@ export class BaseVisitor {
      */
     visitLogical(node) {
         throw new Error('Metodo visitLogical no implementado');
+    }
+    
+
+    /**
+     * @param {Unario} node
+     * @returns {any}
+     */
+    visitUnario(node) {
+        throw new Error('Metodo visitUnario no implementado');
     }
     
 }

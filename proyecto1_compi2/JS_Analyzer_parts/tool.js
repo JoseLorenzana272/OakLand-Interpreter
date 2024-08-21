@@ -155,6 +155,22 @@ const configuracionNodos = [
                 description: 'Operador de la operacion'
             }
         ]
+    },
+    {
+        name: 'Unario',
+        extends: 'Expression',
+        props: [
+            {
+                name: 'exp',
+                type: 'Expresion',
+                description: 'Expresion a la que se le aplica el operador unario'
+            },
+            {
+                name: 'op',
+                type: 'string',
+                description: 'Operador unario'
+            }
+        ]
     }
 ]
 

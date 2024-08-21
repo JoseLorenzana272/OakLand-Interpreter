@@ -34,10 +34,10 @@ export class InterpreterVisitor extends BaseVisitor {
         for (let i = 0; i < node.exp.length; i++) {
             const valor = node.exp[i].accept(this);
 
-            resultados += valor.value + '\n';
+            resultados += valor.value;
         }
 
-        this.salida += resultados;
+        this.salida += resultados + '\n' ;
         console.log(resultados);
     }
 
@@ -110,5 +110,26 @@ export class InterpreterVisitor extends BaseVisitor {
         console.log(left, right, node.op);
 
         return LogicalOp(node.op, left, right)
+    }
+
+    /**
+     * @type [BaseVisitor['visitUnario']]
+     */
+    visitUnario(node) {
+        const valor = node.exp.accept(this);
+
+        if (!(valor instanceof Literal)) {
+            throw new Error('La expresión debe ser una literal');
+        }
+
+        switch (node.op) {
+            case '-':
+                return new Literal({ value: -valor.value, type: valor.type });
+            case '!':
+                return new Literal({ value: !valor.value, type: valor.type });
+            default:
+                throw new Error(`Operador no soportado: ${node.op}`);
+        }
+
     }
 }

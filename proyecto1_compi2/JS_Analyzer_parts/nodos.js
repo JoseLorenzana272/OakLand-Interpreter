@@ -263,4 +263,37 @@ export class Logical  {
     }
 }
     
-export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical }
+export class Unario  {
+
+    /**
+    * @param {Object} options
+    * @param {Expresion} options.exp Expresion a la que se le aplica el operador unario
+ * @param {string} options.op Operador unario
+    */
+    constructor({ exp, op }) {
+        
+        
+        /**
+         * Expresion a la que se le aplica el operador unario
+         * @type {Expresion}
+        */
+        this.exp = exp;
+
+
+        /**
+         * Operador unario
+         * @type {string}
+        */
+        this.op = op;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitUnario(this);
+    }
+}
+    
+export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario }
