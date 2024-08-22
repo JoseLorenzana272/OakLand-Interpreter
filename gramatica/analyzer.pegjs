@@ -16,7 +16,9 @@
       'VariableAssign': nodos.VariableAssign,
       'TernaryOp': nodos.TernaryOp,
       'IfNode': nodos.IfNode,
-      'WhileNode': nodos.WhileNode
+      'WhileNode': nodos.WhileNode,
+      'ForLoop': nodos.ForLoop,
+      'IncrementDecrement': nodos.IncrementDecrement
     }
 
     const node = new type[typeNode](props);
@@ -154,6 +156,7 @@ Sentence = p:Print { return p; }
           /b:Block { return b; }
           /i: If { return i; }
           /w: While { return w; }
+          /f: ForLoop { return f; }
 
 If = "if" _ "(" _ cond:Operations _ ")" _ stmtTrue:Sentence 
       stmtFalse:(
@@ -161,6 +164,10 @@ If = "if" _ "(" _ cond:Operations _ ")" _ stmtTrue:Sentence
       )? { return createNode('IfNode', { cond, stmtTrue, stmtFalse }) }
 
 While = "while" _ "(" _ cond:Operations _ ")" _ stmt:Sentence { return createNode('WhileNode', { cond, stmt }) }
+
+ForLoop = "for" _ "("_ init:VariableDeclaration _ cond:Operations _ ";" _ inc:(IncrementDecrement/Assignment) _ ")" _ stmt:Sentence { return createNode('ForLoop', { init, cond, inc, stmt }) }
+
+IncrementDecrement = id:Id _ op:("++" / "--") { return createNode('IncrementDecrement', { id, op }); }
 
 Print = "system.out.println" _ "(" _ expressions:ExpressionPrint  _ ")" _ ";"  { return createNode('Print', {exp: expressions}); }
 

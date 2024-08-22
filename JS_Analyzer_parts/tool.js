@@ -304,6 +304,48 @@ const configuracionNodos = [
                 description: 'Cuerpo del while'
             }
         ]
+    },
+    {
+        name: 'IncrementDecrement',
+        extends: 'Expresion',
+        props: [
+            {
+                name: 'id',
+                type: 'string',
+                description: 'Identifier of the variable'
+            },
+            {
+                name: 'op',
+                type: 'string',
+                description: 'Operator of the increment/decrement'
+            }
+        ]
+    },
+    {
+        name: 'ForLoop',
+        extends: 'Expresion',
+        props: [
+            {
+                name: 'init',
+                type: 'Expresion',
+                description: 'Inicialization of the for'
+            },
+            {
+                name: 'cond',
+                type: 'Expresion',
+                description: 'For condition'
+            },
+            {
+                name: 'inc',
+                type: 'Expresion',
+                description: 'Update of the for (++,--)'
+            },
+            {
+                name: 'stmt',
+                type: 'Expresion',
+                description: 'Body of the for'
+            }
+        ]
     }
 ]
 

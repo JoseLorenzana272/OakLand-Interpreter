@@ -341,4 +341,72 @@ export class InterpreterVisitor extends BaseVisitor {
             node.stmt.accept(this);
         }
     }
+
+    /**
+     * @type [BaseVisitor['visitIncrementDecrement']]
+     */
+    visitIncrementDecrement(node) {
+        const variable = this.entornoActual.getVariable(node.id);
+        if (!variable) {
+            throw new Error(`Variable ${node.id} no definida`);
+        }
+
+        if (!(variable.value instanceof Literal)) {
+            throw new Error('La variable debe ser una literal');
+        }
+
+        switch (node.op) {
+            case '++':
+                variable.value = new Literal({
+                    value: variable.value.value + 1,
+                    type: variable.value.type
+                });
+                break;
+            case '--':
+                variable.value = new Literal({
+                    value: variable.value.value - 1,
+                    type: variable.value.type
+                });
+                break;
+            default:
+                throw new Error(`Operador no soportado: ${node.op}`);
+        }
+
+        this.entornoActual.assignVariable(node.id, variable.value);
+        return variable.value;
+    }
+
+
+    /**
+     * @type [BaseVisitor['visitForLoop']]
+     */
+    visitForLoop(node) {
+        const entornoAnterior = this.entornoActual;
+        this.entornoActual = new Entorno(entornoAnterior);
+    
+        // Inicialización
+        node.init.accept(this);
+    
+        while (true) {
+            // Evaluar la condición
+            const cond = node.cond.accept(this);
+            if (!(cond instanceof Literal)) {
+                throw new Error('La condición debe ser una literal');
+            }
+    
+            // Si la condición es falsa, salir del bucle
+            if (!cond.value) {
+                break;
+            }
+    
+            // Ejecutar la sentencia
+            node.stmt.accept(this);
+    
+            // Actualizar la variable de control
+            node.inc.accept(this);
+        }
+    
+        this.entornoActual = entornoAnterior;
+    }
+
 }

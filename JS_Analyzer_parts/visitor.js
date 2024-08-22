@@ -48,6 +48,12 @@
 
  * @typedef {import('./nodos').WhileNode} WhileNode
 
+
+ * @typedef {import('./nodos').IncrementDecrement} IncrementDecrement
+
+
+ * @typedef {import('./nodos').ForLoop} ForLoop
+
  */
 
 
@@ -199,6 +205,24 @@ export class BaseVisitor {
      */
     visitWhileNode(node) {
         throw new Error('Metodo visitWhileNode no implementado');
+    }
+    
+
+    /**
+     * @param {IncrementDecrement} node
+     * @returns {any}
+     */
+    visitIncrementDecrement(node) {
+        throw new Error('Metodo visitIncrementDecrement no implementado');
+    }
+    
+
+    /**
+     * @param {ForLoop} node
+     * @returns {any}
+     */
+    visitForLoop(node) {
+        throw new Error('Metodo visitForLoop no implementado');
     }
     
 }

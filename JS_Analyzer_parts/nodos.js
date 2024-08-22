@@ -568,4 +568,86 @@ export class WhileNode  {
     }
 }
     
-export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode }
+export class IncrementDecrement  {
+
+    /**
+    * @param {Object} options
+    * @param {string} options.id Identifier of the variable
+ * @param {string} options.op Operator of the increment/decrement
+    */
+    constructor({ id, op }) {
+        
+        
+        /**
+         * Identifier of the variable
+         * @type {string}
+        */
+        this.id = id;
+
+
+        /**
+         * Operator of the increment/decrement
+         * @type {string}
+        */
+        this.op = op;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitIncrementDecrement(this);
+    }
+}
+    
+export class ForLoop  {
+
+    /**
+    * @param {Object} options
+    * @param {Expresion} options.init Inicialization of the for
+ * @param {Expresion} options.cond For condition
+ * @param {Expresion} options.inc Update of the for (++,--)
+ * @param {Expresion} options.stmt Body of the for
+    */
+    constructor({ init, cond, inc, stmt }) {
+        
+        
+        /**
+         * Inicialization of the for
+         * @type {Expresion}
+        */
+        this.init = init;
+
+
+        /**
+         * For condition
+         * @type {Expresion}
+        */
+        this.cond = cond;
+
+
+        /**
+         * Update of the for (++,--)
+         * @type {Expresion}
+        */
+        this.inc = inc;
+
+
+        /**
+         * Body of the for
+         * @type {Expresion}
+        */
+        this.stmt = stmt;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitForLoop(this);
+    }
+}
+    
+export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop }
