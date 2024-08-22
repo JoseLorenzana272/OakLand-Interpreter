@@ -45,6 +45,9 @@
 
  * @typedef {import('./nodos').IfNode} IfNode
 
+
+ * @typedef {import('./nodos').WhileNode} WhileNode
+
  */
 
 
@@ -187,6 +190,15 @@ export class BaseVisitor {
      */
     visitIfNode(node) {
         throw new Error('Metodo visitIfNode no implementado');
+    }
+    
+
+    /**
+     * @param {WhileNode} node
+     * @returns {any}
+     */
+    visitWhileNode(node) {
+        throw new Error('Metodo visitWhileNode no implementado');
     }
     
 }

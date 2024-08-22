@@ -320,4 +320,25 @@ export class InterpreterVisitor extends BaseVisitor {
     console.log("Condición: ", cond);
     console.log("Resultado: ", cond.value);
     }
+
+    /**
+     * @type [BaseVisitor['visitWhileNode']]
+     */
+    visitWhileNode(node){
+        while (true) {
+            const cond = node.cond.accept(this);
+    
+            if (!(cond instanceof Literal)) {
+                throw new Error('La condición debe ser una literal');
+            }
+    
+            // Si la condición es falsa, sal del bucle
+            if (!cond.value) {
+                break;
+            }
+    
+            // Ejecuta la sentencia del bucle
+            node.stmt.accept(this);
+        }
+    }
 }

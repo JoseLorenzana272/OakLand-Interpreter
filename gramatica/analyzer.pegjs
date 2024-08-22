@@ -15,7 +15,8 @@
       'OpSentence': nodos.OpSentence,
       'VariableAssign': nodos.VariableAssign,
       'TernaryOp': nodos.TernaryOp,
-      'IfNode': nodos.IfNode
+      'IfNode': nodos.IfNode,
+      'WhileNode': nodos.WhileNode
     }
 
     const node = new type[typeNode](props);
@@ -23,12 +24,13 @@
   }
 }
 
-Program = statements:Statements* _ { return statements; }
+Program = _ (Comments)? statements:Statements* _ { return statements; }
 
 Statements = Statement
 
-Statement =  vard:VariableDeclaration _ { return vard; }
-            /s:Sentence _ { return s; }
+Statement =  vard:VariableDeclaration _ ( Comments _ )? { return vard; }
+            /s:Sentence _ ( Comments _ )? { return s; }
+            / Comments _ 
 
 /*---------------------Declaracion de variables----------------------*/
 VariableDeclaration = type:(Types / "var") _ id:Id _ exp:("=" _ exp:Operations {return exp})? _ ";" 
@@ -151,11 +153,14 @@ Sentence = p:Print { return p; }
           /o:Operations _ ";" { return createNode('OpSentence', {o}) }
           /b:Block { return b; }
           /i: If { return i; }
+          /w: While { return w; }
 
 If = "if" _ "(" _ cond:Operations _ ")" _ stmtTrue:Sentence 
       stmtFalse:(
         _ "else" _ stmtFalse:Sentence { return stmtFalse } 
       )? { return createNode('IfNode', { cond, stmtTrue, stmtFalse }) }
+
+While = "while" _ "(" _ cond:Operations _ ")" _ stmt:Sentence { return createNode('WhileNode', { cond, stmt }) }
 
 Print = "system.out.println" _ "(" _ expressions:ExpressionPrint  _ ")" _ ";"  { return createNode('Print', {exp: expressions}); }
 
@@ -194,6 +199,16 @@ Char = "'" [^']* "'" { return createNode('Literal', {value: text().slice(1,-1), 
 Null = 'null' { return createNode('Literal', {value: null, type: 'null'}); }
 
 /*----------------------------------------------------- */
+/* ----------------- Comentarios ---------------------------- */
+Comments = SimpleComment / MultilineComment
+
+SimpleComment = "//" (!EndOfLine .)* EndOfLine { console.log('SimpleComment', text()); }
+
+EndOfLine = "\r" / "\n" / "\r\n" / !.
+
+MultilineComment = "/*" (!"*/" .)* "*/" { console.log('MultilineComment', text()); }
+ /*-------------------------------------------------------------*/
+
 Types = ("int" / "float" / "string" / "char" / "bool") { return text(); }
 
 Id = [a-zA-Z_][a-zA-Z0-9_]* { return text(); }

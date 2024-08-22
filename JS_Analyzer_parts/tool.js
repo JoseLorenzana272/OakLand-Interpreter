@@ -288,6 +288,22 @@ const configuracionNodos = [
                 description: 'Cuerpo del else'
             }
         ]
+    },
+    {
+        name: 'WhileNode',
+        extends: 'Expresion',
+        props: [
+            {
+                name: 'cond',
+                type: 'Expresion',
+                description: 'Condicion del while'
+            },
+            {
+                name: 'stmt',
+                type: 'Expresion',
+                description: 'Cuerpo del while'
+            }
+        ]
     }
 ]
 

@@ -50,3 +50,35 @@ if(7 < 4) {
 } else {
     system.out.println(3);
 }
+
+int counter = 0;
+
+while (counter < 5) {
+    system.out.println("Counter: ", counter);
+    counter += 1;
+}
+
+system.out.println("Final counter value: ", counter);
+
+int jose = 10;
+int dani = 0;
+
+
+while (jose > 5) {
+    jose -= 1;
+    dani += 2;
+    system.out.println("jose: ", jose, " dani: ", dani);
+}
+
+int goku = 3;
+while (goku > 0) {
+    system.out.println("goku: ", goku);
+    int vegeta = goku;
+    while (vegeta > 0) {
+        system.out.println("vegeta: ", vegeta);
+        vegeta -= 1;
+    }
+    goku -= 1;
+}
+
+system.out.println("Final values -> jose: ", jose, " dani: ", dani, " goku: ", goku);
