@@ -10,7 +10,10 @@
       'Logical': nodos.Logical,
       'Unario': nodos.Unario,
       'VariableDeclaration': nodos.VariableDeclaration,
-      'VariableValue': nodos.VariableValue
+      'VariableValue': nodos.VariableValue,
+      'Block': nodos.Block,
+      'OpSentence': nodos.OpSentence,
+      'VariableAssign': nodos.VariableAssign
     }
 
     const node = new type[typeNode](props);
@@ -33,7 +36,10 @@ VariableDeclaration = type:(Types / "var") _ id:Id _ exp:("=" _ exp:Operations {
 
 /*-------------------------------------------------------------------*/
 
-Operations = LogicalOperations/Igualation/RelationalOperations/ArithmeticOperations
+Operations = Assignment
+
+Assignment = id:Id _ op:("="/"+="/"-=") _ assi:Assignment{ return createNode('VariableAssign', {id, op, assi})}
+            /LogicalOperations
 
 /*---------------------Operaciones Logicas----------------------*/
 LogicalOperations = And/Or
@@ -135,12 +141,16 @@ Modulus = izq:Unary expansion:(
 }
 
 
-/*---------------------- Print ---------------------------*/
+/*---------------------- Print & Block ---------------------------*/
 Sentence = p:Print { return p; }
+          /o:Operations _ ";" { return createNode('OpSentence', {o}) }
+          /b:Block { return b; }
 
 Print = "system.out.println" _ "(" _ expressions:ExpressionPrint  _ ")" _ ";"  { return createNode('Print', {exp: expressions}); }
 
 ExpressionPrint = head:Operations tail:(_ "," _ Operations)* { return [head, ...tail.map(t => t[3])]; }
+
+Block = "{" _ stmt:Statements* _ "}" { return createNode('Block', { statements: stmt }); }
 
 /*-------------------------------------------------------- */
 Unary = "-" _ un:DataType { return createNode('Unario', { op: '-', exp: un }); }

@@ -221,5 +221,65 @@ export class InterpreterVisitor extends BaseVisitor {
 
         this.entornoActual.setVariable(variableType, variableName, variableValue);
     }
+
+
+    /**
+     * @type [BaseVisitor['visitBlock']]
+     */
+    visitBlock(node) {
+        console.log(node);
+        const previousScope = this.entornoActual;
+        this.entornoActual = new Entorno(previousScope);
+
+        node.statements.forEach(stm => stm.accept(this));
+
+        this.entornoActual = previousScope;
+
+    }
+
+
+    /**
+     * @type [BaseVisitor['visitOpSentence']]
+     */
+    visitOpSentence(node) {
+        node.o.accept(this);
+    }
+
+    /**
+     * @type [BaseVisitor['visitOpSentence']]
+     */
+    visitVariableAssign(node) {
+        const value = node.assi.accept(this);
+        if (!(value instanceof Literal)) {
+            throw new Error('La expresión debe ser una literal');
+        }
+    
+        const currentValue = this.entornoActual.getVariable(node.id).value;
+    
+        const asignments = {
+            '=': () => {
+                this.entornoActual.assignVariable(node.id, value);
+                return value;
+            },
+            '+=': () => {
+                const newValue = new Literal({
+                    value: ArithmeticOp('+', currentValue, value).value,
+                    type: value.type
+                });
+                this.entornoActual.assignVariable(node.id, newValue);
+                return newValue;
+            },
+            '-=': () => {
+                const newValue = new Literal({
+                    value: ArithmeticOp('-', currentValue, value).value,
+                    type: value.type
+                });
+                this.entornoActual.assignVariable(node.id, newValue);
+                return newValue;
+            },
+        }
+    
+        return asignments[node.op]();
+    }
     
 }

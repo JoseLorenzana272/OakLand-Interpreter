@@ -362,4 +362,95 @@ export class VariableDeclaration  {
     }
 }
     
-export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration }
+export class Block  {
+
+    /**
+    * @param {Object} options
+    * @param {Expresion[]} options.statements Statements/Sentences of the block
+    */
+    constructor({ statements }) {
+        
+        
+        /**
+         * Statements/Sentences of the block
+         * @type {Expresion[]}
+        */
+        this.statements = statements;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitBlock(this);
+    }
+}
+    
+export class OpSentence  {
+
+    /**
+    * @param {Object} options
+    * @param {Expresion} options.o Operation to execute
+    */
+    constructor({ o }) {
+        
+        
+        /**
+         * Operation to execute
+         * @type {Expresion}
+        */
+        this.o = o;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitOpSentence(this);
+    }
+}
+    
+export class VariableAssign  {
+
+    /**
+    * @param {Object} options
+    * @param {string} options.id Identifier of the variable
+ * @param {string} options.op Operator of the assignment
+ * @param {Expresion} options.assi Expression to assign
+    */
+    constructor({ id, op, assi }) {
+        
+        
+        /**
+         * Identifier of the variable
+         * @type {string}
+        */
+        this.id = id;
+
+
+        /**
+         * Operator of the assignment
+         * @type {string}
+        */
+        this.op = op;
+
+
+        /**
+         * Expression to assign
+         * @type {Expresion}
+        */
+        this.assi = assi;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitVariableAssign(this);
+    }
+}
+    
+export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign }

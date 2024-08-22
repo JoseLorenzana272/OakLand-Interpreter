@@ -30,6 +30,15 @@
 
  * @typedef {import('./nodos').VariableDeclaration} VariableDeclaration
 
+
+ * @typedef {import('./nodos').Block} Block
+
+
+ * @typedef {import('./nodos').OpSentence} OpSentence
+
+
+ * @typedef {import('./nodos').VariableAssign} VariableAssign
+
  */
 
 
@@ -127,6 +136,33 @@ export class BaseVisitor {
      */
     visitVariableDeclaration(node) {
         throw new Error('Metodo visitVariableDeclaration no implementado');
+    }
+    
+
+    /**
+     * @param {Block} node
+     * @returns {any}
+     */
+    visitBlock(node) {
+        throw new Error('Metodo visitBlock no implementado');
+    }
+    
+
+    /**
+     * @param {OpSentence} node
+     * @returns {any}
+     */
+    visitOpSentence(node) {
+        throw new Error('Metodo visitOpSentence no implementado');
+    }
+    
+
+    /**
+     * @param {VariableAssign} node
+     * @returns {any}
+     */
+    visitVariableAssign(node) {
+        throw new Error('Metodo visitVariableAssign no implementado');
     }
     
 }

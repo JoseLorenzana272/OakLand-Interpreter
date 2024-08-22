@@ -47,8 +47,7 @@ export class Entorno {
         const variable = this.valores[nombre];
 
         if (variable) {
-            // Asignar nuevo valor manteniendo el tipo original
-            this.valores[nombre] = { tipo: variable.tipo, valor };
+            this.valores[nombre].value = valor;
             return;
         }
 

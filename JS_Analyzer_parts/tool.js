@@ -203,6 +203,49 @@ const configuracionNodos = [
                 description: 'Value of the variable'
             }
         ]
+    },
+    {
+        name: 'Block',
+        extends: 'Expression',
+        props: [
+            {
+                name: 'statements',
+                type: 'Expresion[]',
+                description: 'Statements/Sentences of the block'
+            }
+        ]
+    },
+    {
+        name: 'OpSentence',
+        extends: 'Expression',
+        props: [
+            {
+                name: 'o',
+                type: 'Expresion',
+                description: 'Operation to execute'
+            }
+        ]
+    },
+    {
+        name: 'VariableAssign',
+        extends: 'Expression',
+        props: [
+            {
+                name: 'id',
+                type: 'string',
+                description: 'Identifier of the variable'
+            },
+            {
+                name: 'op',
+                type: 'string',
+                description: 'Operator of the assignment'
+            },
+            {
+                name: 'assi',
+                type: 'Expresion',
+                description: 'Expression to assign'
+            }
+        ]
     }
 ]
 
