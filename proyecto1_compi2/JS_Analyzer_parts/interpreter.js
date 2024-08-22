@@ -5,6 +5,13 @@ import { Literal } from "./nodos.js";
 import { RelationalOp } from "../Expressions/RelationalOp.js";
 import { LogicalOp } from "../Expressions/LogicalOp.js";
 
+const typeMaps = {
+    "string": "",
+    "int": 0,
+    "bool": true,
+    "char": '',
+    "float": 0.0,
+};
 
 export class InterpreterVisitor extends BaseVisitor {
 
@@ -139,6 +146,9 @@ export class InterpreterVisitor extends BaseVisitor {
     visitVariableValue(node) {
         const variableName = node.id;
         const variable = this.entornoActual.getVariable(variableName);
+        if (!variable) {
+            throw new Error(`Variable ${variableName} no definida`);
+        }
         console.log(variable);
         return variable.value; // Retorna solo el valor
     }    
@@ -148,9 +158,68 @@ export class InterpreterVisitor extends BaseVisitor {
      */
     visitVariableDeclaration(node) {
         const variableName = node.id;
+        // Asignacion de valor por defecto
+        if (node.value === null) {
+            this.entornoActual.setVariable(node.type, variableName, new Literal({ value: typeMaps[node.type], type: node.type }));
+            return;
+        }
         const variableValue = node.value.accept(this);
         const variableType = node.type;
 
+        console.log("Nombre de la variable: ", variableName);
+        console.log("Valor de la variable: ", variableValue.value);
+        console.log("Tipo de la variable: ", variableType);
+        console.log("-----------------------------------");
+
+        //verificar tipos
+        switch (variableType) {
+            case 'int':
+                if (typeof variableValue.value !== 'number' || !Number.isInteger(variableValue.value)) {
+                    console.error(`An ${variableType} was expected, but received: `, typeof variableValue.value);
+                    return new Literal({ value: variableValue.value, type: null });
+                }
+                break;
+
+            case 'float':
+                if (typeof variableValue.value !== 'number') {
+                    console.error(`An ${variableType} was expected, but received: `, typeof variableValue.value);
+                    return new Literal({ value: variableValue.value, type: null });
+                }
+                break;
+
+            case 'bool':
+                if (typeof variableValue.value !== 'boolean') {
+                    console.error(`An ${variableType} was expected, but received: `, typeof variableValue.value);
+                    return new Literal({ value: variableValue.value, type: null });
+                }
+                break;
+
+            case 'string':
+                if (typeof variableValue.value !== 'string') {
+                    console.error(`An ${variableType} was expected, but received: `, typeof variableValue.value);
+                    return new Literal({ value: variableValue.value, type: null });
+                }
+                break;
+
+            case 'char':
+                if (typeof variableValue.value !== 'string' || variableValue.value.length !== 1) {
+                    console.error(`An ${variableType} was expected, but received: `, typeof variableValue.value);
+                    return new Literal({ value: variableValue.value, type: null });
+                }
+                break;
+
+            default:
+                throw new Error(`Tipo de dato desconocido: ${variableType}`);
+        }
+
+        if (variableType === 'float' && typeof variableValue.value === 'number' && Number.isInteger(variableValue.value)) {
+            variableValue.value = parseFloat(variableValue.value);
+        } else if (variableType !== 'float' && variableValue.value.type === 'int' && variableType === 'float') {
+            variableValue.value = parseFloat(variableValue.value);
+        }
+
+
         this.entornoActual.setVariable(variableType, variableName, variableValue);
     }
+    
 }
