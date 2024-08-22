@@ -1,4 +1,4 @@
-import { Entorno } from "/environments/environments.js";
+import { Entorno } from "../environments/environments.js";
 import { BaseVisitor } from "./visitor.js";
 import { ArithmeticOp } from "../Expressions/ArithmeticOp.js";
 import { Literal } from "./nodos.js";
