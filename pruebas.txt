@@ -82,3 +82,18 @@ while (goku > 0) {
 }
 
 system.out.println("Final values -> jose: ", jose, " dani: ", dani, " goku: ", goku);
+system.out.println("---------------------------------------");
+for (int t = 0; t < 4; t++) {
+    int r = (t < 2) ? t : a;
+    system.out.println("For loop, t: ", t, " r: ", r);
+
+    int counter = r;
+    while (counter > 0) {
+        if (counter % 2 == 0) {
+            system.out.println("Counter is even: ", counter);
+        } else {
+            system.out.println("Counter is odd: ", counter);
+        }
+        counter-= 1;
+    }
+}

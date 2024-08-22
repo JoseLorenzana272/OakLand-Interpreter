@@ -1,7 +1,7 @@
 import { Entorno } from "../environments/environments.js";
 import { BaseVisitor } from "./visitor.js";
 import { ArithmeticOp } from "../Expressions/ArithmeticOp.js";
-import { Literal } from "./nodos.js";
+import { Literal, Logical, Relational, VariableAssign, VariableDeclaration } from "./nodos.js";
 import { RelationalOp } from "../Expressions/RelationalOp.js";
 import { LogicalOp } from "../Expressions/LogicalOp.js";
 
@@ -381,6 +381,11 @@ export class InterpreterVisitor extends BaseVisitor {
      * @type [BaseVisitor['visitForLoop']]
      */
     visitForLoop(node) {
+
+        /*if(!(node.init instanceof VariableDeclaration) && !(node.init instanceof VariableAssign)){
+            throw new Error('La inicialización debe ser una declaración o asignación de variable, se recibió: ', node.init);
+        }*/
+
         const entornoAnterior = this.entornoActual;
         this.entornoActual = new Entorno(entornoAnterior);
     

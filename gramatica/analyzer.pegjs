@@ -165,7 +165,7 @@ If = "if" _ "(" _ cond:Operations _ ")" _ stmtTrue:Sentence
 
 While = "while" _ "(" _ cond:Operations _ ")" _ stmt:Sentence { return createNode('WhileNode', { cond, stmt }) }
 
-ForLoop = "for" _ "("_ init:VariableDeclaration _ cond:Operations _ ";" _ inc:(IncrementDecrement/Assignment) _ ")" _ stmt:Sentence { return createNode('ForLoop', { init, cond, inc, stmt }) }
+ForLoop = "for" _ "("_ init:Statement _ cond:TernaryOp _ ";" _ inc:(IncrementDecrement/Assignment) _ ")" _ stmt:Block { return createNode('ForLoop', { init, cond, inc, stmt }) }
 
 IncrementDecrement = id:Id _ op:("++" / "--") { return createNode('IncrementDecrement', { id, op }); }
 
