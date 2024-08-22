@@ -453,4 +453,86 @@ export class VariableAssign  {
     }
 }
     
-export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign }
+export class TernaryOp  {
+
+    /**
+    * @param {Object} options
+    * @param {Expresion} options.condition Condition to evaluate
+ * @param {Expresion} options.trueExp Expression to return if the condition is true
+ * @param {Expresion} options.falseExp Expression to return if the condition is false
+    */
+    constructor({ condition, trueExp, falseExp }) {
+        
+        
+        /**
+         * Condition to evaluate
+         * @type {Expresion}
+        */
+        this.condition = condition;
+
+
+        /**
+         * Expression to return if the condition is true
+         * @type {Expresion}
+        */
+        this.trueExp = trueExp;
+
+
+        /**
+         * Expression to return if the condition is false
+         * @type {Expresion}
+        */
+        this.falseExp = falseExp;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitTernaryOp(this);
+    }
+}
+    
+export class IfNode  {
+
+    /**
+    * @param {Object} options
+    * @param {Expresion} options.cond Condicion del if
+ * @param {Expresion} options.stmtTrue Cuerpo del if
+ * @param {Expresion|undefined} options.stmtFalse Cuerpo del else
+    */
+    constructor({ cond, stmtTrue, stmtFalse }) {
+        
+        
+        /**
+         * Condicion del if
+         * @type {Expresion}
+        */
+        this.cond = cond;
+
+
+        /**
+         * Cuerpo del if
+         * @type {Expresion}
+        */
+        this.stmtTrue = stmtTrue;
+
+
+        /**
+         * Cuerpo del else
+         * @type {Expresion|undefined}
+        */
+        this.stmtFalse = stmtFalse;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitIfNode(this);
+    }
+}
+    
+export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode }

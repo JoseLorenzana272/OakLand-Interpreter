@@ -246,6 +246,48 @@ const configuracionNodos = [
                 description: 'Expression to assign'
             }
         ]
+    },
+    {
+        name: 'TernaryOp',
+        extends: 'Expression',
+        props: [
+            {
+                name: 'condition',
+                type: 'Expresion',
+                description: 'Condition to evaluate'
+            },
+            {
+                name: 'trueExp',
+                type: 'Expresion',
+                description: 'Expression to return if the condition is true'
+            },
+            {
+                name: 'falseExp',
+                type: 'Expresion',
+                description: 'Expression to return if the condition is false'
+            }
+        ]
+    },
+    {
+        name: 'IfNode',
+        extends: 'Expresion',
+        props: [
+            {
+                name: 'cond',
+                type: 'Expresion',
+                description: 'Condicion del if'
+            },
+            {
+                name: 'stmtTrue',
+                type: 'Expresion',
+                description: 'Cuerpo del if'
+            },
+            {
+                name: 'stmtFalse',
+                type: 'Expresion|undefined',
+                description: 'Cuerpo del else'
+            }
+        ]
     }
 ]
 

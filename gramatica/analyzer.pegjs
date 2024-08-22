@@ -13,7 +13,9 @@
       'VariableValue': nodos.VariableValue,
       'Block': nodos.Block,
       'OpSentence': nodos.OpSentence,
-      'VariableAssign': nodos.VariableAssign
+      'VariableAssign': nodos.VariableAssign,
+      'TernaryOp': nodos.TernaryOp,
+      'IfNode': nodos.IfNode
     }
 
     const node = new type[typeNode](props);
@@ -39,7 +41,10 @@ VariableDeclaration = type:(Types / "var") _ id:Id _ exp:("=" _ exp:Operations {
 Operations = Assignment
 
 Assignment = id:Id _ op:("="/"+="/"-=") _ assi:Assignment{ return createNode('VariableAssign', {id, op, assi})}
-            /LogicalOperations
+            /TernaryOp
+
+TernaryOp = condition:LogicalOperations _ "?" _ trueExp:TernaryOp _ ":" _ falseExp:TernaryOp { return createNode('TernaryOp', { condition, trueExp, falseExp }); }
+          /LogicalOperations
 
 /*---------------------Operaciones Logicas----------------------*/
 LogicalOperations = And/Or
@@ -145,6 +150,12 @@ Modulus = izq:Unary expansion:(
 Sentence = p:Print { return p; }
           /o:Operations _ ";" { return createNode('OpSentence', {o}) }
           /b:Block { return b; }
+          /i: If { return i; }
+
+If = "if" _ "(" _ cond:Operations _ ")" _ stmtTrue:Sentence 
+      stmtFalse:(
+        _ "else" _ stmtFalse:Sentence { return stmtFalse } 
+      )? { return createNode('IfNode', { cond, stmtTrue, stmtFalse }) }
 
 Print = "system.out.println" _ "(" _ expressions:ExpressionPrint  _ ")" _ ";"  { return createNode('Print', {exp: expressions}); }
 

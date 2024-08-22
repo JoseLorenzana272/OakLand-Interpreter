@@ -39,6 +39,12 @@
 
  * @typedef {import('./nodos').VariableAssign} VariableAssign
 
+
+ * @typedef {import('./nodos').TernaryOp} TernaryOp
+
+
+ * @typedef {import('./nodos').IfNode} IfNode
+
  */
 
 
@@ -163,6 +169,24 @@ export class BaseVisitor {
      */
     visitVariableAssign(node) {
         throw new Error('Metodo visitVariableAssign no implementado');
+    }
+    
+
+    /**
+     * @param {TernaryOp} node
+     * @returns {any}
+     */
+    visitTernaryOp(node) {
+        throw new Error('Metodo visitTernaryOp no implementado');
+    }
+    
+
+    /**
+     * @param {IfNode} node
+     * @returns {any}
+     */
+    visitIfNode(node) {
+        throw new Error('Metodo visitIfNode no implementado');
     }
     
 }

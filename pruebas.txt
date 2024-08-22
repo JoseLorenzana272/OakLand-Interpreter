@@ -1,0 +1,52 @@
+int a = 10;
+float b = 5.5;
+string c = "Hello";
+bool d = true;
+char e = 'A';
+int u = 10;
+
+a += 5;
+b -= 2.2;
+c = "World";
+
+system.out.println("Values after operations: ", a, " ", b, " ", c, " ", d);
+
+{
+    int f = a + 7;
+    system.out.println("Sum of a and 7:", f);
+}
+
+a = (u + 2) * 3;
+d = !d;
+
+system.out.println("Updated values: ", a, " ", d);
+
+int g = (a > 20) ? a : u;
+system.out.println("Ternary operation result: ", g);
+
+if(a > 30) {
+    system.out.println("a is greater than 30");
+} else {
+    system.out.println("a is not greater than 30");
+}
+
+if(a > 20) {
+    system.out.println("a is greater than 20");
+
+    if(b > 3) {
+        system.out.println("b is greater than 3");
+    } else {
+        system.out.println("b is not greater than 3");
+    }
+
+} else {
+    system.out.println("a is not greater than 20");
+}
+
+if(7 < 4) {
+    system.out.println(1);
+} else if(2 < 5) {
+    system.out.println(2);
+} else {
+    system.out.println(3);
+}

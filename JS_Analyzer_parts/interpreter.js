@@ -207,6 +207,8 @@ export class InterpreterVisitor extends BaseVisitor {
                     return new Literal({ value: variableValue.value, type: null });
                 }
                 break;
+            case 'var':
+                break;
 
             default:
                 throw new Error(`Tipo de dato desconocido: ${variableType}`);
@@ -281,5 +283,41 @@ export class InterpreterVisitor extends BaseVisitor {
     
         return asignments[node.op]();
     }
+
+    /**
+     * @type [BaseVisitor['visitTernaryOp']]
+     */
+    visitTernaryOp(node) {
+        const condition = node.condition.accept(this);
+        if (!(condition instanceof Literal)) {
+            throw new Error('La condición debe ser una literal');
+        }
     
+        if (condition.value) {
+            return node.trueExp.accept(this);
+        }
+    
+        return node.falseExp.accept(this);
+    }
+
+    /**
+     * @type [BaseVisitor['visitIfNode']]
+     */
+    visitIfNode(node) {
+        const cond = node.cond.accept(this);
+
+    if (!(cond instanceof Literal)) {
+        throw new Error('La condición debe ser una literal');
+    }
+
+    // Evalúa el valor de la condición almacenado en el Literal
+    if (cond.value) {
+        node.stmtTrue.accept(this);
+    } else if (node.stmtFalse) {
+        node.stmtFalse.accept(this);
+    }
+
+    console.log("Condición: ", cond);
+    console.log("Resultado: ", cond.value);
+    }
 }
