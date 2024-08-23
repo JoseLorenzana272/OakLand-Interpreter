@@ -26,13 +26,12 @@
   }
 }
 
-Program = _ (Comments)? statements:Statements* _ { return statements; }
+Program = _ statements:Statements* _ { return statements; }
 
 Statements = Statement
 
-Statement =  vard:VariableDeclaration _ ( Comments _ )? { return vard; }
-            /s:Sentence _ ( Comments _ )? { return s; }
-            / Comments _ 
+Statement =  _ vard:VariableDeclaration _ { return vard; }
+            /_ s:Sentence _ { return s; } 
 
 /*---------------------Declaracion de variables----------------------*/
 VariableDeclaration = type:(Types / "var") _ id:Id _ exp:("=" _ exp:Operations {return exp})? _ ";" 
@@ -209,11 +208,9 @@ Null = 'null' { return createNode('Literal', {value: null, type: 'null'}); }
 /* ----------------- Comentarios ---------------------------- */
 Comments = SimpleComment / MultilineComment
 
-SimpleComment = "//" (!EndOfLine .)* EndOfLine { console.log('SimpleComment', text()); }
+SimpleComment = "//" [^\r\n]*
 
-EndOfLine = "\r" / "\n" / "\r\n" / !.
-
-MultilineComment = "/*" (!"*/" .)* "*/" { console.log('MultilineComment', text()); }
+MultilineComment = "/*" (!"*/" .)* "*/"
  /*-------------------------------------------------------------*/
 
 Types = ("int" / "float" / "string" / "char" / "bool") { return text(); }
@@ -221,4 +218,4 @@ Types = ("int" / "float" / "string" / "char" / "bool") { return text(); }
 Id = [a-zA-Z_][a-zA-Z0-9_]* { return text(); }
 
 
-_ = [ \t\n\r]*
+_ = [ \t\n\r]* Comments* [ \t\n\r]*
