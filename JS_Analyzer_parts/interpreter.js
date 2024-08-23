@@ -13,6 +13,14 @@ const typeMaps = {
     "float": 0.0,
 };
 
+function procesarCadena(cadena) {
+    return cadena
+        .replace(/\\n/g, '\n')
+        .replace(/\\t/g, '\t') 
+        .replace(/\\"/g, '"')   
+        .replace(/\\\\/g, '\\');
+}
+
 export class InterpreterVisitor extends BaseVisitor {
 
     constructor() {
@@ -29,6 +37,10 @@ export class InterpreterVisitor extends BaseVisitor {
      * @type [BaseVisitor['visitLiteral']]
      */
     visitLiteral(nodo) {
+        //procesar si es string
+        if (nodo.type === 'string') {
+            return new Literal({ value: procesarCadena(nodo.value), type: nodo.type });
+        }
         return nodo;
     }
 

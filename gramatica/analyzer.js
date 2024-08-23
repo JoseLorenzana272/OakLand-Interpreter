@@ -199,7 +199,7 @@ function peg$parse(input, options) {
   var peg$c19 = "for";
   var peg$c20 = "++";
   var peg$c21 = "--";
-  var peg$c22 = "system.out.println";
+  var peg$c22 = "System.out.println";
   var peg$c23 = ",";
   var peg$c24 = "{";
   var peg$c25 = "}";
@@ -256,7 +256,7 @@ function peg$parse(input, options) {
   var peg$e22 = peg$literalExpectation("for", false);
   var peg$e23 = peg$literalExpectation("++", false);
   var peg$e24 = peg$literalExpectation("--", false);
-  var peg$e25 = peg$literalExpectation("system.out.println", false);
+  var peg$e25 = peg$literalExpectation("System.out.println", false);
   var peg$e26 = peg$literalExpectation(",", false);
   var peg$e27 = peg$literalExpectation("{", false);
   var peg$e28 = peg$literalExpectation("}", false);
