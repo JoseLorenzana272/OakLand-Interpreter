@@ -48,7 +48,7 @@ VectorDeclaration
       "=" _ "{" _ values:VectorValues _ "}" _ ";"{ 
         return createNode('VectorDeclaration', { type, id, values, size: values.length }); 
       }
-    / "=" _ "new" _ newType:Types _ "[" _ size:Integer _ "]" { 
+    / type:Types _ "[]" _ id:Id _ "=" _ "new" _ newType:Types _ "[" _ size:Integer _ "]" _ ";" { 
         if (type !== newType) {
           throw new Error("Array type mismatch");
         }
@@ -57,6 +57,7 @@ VectorDeclaration
         }
         return createNode('VectorDeclaration', { type, id, size });
       }
+    / type:Types _ "[]" _ id:Id _ "=" _ values:Id ";" { return createNode('VectorDeclaration', { type, id, values }); }
 
 VectorValues = head:Operations tail:(_ "," _ Operations)* { return [head, ...tail.map(t => t[3])]; }
 

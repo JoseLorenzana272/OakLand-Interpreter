@@ -16,9 +16,9 @@ export class Entorno {
      * @param {any} valor
      */
     setVariable(tipo, nombre, valor) {
-        if (this.valores[nombre]) {
+        /*if (this.valores[nombre]) {
             throw new Error(`Variable ${nombre} ya definida`);
-        }
+        }*/
         
         if (Array.isArray(valor)) {
             // Si es un array, se crea un nuevo Literal almacenando una copia del array

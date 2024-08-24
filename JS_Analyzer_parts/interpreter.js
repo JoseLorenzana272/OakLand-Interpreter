@@ -513,7 +513,31 @@ export class InterpreterVisitor extends BaseVisitor {
         const variableName = node.id;
         const variableType = node.type;
         //const size = node.size.accept(this);
-        const variableValues = node.values.map(value => value.accept(this));
+        let variableValues = [];
+
+        //Verificar si es un vector con valores
+        if (Array.isArray(node.values)){
+            variableValues = node.values.map(value => value.accept(this));
+            this.entornoActual.setVariable(variableType, variableName, new Literal({ value: variableValues, type: variableType }));
+            //en el else if, se verifica si es un nuevo vector con tamaño y se agregan valores por defecto
+        }else if (node.size){
+            const size = node.size.accept(this);
+            variableValues = new Array(size.value).fill(new Literal({ value: typeMaps[variableType], type: variableType }));
+            this.entornoActual.setVariable(variableType, variableName, new Literal({ value: variableValues, type: variableType }));
+            // En el otro else if, copiar copiar los valores de otro vector
+        }else if (typeof node.values === 'string'){
+            const vector = this.entornoActual.getVariable(node.values);
+            const acceptedVector = vector.value.accept(this);
+            console.log("Vector Aceptado: ", acceptedVector.value);
+            if (!vector) {
+                throw new Error(`Variable ${node.values} no definida`);
+            }
+            if (!Array.isArray(acceptedVector.value)) {
+                throw new Error(`Variable ${node.values} no es un vector`);
+            }
+            variableValues = acceptedVector.value;
+            this.entornoActual.setVariable(variableType, variableName, new Literal({ value: variableValues, type: variableType }));
+        }
         
         //Verificar tipos para el vector
         switch(variableType){
