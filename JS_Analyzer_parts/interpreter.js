@@ -1,9 +1,10 @@
 import { Entorno } from "../environments/environments.js";
 import { BaseVisitor } from "./visitor.js";
 import { ArithmeticOp } from "../Expressions/ArithmeticOp.js";
-import { Literal, Logical, Relational, VariableAssign, VariableDeclaration } from "./nodos.js";
+import nodos, { Literal, Logical, Relational, VariableAssign, VariableDeclaration } from "./nodos.js";
 import { RelationalOp } from "../Expressions/RelationalOp.js";
 import { LogicalOp } from "../Expressions/LogicalOp.js";
+import { BreakException, ContinueException, ReturnException } from "../Instructions/transference.js";
 
 const typeMaps = {
     "string": "",
@@ -27,6 +28,12 @@ export class InterpreterVisitor extends BaseVisitor {
         super();
         this.entornoActual = new Entorno();
         this.salida = '';
+
+
+        /**
+         * @type {Expresion | null}
+        */
+        this.prevContinue = null;
     }
 
     interpretar(nodo) {
@@ -49,6 +56,8 @@ export class InterpreterVisitor extends BaseVisitor {
      */
     visitPrint(node){
         let resultados = '';
+
+        console.log("Imprimiendo: ", node);
 
         for (let i = 0; i < node.exp.length; i++) {
             const valor = node.exp[i].accept(this);
@@ -245,6 +254,8 @@ export class InterpreterVisitor extends BaseVisitor {
         const previousScope = this.entornoActual;
         this.entornoActual = new Entorno(previousScope);
 
+        console.log("Bloque de código: ", node);
+
         node.statements.forEach(stm => stm.accept(this));
 
         this.entornoActual = previousScope;
@@ -337,23 +348,31 @@ export class InterpreterVisitor extends BaseVisitor {
      * @type [BaseVisitor['visitWhileNode']]
      */
     visitWhileNode(node){
-        while (true) {
-            const cond = node.cond.accept(this);
-    
-            if (!(cond instanceof Literal)) {
-                throw new Error('La condición debe ser una literal');
+        const firstScope = this.entornoActual;
+        try {
+            while (node.cond.accept(this).value) {
+                node.stmt.accept(this);
+
+                //verificar si es Literal
+                if (!(node.cond.accept(this) instanceof Literal)) {
+                    throw new Error('La condición debe ser una literal');
+                }
             }
-    
-            // Si la condición es falsa, sal del bucle
-            if (!cond.value) {
-                break;
+        } catch (error) {
+            this.actualScope = firstScope;
+
+            if (error instanceof BreakException) {
+                console.log('break');
+                return
             }
-    
-            // Ejecuta la sentencia del bucle
-            node.stmt.accept(this);
+
+            if (error instanceof ContinueException) {
+                return this.visitWhileNode(node);
+            }
+
+            throw error;
         }
     }
-
     /**
      * @type [BaseVisitor['visitIncrementDecrement']]
      */
@@ -397,33 +416,92 @@ export class InterpreterVisitor extends BaseVisitor {
         /*if(!(node.init instanceof VariableDeclaration) && !(node.init instanceof VariableAssign)){
             throw new Error('La inicialización debe ser una declaración o asignación de variable, se recibió: ', node.init);
         }*/
+        const previousIncrement = this.prevContinue;
+        this.prevContinue = node.inc;
 
-        const entornoAnterior = this.entornoActual;
-        this.entornoActual = new Entorno(entornoAnterior);
-    
-        // Inicialización
-        node.init.accept(this);
-    
-        while (true) {
-            // Evaluar la condición
-            const cond = node.cond.accept(this);
-            if (!(cond instanceof Literal)) {
-                throw new Error('La condición debe ser una literal');
-            }
-    
-            // Si la condición es falsa, salir del bucle
-            if (!cond.value) {
-                break;
-            }
-    
-            // Ejecutar la sentencia
-            node.stmt.accept(this);
-    
-            // Actualizar la variable de control
-            node.inc.accept(this);
+        const forScope = new nodos.Block({
+            statements:[
+                node.init,
+                new nodos.WhileNode({
+                    cond: node.cond,
+                    stmt: new nodos.Block({
+                        statements: [
+                            node.inc,
+                            node.stmt
+                        ]
+                    })
+                })
+            ]
+        })
+
+        forScope.accept(this);
+
+        this.prevContinue = previousIncrement;
+    }
+
+    /**
+     * @type [BaseVisitor['visitBreakNode']]
+     */
+    visitBreakNode(node) {
+        throw new BreakException();       
+
+    }
+
+    /**
+     * @type [BaseVisitor['visitContinueNode']]
+     */
+    visitContinueNode(node) {
+        if (this.prevContinue) {
+            this.prevContinue.accept(this);
         }
-    
-        this.entornoActual = entornoAnterior;
+
+        throw new ContinueException();
+    }
+
+    /**
+     * @type [BaseVisitor['visitreturnNode']]
+     */
+    visitreturnNode(node) {
+        let valor = null
+        if (node.exp) {
+            valor = node.exp.accept(this);
+        }
+        throw new ReturnException(valor);
+
+    }
+
+    /**
+     * @type [BaseVisitor['visitreturnNode']]
+     */
+    visitSwitchNode(node) {
+        console.log(node);
+        const firstScope = this.entornoActual;
+        const value = node.exp.accept(this);
+        let match = false;
+        try {
+            for (let i = 0; i < node.cases.length; i++) {
+                console.log("Current case: ", node.cases[i]);
+                const currentCase = node.cases[i];
+                const caseValue = currentCase.value.accept(this);
+                if (value.value === caseValue.value) {
+                    match = true;
+                    currentCase.inst.forEach(inst => inst.accept(this));
+                    break;
+                }
+            }
+
+            if (!match && node.default) {
+                node.default.accept(this);
+            }
+        } catch (error) {
+            this.entornoActual = firstScope;
+            if (error instanceof BreakException) {
+                return;
+            }
+
+            throw error;
+        }
+
     }
 
 }

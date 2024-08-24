@@ -650,4 +650,108 @@ export class ForLoop  {
     }
 }
     
-export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop }
+export class BreakNode  {
+
+    /**
+    * @param {Object} options
+    * 
+    */
+    constructor() {
+        
+        
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitBreakNode(this);
+    }
+}
+    
+export class ContinueNode  {
+
+    /**
+    * @param {Object} options
+    * 
+    */
+    constructor() {
+        
+        
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitContinueNode(this);
+    }
+}
+    
+export class returnNode  {
+
+    /**
+    * @param {Object} options
+    * @param {Expresion|undefined} options.exp Expresion a retornar
+    */
+    constructor({ exp }) {
+        
+        
+        /**
+         * Expresion a retornar
+         * @type {Expresion|undefined}
+        */
+        this.exp = exp;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitreturnNode(this);
+    }
+}
+    
+export class SwitchNode  {
+
+    /**
+    * @param {Object} options
+    * @param {Expresion} options.exp Expresion a evaluar
+ * @param {CaseNode[]} options.cases Casos del switch
+ * @param {Expresion} options.def Caso por defecto
+    */
+    constructor({ exp, cases, def }) {
+        
+        
+        /**
+         * Expresion a evaluar
+         * @type {Expresion}
+        */
+        this.exp = exp;
+
+
+        /**
+         * Casos del switch
+         * @type {CaseNode[]}
+        */
+        this.cases = cases;
+
+
+        /**
+         * Caso por defecto
+         * @type {Expresion}
+        */
+        this.def = def;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitSwitchNode(this);
+    }
+}
+    
+export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, returnNode, SwitchNode }

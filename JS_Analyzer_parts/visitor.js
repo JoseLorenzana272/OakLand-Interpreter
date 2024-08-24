@@ -54,6 +54,18 @@
 
  * @typedef {import('./nodos').ForLoop} ForLoop
 
+
+ * @typedef {import('./nodos').BreakNode} BreakNode
+
+
+ * @typedef {import('./nodos').ContinueNode} ContinueNode
+
+
+ * @typedef {import('./nodos').returnNode} returnNode
+
+
+ * @typedef {import('./nodos').SwitchNode} SwitchNode
+
  */
 
 
@@ -223,6 +235,42 @@ export class BaseVisitor {
      */
     visitForLoop(node) {
         throw new Error('Metodo visitForLoop no implementado');
+    }
+    
+
+    /**
+     * @param {BreakNode} node
+     * @returns {any}
+     */
+    visitBreakNode(node) {
+        throw new Error('Metodo visitBreakNode no implementado');
+    }
+    
+
+    /**
+     * @param {ContinueNode} node
+     * @returns {any}
+     */
+    visitContinueNode(node) {
+        throw new Error('Metodo visitContinueNode no implementado');
+    }
+    
+
+    /**
+     * @param {returnNode} node
+     * @returns {any}
+     */
+    visitreturnNode(node) {
+        throw new Error('Metodo visitreturnNode no implementado');
+    }
+    
+
+    /**
+     * @param {SwitchNode} node
+     * @returns {any}
+     */
+    visitSwitchNode(node) {
+        throw new Error('Metodo visitSwitchNode no implementado');
     }
     
 }

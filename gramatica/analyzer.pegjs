@@ -18,7 +18,11 @@
       'IfNode': nodos.IfNode,
       'WhileNode': nodos.WhileNode,
       'ForLoop': nodos.ForLoop,
-      'IncrementDecrement': nodos.IncrementDecrement
+      'IncrementDecrement': nodos.IncrementDecrement,
+      'BreakNode': nodos.BreakNode,
+      'ContinueNode': nodos.ContinueNode,
+      'ReturnNode': nodos.ReturnNode,
+      'SwitchNode': nodos.SwitchNode,
     }
 
     const node = new type[typeNode](props);
@@ -151,11 +155,30 @@ Modulus = izq:Unary expansion:(
 
 /*---------------------- Print & Block ---------------------------*/
 Sentence = p:Print { return p; }
-          /o:Operations _ ";" { return createNode('OpSentence', {o}) }
           /b:Block { return b; }
           /i: If { return i; }
           /w: While { return w; }
           /f: ForLoop { return f; }
+          /sw: Switch { return sw; }
+          /br: Break { return br; }
+          /c: Continue { return c; }
+          /rt: Return { return rt; }
+          /o:Operations _ ";" { return createNode('OpSentence', {o}) }
+
+Break = "break" _ ";" { return createNode('BreakNode', {}); }
+
+Continue = "continue" _ ";" { return createNode('ContinueNode', {}); }
+
+Return = "return" _ exp:Operations? _ ";" { return crearNodo('ReturnNode', { exp }) }
+
+Switch = "switch" _ "(" _ exp:Operations _ ")" _ "{" _ 
+             cases:SwitchCase* 
+             def:DefaultCase? 
+             _ "}" { return createNode('SwitchNode', { exp, cases, def }) }
+
+SwitchCase = _ "case" _ value:Operations _ ":" _ inst:Sentence* _ (Break)? _ { return { value, inst } }
+
+DefaultCase = _ "default" _ ":" _ stmts:Sentence* { return { stmts } }
 
 If = "if" _ "(" _ cond:Operations _ ")" _ stmtTrue:Sentence 
       stmtFalse:(
@@ -164,7 +187,7 @@ If = "if" _ "(" _ cond:Operations _ ")" _ stmtTrue:Sentence
 
 While = "while" _ "(" _ cond:Operations _ ")" _ stmt:Sentence { return createNode('WhileNode', { cond, stmt }) }
 
-ForLoop = "for" _ "("_ init:Statement _ cond:TernaryOp _ ";" _ inc:(IncrementDecrement/Assignment) _ ")" _ stmt:Block { return createNode('ForLoop', { init, cond, inc, stmt }) }
+ForLoop = "for" _ "("_ init:Statement _ cond:TernaryOp _ ";" _ inc:(IncrementDecrement/Assignment) _ ")" _ stmt:Sentence { return createNode('ForLoop', { init, cond, inc, stmt }) }
 
 IncrementDecrement = id:Id _ op:("++" / "--") { return createNode('IncrementDecrement', { id, op }); }
 

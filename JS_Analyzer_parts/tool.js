@@ -346,6 +346,48 @@ const configuracionNodos = [
                 description: 'Body of the for'
             }
         ]
+    },
+    {
+        name: 'BreakNode',
+        extends: 'Expresion',
+        props: []
+    },
+    {
+        name: 'ContinueNode',
+        extends: 'Expresion',
+        props: []
+    },
+    {
+        name: 'returnNode',
+        extends: 'Expresion',
+        props: [
+            {
+                name: 'exp',
+                type: 'Expresion|undefined',
+                description: 'Expresion a retornar'
+            }
+        ]
+    },
+    {
+        name: 'SwitchNode',
+        extends: 'Expresion',
+        props: [
+            {
+                name: 'exp',
+                type: 'Expresion',
+                description: 'Expresion a evaluar'
+            },
+            {
+                name: 'cases',
+                type: 'CaseNode[]',
+                description: 'Casos del switch'
+            },
+            {
+                name: 'def',
+                type: 'Expresion',
+                description: 'Caso por defecto'
+            }
+        ]
     }
 ]
 
@@ -386,7 +428,7 @@ export class ${nodo.name} ${baseClass && nodo.extends ? `extends ${nodo.extends}
     * @param {Object} options
     * ${nodo.props.map(prop => `@param {${prop.type}} options.${prop.name} ${prop.description}`).join('\n * ')}
     */
-    constructor(${!nodo.base && `{ ${nodo.props.map(prop => `${prop.name}`).join(', ')} }` || ''}) {
+    constructor(${!nodo.base && nodo.props.length > 0 && `{ ${nodo.props.map(prop => `${prop.name}`).join(', ')} }` || ''}) {
         ${baseClass && nodo.extends ? `super();` : ''}
         ${nodo.props.map(prop => `
         /**
