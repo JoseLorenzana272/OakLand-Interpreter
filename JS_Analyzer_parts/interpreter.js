@@ -504,4 +504,57 @@ export class InterpreterVisitor extends BaseVisitor {
 
     }
 
+
+    /**
+     * @type [BaseVisitor['visitVectorDeclaration']]
+     */
+    visitVectorDeclaration(node) {
+        console.log(node);
+        const variableName = node.id;
+        const variableType = node.type;
+        //const size = node.size.accept(this);
+        const variableValues = node.values.map(value => value.accept(this));
+        
+        //Verificar tipos para el vector
+        switch(variableType){
+            case 'int':
+                if (variableValues.some(value => typeof value.value !== 'number' || !Number.isInteger(value.value))) {
+                    throw new Error(`An ${variableType} was expected, but received: `, variableValues);
+                }
+                break;
+            case 'float':
+                if (variableValues.some(value => typeof value.value !== 'number')) {
+                    throw new Error(`An ${variableType} was expected, but received: `, variableValues);
+                }
+                break;
+            case 'bool':
+                if (variableValues.some(value => typeof value.value !== 'boolean')) {
+                    throw new Error(`An ${variableType} was expected, but received: `, variableValues);
+                }
+                break;
+            case 'string':
+                if (variableValues.some(value => typeof value.value !== 'string')) {
+                    throw new Error(`An ${variableType} was expected, but received: `, variableValues);
+                }
+                break;
+            case 'char':
+                if (variableValues.some(value => typeof value.value !== 'string' || value.value.length !== 1)) {
+                    throw new Error(`An ${variableType} was expected, but received: `, variableValues);
+                }
+                break;
+            default:
+                throw new Error(`Tipo de dato desconocido: ${variableType}`);
+
+
+        }
+
+        //Esto seria de ver si es para acá o para el join
+        const valueString = variableValues.map(value => value.value).join(', ');
+        console.log(`[${valueString}]`);
+        this.entornoActual.setVariable(variableType, variableName, new Literal({ value: variableValues, type: variableType }));
+
+
+        
+    }
+
 }

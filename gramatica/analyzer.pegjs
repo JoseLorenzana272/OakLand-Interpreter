@@ -23,6 +23,7 @@
       'ContinueNode': nodos.ContinueNode,
       'ReturnNode': nodos.ReturnNode,
       'SwitchNode': nodos.SwitchNode,
+      'VectorDeclaration': nodos.VectorDeclaration,
     }
 
     const node = new type[typeNode](props);
@@ -35,13 +36,29 @@ Program = _ statements:Statements* _ { return statements; }
 Statements = Statement
 
 Statement =  _ vard:VariableDeclaration _ { return vard; }
+            /_ vecd:VectorDeclaration _ { return vecd; }
             /_ s:Sentence _ { return s; } 
 
 /*---------------------Declaracion de variables----------------------*/
 VariableDeclaration = type:(Types / "var") _ id:Id _ exp:("=" _ exp:Operations {return exp})? _ ";" 
                       { return createNode('VariableDeclaration', { type, id, value: exp || null }); }
 
+VectorDeclaration 
+  = type:Types _ "[]" _ id:Id _
+      "=" _ "{" _ values:VectorValues _ "}" _ ";"{ 
+        return createNode('VectorDeclaration', { type, id, values, size: values.length }); 
+      }
+    / "=" _ "new" _ newType:Types _ "[" _ size:Integer _ "]" { 
+        if (type !== newType) {
+          throw new Error("Array type mismatch");
+        }
+        if (size < 0) {
+          throw new Error("Array size cannot be negative");
+        }
+        return createNode('VectorDeclaration', { type, id, size });
+      }
 
+VectorValues = head:Operations tail:(_ "," _ Operations)* { return [head, ...tail.map(t => t[3])]; }
 
 /*-------------------------------------------------------------------*/
 

@@ -388,6 +388,32 @@ const configuracionNodos = [
                 description: 'Caso por defecto'
             }
         ]
+    },
+    {
+        name: 'VectorDeclaration',
+        extends: 'Expresion',
+        props: [
+            {
+                name: 'id',
+                type: 'string',
+                description: 'Identifier of the vector'
+            },
+            {
+                name: 'type',
+                type: 'string',
+                description: 'Type of the vector'
+            },
+            {
+                name: 'size',
+                type: 'Expresion',
+                description: 'Size of the vector'
+            },
+            {
+                name: 'values',
+                type: 'Expresion[]',
+                description: 'Values of the vector'
+            }
+        ]
     }
 ]
 

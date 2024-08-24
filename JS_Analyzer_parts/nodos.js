@@ -754,4 +754,53 @@ export class SwitchNode  {
     }
 }
     
-export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, returnNode, SwitchNode }
+export class VectorDeclaration  {
+
+    /**
+    * @param {Object} options
+    * @param {string} options.id Identifier of the vector
+ * @param {string} options.type Type of the vector
+ * @param {Expresion} options.size Size of the vector
+ * @param {Expresion[]} options.values Values of the vector
+    */
+    constructor({ id, type, size, values }) {
+        
+        
+        /**
+         * Identifier of the vector
+         * @type {string}
+        */
+        this.id = id;
+
+
+        /**
+         * Type of the vector
+         * @type {string}
+        */
+        this.type = type;
+
+
+        /**
+         * Size of the vector
+         * @type {Expresion}
+        */
+        this.size = size;
+
+
+        /**
+         * Values of the vector
+         * @type {Expresion[]}
+        */
+        this.values = values;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitVectorDeclaration(this);
+    }
+}
+    
+export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, returnNode, SwitchNode, VectorDeclaration }

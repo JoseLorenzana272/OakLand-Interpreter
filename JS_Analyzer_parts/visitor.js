@@ -66,6 +66,9 @@
 
  * @typedef {import('./nodos').SwitchNode} SwitchNode
 
+
+ * @typedef {import('./nodos').VectorDeclaration} VectorDeclaration
+
  */
 
 
@@ -271,6 +274,15 @@ export class BaseVisitor {
      */
     visitSwitchNode(node) {
         throw new Error('Metodo visitSwitchNode no implementado');
+    }
+    
+
+    /**
+     * @param {VectorDeclaration} node
+     * @returns {any}
+     */
+    visitVectorDeclaration(node) {
+        throw new Error('Metodo visitVectorDeclaration no implementado');
     }
     
 }

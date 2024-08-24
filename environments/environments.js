@@ -20,7 +20,13 @@ export class Entorno {
             throw new Error(`Variable ${nombre} ya definida`);
         }
         
-        this.valores[nombre] = new Literal({ value: valor, type: tipo });
+        if (Array.isArray(valor)) {
+            // Si es un array, se crea un nuevo Literal almacenando una copia del array
+            this.valores[nombre] = new Literal({ value: [...valor], type: tipo });
+        } else {
+            // Para otros tipos de datos, se almacena directamente
+            this.valores[nombre] = new Literal({ value: valor, type: tipo });
+        }
     }
 
     /**
