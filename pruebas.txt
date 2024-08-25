@@ -96,3 +96,55 @@ for (int t = 0; t < 4; t++) {
         counter-= 1;
     }
 }
+
+var num1 = parseInt("1.99999");
+var num2 = 23;
+System.out.println(toString(num1) + toString(num2));
+
+System.out.println(toString(true) + "false");
+
+string cadena = toString(false) + "->" + toString(num1);
+System.out.println(cadena);
+
+// Switch case normal
+int option = 2;
+
+switch(option) {
+    case 1:
+        System.out.println("Option 1 selected");
+        break;
+    case 2:
+        System.out.println("Option 2 selected");
+        break;
+    case 3:
+        System.out.println("Option 3 selected");
+        break;
+    default:
+        System.out.println("Invalid option");
+}
+
+// Switch case complicado
+string command = "LOWER";
+
+switch(toUpperCase(command)) {
+    case "UPPER":
+        System.out.println("Command is UPPER");
+        break;
+    case "LOWER":
+        System.out.println("Command is LOWER");
+        string lowerStr = "HELLO WORLD";
+        System.out.println("Lowercase: " + toLowerCase(lowerStr));
+        break;
+    case "MIXED":
+        System.out.println("Command is MIXED");
+        break;
+    default:
+        System.out.println("Unknown command");
+}
+
+// Using parseFloat and toUpperCase
+float numFloat = parsefloat("12.34");
+System.out.println("Parsed float: " + toString(numFloat));
+
+string mixedCase = "hello WoRld";
+System.out.println("Uppercase string: " + toUpperCase(mixedCase));

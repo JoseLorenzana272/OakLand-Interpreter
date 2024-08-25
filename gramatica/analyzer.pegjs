@@ -217,8 +217,8 @@ ExpressionPrint = head:Operations tail:(_ "," _ Operations)* { return [head, ...
 Block = "{" _ stmt:Statements* _ "}" { return createNode('Block', { statements: stmt }); }
 
 /*-------------------------------------------------------- */
-Unary = "-" _ un:FCall { return createNode('Unario', { op: '-', exp: un }); }
-      / "!" _ un:FCall { return createNode('Unario', { op: '!', exp: un }); }
+Unary = "-" _ un:Unary { return createNode('Unario', { op: '-', exp: un }); }
+      / "!" _ un:Unary { return createNode('Unario', { op: '!', exp: un }); }
       /FCall
 
 /*----------------------Llamadas a funciones----------------------*/

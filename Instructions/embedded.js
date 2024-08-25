@@ -12,5 +12,57 @@ class NativeFunction extends Summonable {
 
 
 export const embedded = {
-    'time': new NativeFunction(() => 0, () => new Literal({value:new Date().toISOString(), type: 'string'})),
+    'parseInt': new NativeFunction(() => 1, (interprete, args) => {
+        const parsedValue = parseInt(args[0].value);
+        if (isNaN(parsedValue)) {
+            throw new Error('No se pudo parsear el valor a int');
+        }
+        return new Literal({
+            value: parsedValue,
+            type: 'int'
+        });
+    }),
+    'parsefloat': new NativeFunction(() => 1, (interprete, args) => {
+        const parsedValue = parseFloat(args[0].value);
+        if (isNaN(parsedValue)) {
+            throw new Error('No se pudo parsear el valor a float');
+        }
+        return new Literal({
+            value: parsedValue,
+            type: 'float'
+        });
+    }),
+    'toString': new NativeFunction(() => 1, (interprete, args) => {
+        if (args[0] === undefined || args[0].value === null) {
+            throw new Error('No se pudo convertir el valor a string');
+        }
+        return new Literal({
+            value: args[0].value.toString(),
+            type: 'string'
+        });
+    }),
+    'toLowerCase': new NativeFunction(() => 1, (interprete, args) => {
+        if (typeof args[0].value !== 'string') {
+            throw new Error('El valor no es un string, no se puede convertir a minúsculas');
+        }
+        return new Literal({
+            value: args[0].value.toLowerCase(),
+            type: 'string'
+        });
+    }),
+    'toUpperCase': new NativeFunction(() => 1, (interprete, args) => {
+        if (typeof args[0].value !== 'string') {
+            throw new Error('El valor no es un string, no se puede convertir a mayúsculas');
+        }
+        return new Literal({
+            value: args[0].value.toUpperCase(),
+            type: 'string'
+        });
+    }),
+    'typeof': new NativeFunction(() => 1, (interprete, args) => {
+        return new Literal({
+            value: typeof args[0].value,
+            type: 'string'
+        });
+    }),
 }

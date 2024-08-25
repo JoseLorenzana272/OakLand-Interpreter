@@ -2612,7 +2612,7 @@ function peg$parse(input, options) {
     }
     if (s1 !== peg$FAILED) {
       s2 = peg$parse_();
-      s3 = peg$parseFCall();
+      s3 = peg$parseUnary();
       if (s3 !== peg$FAILED) {
         peg$savedPos = s0;
         s0 = peg$f50(s3);
@@ -2635,7 +2635,7 @@ function peg$parse(input, options) {
       }
       if (s1 !== peg$FAILED) {
         s2 = peg$parse_();
-        s3 = peg$parseFCall();
+        s3 = peg$parseUnary();
         if (s3 !== peg$FAILED) {
           peg$savedPos = s0;
           s0 = peg$f51(s3);

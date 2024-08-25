@@ -499,8 +499,9 @@ export class InterpreterVisitor extends BaseVisitor {
                 }
             }
 
-            if (!match && node.default) {
-                node.default.accept(this);
+            if (match && node.def) {
+                console.log("Default case: ", node.def);
+                node.def.stmts.forEach(stmt => stmt.accept(this));
             }
         } catch (error) {
             this.entornoActual = firstScope;
