@@ -2050,7 +2050,7 @@ function peg$parse(input, options) {
   }
 
   function peg$parseSwitchCase() {
-    var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11;
+    var s0, s1, s2, s3, s4, s5, s6, s7, s8, s9;
 
     s0 = peg$currPos;
     s1 = peg$parse_();
@@ -2076,17 +2076,12 @@ function peg$parse(input, options) {
         if (s6 !== peg$FAILED) {
           s7 = peg$parse_();
           s8 = [];
-          s9 = peg$parseSentence();
+          s9 = peg$parseStatement();
           while (s9 !== peg$FAILED) {
             s8.push(s9);
-            s9 = peg$parseSentence();
+            s9 = peg$parseStatement();
           }
           s9 = peg$parse_();
-          s10 = peg$parseBreak();
-          if (s10 === peg$FAILED) {
-            s10 = null;
-          }
-          s11 = peg$parse_();
           peg$savedPos = s0;
           s0 = peg$f40(s4, s8);
         } else {

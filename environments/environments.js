@@ -34,11 +34,11 @@ export class Entorno {
      * @returns {{ tipo: string, valor: any }}
      */
     getVariable(nombre) {
-        const variable = this.valores[nombre];
+        const valorActual = this.valores[nombre];
 
-        if (variable) return variable;
+        if (valorActual !== undefined) return valorActual;
 
-        if (this.padre) {
+        if (!valorActual && this.padre) {
             return this.padre.getVariable(nombre);
         }
 

@@ -31,7 +31,7 @@ export class InterpreterVisitor extends BaseVisitor {
         this.entornoActual = new Entorno();
 
         Object.entries(embedded).forEach(([nombre, funcion]) => {
-            this.entornoActual.setVariable(nombre, funcion);
+            this.entornoActual.setVariable("string", nombre, funcion);
         });
 
         this.salida = '';
@@ -177,6 +177,7 @@ export class InterpreterVisitor extends BaseVisitor {
         if (!variable) {
             throw new Error(`Variable ${variableName} no definida`);
         }
+        
         console.log(variable);
         return variable.value; // Retorna solo el valor
     }    
@@ -450,6 +451,7 @@ export class InterpreterVisitor extends BaseVisitor {
      * @type [BaseVisitor['visitBreakNode']]
      */
     visitBreakNode(node) {
+        console.log(node);
         throw new BreakException();       
 
     }
@@ -490,10 +492,10 @@ export class InterpreterVisitor extends BaseVisitor {
                 console.log("Current case: ", node.cases[i]);
                 const currentCase = node.cases[i];
                 const caseValue = currentCase.value.accept(this);
-                if (value.value === caseValue.value) {
+                if (value.value === caseValue.value || match) {
                     match = true;
                     currentCase.inst.forEach(inst => inst.accept(this));
-                    break;
+                    
                 }
             }
 
@@ -593,6 +595,7 @@ export class InterpreterVisitor extends BaseVisitor {
      * @type [BaseVisitor['visitCallNode']]
      */
     visitCallNode(node) {
+        console.log("Llamada a función: ", node);
         const funcion = node.callee.accept(this);
 
         const argumentos = node.args.map(arg => arg.accept(this));
@@ -605,7 +608,7 @@ export class InterpreterVisitor extends BaseVisitor {
         if (funcion.aridad() !== argumentos.length) {
             throw new Error('Aridad incorrecta');
         }
-        
+        console.log("calabacin", funcion.invocar(this, argumentos))
         return funcion.invocar(this, argumentos);
     }
 

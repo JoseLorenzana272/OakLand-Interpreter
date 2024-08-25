@@ -195,7 +195,7 @@ Switch = "switch" _ "(" _ exp:Operations _ ")" _ "{" _
              def:DefaultCase? 
              _ "}" { return createNode('SwitchNode', { exp, cases, def }) }
 
-SwitchCase = _ "case" _ value:Operations _ ":" _ inst:Sentence* _ (Break)? _ { return { value, inst } }
+SwitchCase = _ "case" _ value:Operations _ ":" _ inst:Statements* _ { return { value, inst } }
 
 DefaultCase = _ "default" _ ":" _ stmts:Sentence* { return { stmts } }
 
