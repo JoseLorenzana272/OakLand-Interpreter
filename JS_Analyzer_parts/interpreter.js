@@ -5,6 +5,8 @@ import nodos, { Literal, Logical, Relational, VariableAssign, VariableDeclaratio
 import { RelationalOp } from "../Expressions/RelationalOp.js";
 import { LogicalOp } from "../Expressions/LogicalOp.js";
 import { BreakException, ContinueException, ReturnException } from "../Instructions/transference.js";
+import { Summonable } from "../Instructions/summonable.js";
+import { embedded } from "../Instructions/embedded.js";
 
 const typeMaps = {
     "string": "",
@@ -27,6 +29,11 @@ export class InterpreterVisitor extends BaseVisitor {
     constructor() {
         super();
         this.entornoActual = new Entorno();
+
+        Object.entries(embedded).forEach(([nombre, funcion]) => {
+            this.entornoActual.setVariable(nombre, funcion);
+        });
+
         this.salida = '';
 
 
@@ -579,6 +586,27 @@ export class InterpreterVisitor extends BaseVisitor {
 
 
         
+    }
+    
+
+    /**
+     * @type [BaseVisitor['visitCallNode']]
+     */
+    visitCallNode(node) {
+        const funcion = node.callee.accept(this);
+
+        const argumentos = node.args.map(arg => arg.accept(this));
+
+        console.log("Función: ", funcion);
+        if (!(funcion instanceof Summonable)) {
+            throw new Error('No es invocable');
+        }
+
+        if (funcion.aridad() !== argumentos.length) {
+            throw new Error('Aridad incorrecta');
+        }
+        
+        return funcion.invocar(this, argumentos);
     }
 
 }

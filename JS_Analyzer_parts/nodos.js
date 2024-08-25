@@ -803,4 +803,37 @@ export class VectorDeclaration  {
     }
 }
     
-export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, returnNode, SwitchNode, VectorDeclaration }
+export class CallNode  {
+
+    /**
+    * @param {Object} options
+    * @param {Expresion} options.callee Call to the function
+ * @param {Expresion[]} options.args Arguments of the function
+    */
+    constructor({ callee, args }) {
+        
+        
+        /**
+         * Call to the function
+         * @type {Expresion}
+        */
+        this.callee = callee;
+
+
+        /**
+         * Arguments of the function
+         * @type {Expresion[]}
+        */
+        this.args = args;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitCallNode(this);
+    }
+}
+    
+export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, returnNode, SwitchNode, VectorDeclaration, CallNode }

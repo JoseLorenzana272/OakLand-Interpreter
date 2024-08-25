@@ -414,6 +414,22 @@ const configuracionNodos = [
                 description: 'Values of the vector'
             }
         ]
+    },
+    {
+        name: 'CallNode',
+        extends: 'Expresion',
+        props: [
+            {
+                name: 'callee',
+                type: 'Expresion',
+                description: 'Call to the function'
+            },
+            {
+                name: 'args',
+                type: 'Expresion[]',
+                description: 'Arguments of the function'
+            }
+        ]
     }
 ]
 

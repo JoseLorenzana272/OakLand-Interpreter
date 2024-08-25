@@ -24,6 +24,7 @@
       'ReturnNode': nodos.ReturnNode,
       'SwitchNode': nodos.SwitchNode,
       'VectorDeclaration': nodos.VectorDeclaration,
+      'CallNode': nodos.CallNode
     }
 
     const node = new type[typeNode](props);
@@ -216,9 +217,22 @@ ExpressionPrint = head:Operations tail:(_ "," _ Operations)* { return [head, ...
 Block = "{" _ stmt:Statements* _ "}" { return createNode('Block', { statements: stmt }); }
 
 /*-------------------------------------------------------- */
-Unary = "-" _ un:DataType { return createNode('Unario', { op: '-', exp: un }); }
-      / "!" _ un:DataType { return createNode('Unario', { op: '!', exp: un }); }
-      /DataType
+Unary = "-" _ un:FCall { return createNode('Unario', { op: '-', exp: un }); }
+      / "!" _ un:FCall { return createNode('Unario', { op: '!', exp: un }); }
+      /FCall
+
+/*----------------------Llamadas a funciones----------------------*/
+
+FCall = callee:DataType _ params:("(" args:Arguments? ")" { return args })* {
+  return params.reduce(
+    (callee, args) => {
+      return createNode('CallNode', { callee, args: args || [] })
+    },
+    callee
+  )
+}
+
+Arguments = arg:Operations _ args:("," _ exp:Operations { return exp })* { return [arg, ...args] }
 
 /*----------- Tipos de datos ---------------------------- */
 

@@ -69,6 +69,9 @@
 
  * @typedef {import('./nodos').VectorDeclaration} VectorDeclaration
 
+
+ * @typedef {import('./nodos').CallNode} CallNode
+
  */
 
 
@@ -283,6 +286,15 @@ export class BaseVisitor {
      */
     visitVectorDeclaration(node) {
         throw new Error('Metodo visitVectorDeclaration no implementado');
+    }
+    
+
+    /**
+     * @param {CallNode} node
+     * @returns {any}
+     */
+    visitCallNode(node) {
+        throw new Error('Metodo visitCallNode no implementado');
     }
     
 }
