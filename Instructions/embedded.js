@@ -61,7 +61,7 @@ export const embedded = {
     }),
     'typeof': new NativeFunction(() => 1, (interprete, args) => {
         return new Literal({
-            value: typeof args[0].value,
+            value: args[0].type,
             type: 'string'
         });
     }),

@@ -223,7 +223,8 @@ Unary = "-" _ un:Unary { return createNode('Unario', { op: '-', exp: un }); }
 
 /*----------------------Llamadas a funciones----------------------*/
 
-FCall = callee:DataType _ params:("(" args:Arguments? ")" { return args })* {
+FCall = callee:DataType " "* args:Arguments   { return createNode('CallNode', { callee, args: args}) }
+/callee:DataType _ params:("(" args:Arguments? ")" { return args })* {
   return params.reduce(
     (callee, args) => {
       return createNode('CallNode', { callee, args: args || [] })
