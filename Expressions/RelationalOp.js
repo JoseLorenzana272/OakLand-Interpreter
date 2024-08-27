@@ -55,7 +55,7 @@ export function RelationalOp(op, izq, der){
                 throw new Error(`Operador relacional desconocido: ${op}`);
         }
     }
-
+    console.log("OPERAACION: ", izq, op, der, "RESULTADO: ", resultado);
     // El tipo de resultado siempre será booleano
     return new Literal({ value: resultado, type: 'bool' });
 }

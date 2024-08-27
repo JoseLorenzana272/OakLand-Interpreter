@@ -24,7 +24,12 @@
       'ReturnNode': nodos.ReturnNode,
       'SwitchNode': nodos.SwitchNode,
       'VectorDeclaration': nodos.VectorDeclaration,
-      'CallNode': nodos.CallNode
+      'CallNode': nodos.CallNode,
+      'ArrayAccess': nodos.ArrayAccess,
+      'IndexOf': nodos.IndexOf,
+      'Join': nodos.Join,
+      'Length': nodos.Length,
+      'VectorAssign': nodos.VectorAssign
     }
 
     const node = new type[typeNode](props);
@@ -49,14 +54,14 @@ VectorDeclaration
       "=" _ "{" _ values:VectorValues _ "}" _ ";"{ 
         return createNode('VectorDeclaration', { type, id, values, size: values.length }); 
       }
-    / type:Types _ "[]" _ id:Id _ "=" _ "new" _ newType:Types _ "[" _ size:Integer _ "]" _ ";" { 
-        if (type !== newType) {
-          throw new Error("Array type mismatch");
+    / type:Types _ "[]" _ id:Id _ "=" _ "new" _ newType:Types _ "[" _ size:Operations _ "]" _ ";" { 
+        if (type === newType || (type === 'float' && newType === 'int')) {
+          return createNode('VectorDeclaration', { type, id, size });
         }
         if (size < 0) {
           throw new Error("Array size cannot be negative");
         }
-        return createNode('VectorDeclaration', { type, id, size });
+        throw new Error("Type mismatch");
       }
     / type:Types _ "[]" _ id:Id _ "=" _ values:Id ";" { return createNode('VectorDeclaration', { type, id, values }); }
 
@@ -67,6 +72,7 @@ VectorValues = head:Operations tail:(_ "," _ Operations)* { return [head, ...tai
 Operations = Assignment
 
 Assignment = id:Id _ op:("="/"+="/"-=") _ assi:Assignment{ return createNode('VariableAssign', {id, op, assi})}
+            /id:Id "[" _ index:Operations _ "]" _ op:("=") _ assi:Assignment{ return createNode('VectorAssign', {id, index, op, assi})} 
             /TernaryOp
 
 TernaryOp = condition:LogicalOperations _ "?" _ trueExp:TernaryOp _ ":" _ falseExp:TernaryOp { return createNode('TernaryOp', { condition, trueExp, falseExp }); }
@@ -242,9 +248,20 @@ DataType = "(" _ exp:Operations _ ")" {return createNode('Grouping', { exp })}
             /dato:Boolean { return dato; }
             /dato:String { return dato; }
             /dato:Char { return dato; }
+            /dato:ArrayAccess { return dato; }
+            /dato:IndexOf { return dato; }
+            /dato:Join { return dato; }
+            /dato:Length { return dato; }
             /Null
             /id:Id { return createNode('VariableValue', { id }) }
 
+ArrayAccess = id:Id "[" _ index:Operations _ "]" { return createNode('ArrayAccess', { id, index }) }
+
+IndexOf = id:Id "." "indexOf" "(" _ exp:Operations _ ")" { return createNode('IndexOf', { id, exp }) }
+
+Join = id:Id "." "join" "()" { return createNode('Join', { id }) }
+
+Length = id:Id "." "length" { return createNode('Length', { id }) }
 
 Number = Float/Integer
 

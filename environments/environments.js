@@ -27,6 +27,7 @@ export class Entorno {
             // Para otros tipos de datos, se almacena directamente
             this.valores[nombre] = new Literal({ value: valor, type: tipo });
         }
+
     }
 
     /**
@@ -35,7 +36,6 @@ export class Entorno {
      */
     getVariable(nombre) {
         const valorActual = this.valores[nombre];
-
         if (valorActual !== undefined) return valorActual;
 
         if (!valorActual && this.padre) {

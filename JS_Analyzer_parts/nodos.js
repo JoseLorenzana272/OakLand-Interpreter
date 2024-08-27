@@ -836,4 +836,169 @@ export class CallNode  {
     }
 }
     
-export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, returnNode, SwitchNode, VectorDeclaration, CallNode }
+export class ArrayAccess  {
+
+    /**
+    * @param {Object} options
+    * @param {string} options.id Identifier of the vector
+ * @param {Expresion} options.index Index of the vector
+    */
+    constructor({ id, index }) {
+        
+        
+        /**
+         * Identifier of the vector
+         * @type {string}
+        */
+        this.id = id;
+
+
+        /**
+         * Index of the vector
+         * @type {Expresion}
+        */
+        this.index = index;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitArrayAccess(this);
+    }
+}
+    
+export class IndexOf  {
+
+    /**
+    * @param {Object} options
+    * @param {string} options.id Identifier of the vector
+ * @param {Expresion} options.exp Value to search
+    */
+    constructor({ id, exp }) {
+        
+        
+        /**
+         * Identifier of the vector
+         * @type {string}
+        */
+        this.id = id;
+
+
+        /**
+         * Value to search
+         * @type {Expresion}
+        */
+        this.exp = exp;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitIndexOf(this);
+    }
+}
+    
+export class Join  {
+
+    /**
+    * @param {Object} options
+    * @param {string} options.id Identifier of the vector
+    */
+    constructor({ id }) {
+        
+        
+        /**
+         * Identifier of the vector
+         * @type {string}
+        */
+        this.id = id;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitJoin(this);
+    }
+}
+    
+export class Length  {
+
+    /**
+    * @param {Object} options
+    * @param {string} options.id Identifier of the vector
+    */
+    constructor({ id }) {
+        
+        
+        /**
+         * Identifier of the vector
+         * @type {string}
+        */
+        this.id = id;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitLength(this);
+    }
+}
+    
+export class VectorAssign  {
+
+    /**
+    * @param {Object} options
+    * @param {string} options.id Identifier of the vector
+ * @param {Expresion} options.index Index of the vector
+ * @param {string} options.op Operator of the assignment
+ * @param {Expresion} options.assi Expression to assign
+    */
+    constructor({ id, index, op, assi }) {
+        
+        
+        /**
+         * Identifier of the vector
+         * @type {string}
+        */
+        this.id = id;
+
+
+        /**
+         * Index of the vector
+         * @type {Expresion}
+        */
+        this.index = index;
+
+
+        /**
+         * Operator of the assignment
+         * @type {string}
+        */
+        this.op = op;
+
+
+        /**
+         * Expression to assign
+         * @type {Expresion}
+        */
+        this.assi = assi;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitVectorAssign(this);
+    }
+}
+    
+export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, returnNode, SwitchNode, VectorDeclaration, CallNode, ArrayAccess, IndexOf, Join, Length, VectorAssign }

@@ -72,6 +72,21 @@
 
  * @typedef {import('./nodos').CallNode} CallNode
 
+
+ * @typedef {import('./nodos').ArrayAccess} ArrayAccess
+
+
+ * @typedef {import('./nodos').IndexOf} IndexOf
+
+
+ * @typedef {import('./nodos').Join} Join
+
+
+ * @typedef {import('./nodos').Length} Length
+
+
+ * @typedef {import('./nodos').VectorAssign} VectorAssign
+
  */
 
 
@@ -295,6 +310,51 @@ export class BaseVisitor {
      */
     visitCallNode(node) {
         throw new Error('Metodo visitCallNode no implementado');
+    }
+    
+
+    /**
+     * @param {ArrayAccess} node
+     * @returns {any}
+     */
+    visitArrayAccess(node) {
+        throw new Error('Metodo visitArrayAccess no implementado');
+    }
+    
+
+    /**
+     * @param {IndexOf} node
+     * @returns {any}
+     */
+    visitIndexOf(node) {
+        throw new Error('Metodo visitIndexOf no implementado');
+    }
+    
+
+    /**
+     * @param {Join} node
+     * @returns {any}
+     */
+    visitJoin(node) {
+        throw new Error('Metodo visitJoin no implementado');
+    }
+    
+
+    /**
+     * @param {Length} node
+     * @returns {any}
+     */
+    visitLength(node) {
+        throw new Error('Metodo visitLength no implementado');
+    }
+    
+
+    /**
+     * @param {VectorAssign} node
+     * @returns {any}
+     */
+    visitVectorAssign(node) {
+        throw new Error('Metodo visitVectorAssign no implementado');
     }
     
 }

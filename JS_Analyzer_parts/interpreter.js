@@ -69,7 +69,12 @@ export class InterpreterVisitor extends BaseVisitor {
         for (let i = 0; i < node.exp.length; i++) {
             const valor = node.exp[i].accept(this);
 
-            resultados += valor.value;
+            if (Array.isArray(valor.value)) {
+                resultados += '[' + valor.value.map(v => v.value).join(', ') + ']';
+            }else{
+                resultados += valor.value;
+            }
+            
         }
 
         this.salida += resultados + '\n' ;
@@ -360,11 +365,9 @@ export class InterpreterVisitor extends BaseVisitor {
         try {
             while (node.cond.accept(this).value) {
                 node.stmt.accept(this);
-
+                console.log("While HAJGHAHKJBKJSBKJAJ");
                 //verificar si es Literal
-                if (!(node.cond.accept(this) instanceof Literal)) {
-                    throw new Error('La condición debe ser una literal');
-                }
+                
             }
         } catch (error) {
             this.actualScope = firstScope;
@@ -434,8 +437,9 @@ export class InterpreterVisitor extends BaseVisitor {
                     cond: node.cond,
                     stmt: new nodos.Block({
                         statements: [
-                            node.inc,
-                            node.stmt
+                            node.stmt,
+                            node.inc
+                            
                         ]
                     })
                 })
@@ -609,8 +613,116 @@ export class InterpreterVisitor extends BaseVisitor {
         if (funcion.aridad() !== argumentos.length) {
             throw new Error('Aridad incorrecta');
         }
-        console.log("calabacin", funcion.invocar(this, argumentos))
         return funcion.invocar(this, argumentos);
     }
+
+
+    /**
+     * @type [BaseVisitor['visitArrayAccess']]
+     */
+    visitArrayAccess(node) {
+        const variable = this.entornoActual.getVariable(node.id);
+        console.log("Variable: ", variable.value.value);
+        if (!variable) {
+            throw new Error(`Variable ${node.id} no definida`);
+        }
+
+        const index = node.index.accept(this);
+        if (!(index instanceof Literal)) {
+            throw new Error('El índice debe ser una literal');
+        }
+
+        if (!Array.isArray(variable.value.value)) {
+            throw new Error(`Variable ${node.id} no es un vector`);
+        }
+
+        if (index.value < 0 || index.value >= variable.value.length) {
+            throw new Error(`Índice fuera de rango: ${index.value}`);
+        }
+        console.log("Valor del índice: ", index.value);
+        console.log("Nombre de la variable: ", node.id);
+        console.log("Valor del vector: ", variable.value.value[index.value]);
+        return variable.value.value[index.value];
+    }
+
+    /**
+     * @type [BaseVisitor['visitIndexOf']]
+     */
+    visitIndexOf(node) {
+        const variable = this.entornoActual.getVariable(node.id);
+        if (!variable) {
+            throw new Error(`Variable ${node.id} no definida`);
+        }
+
+        const value = node.exp.accept(this);
+        if (!Array.isArray(variable.value.value)) {
+            throw new Error(`Variable ${node.id} no es un vector`);
+        }
+
+        const index = variable.value.value.findIndex(val => val.value === value.value);
+        return new Literal({ value: index, type: 'int' });
+    }
+
+    /**
+     * @type [BaseVisitor['visitJoin']]
+     */
+    visitJoin(node) {
+        const variable = this.entornoActual.getVariable(node.id);
+        if (!variable) {
+            throw new Error(`Variable ${node.id} no definida`);
+        }
+
+        if (!Array.isArray(variable.value.value)) {
+            throw new Error(`Variable ${node.id} no es un vector`);
+        }
+
+        const valueString = variable.value.value.map(value => value.value).join();
+        return new Literal({ value: valueString, type: 'string' });
+    }
+
+    /**
+     * @type [BaseVisitor['visitLength']]
+     */
+    visitLength(node) {
+        const variable = this.entornoActual.getVariable(node.id);
+        if (!variable) {
+            throw new Error(`Variable ${node.id} no definida`);
+        }
+
+        if (!Array.isArray(variable.value.value)) {
+            throw new Error(`Variable ${node.id} no es un vector`);
+        }
+
+        console.log("Length: ", variable.value.value);
+        return new Literal({ value: variable.value.value.length, type: 'int' });
+    }
+
+    /**
+     * @type [BaseVisitor['visitVectorAssign']]
+     */
+    visitVectorAssign(node) {
+        const variable = this.entornoActual.getVariable(node.id);
+        if (!variable) {
+            throw new Error(`Variable ${node.id} no definida`);
+        }
+
+        if (!Array.isArray(variable.value.value)) {
+            throw new Error(`Variable ${node.id} no es un vector`);
+        }
+
+        const index = node.index.accept(this);
+        if (!(index instanceof Literal)) {
+            throw new Error('El índice debe ser una literal');
+        }
+
+        if (index.value < 0 || index.value >= variable.value.length) {
+            throw new Error(`Índice fuera de rango: ${index.value}`);
+        }
+
+        const value = node.assi.accept(this);
+        variable.value.value[index.value] = value;
+        return value;
+    }
+
 
 }

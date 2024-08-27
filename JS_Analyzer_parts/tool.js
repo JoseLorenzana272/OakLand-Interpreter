@@ -430,6 +430,86 @@ const configuracionNodos = [
                 description: 'Arguments of the function'
             }
         ]
+    },
+    {
+        name: 'ArrayAccess',
+        extends: 'Expresion',
+        props: [
+            {
+                name: 'id',
+                type: 'string',
+                description: 'Identifier of the vector'
+            },
+            {
+                name: 'index',
+                type: 'Expresion',
+                description: 'Index of the vector'
+            }
+        ]
+    },
+    {
+        name: 'IndexOf',
+        extends: 'Expresion',
+        props: [
+            {
+                name: 'id',
+                type: 'string',
+                description: 'Identifier of the vector'
+            },
+            {
+                name: 'exp',
+                type: 'Expresion',
+                description: 'Value to search'
+            }
+        ]
+    },
+    {
+        name: 'Join',
+        extends: 'Expresion',
+        props: [
+            {name: 'id',
+            type: 'string',
+            description: 'Identifier of the vector'
+            }
+            
+        ]
+    },
+    {
+        name: 'Length',
+        extends: 'Expresion',
+        props: [
+            {
+                name: 'id',
+                type: 'string',
+                description: 'Identifier of the vector'
+            }
+        ]
+    },
+    {
+        name: 'VectorAssign',
+        extends: 'Expresion',
+        props: [
+            {
+                name: 'id',
+                type: 'string',
+                description: 'Identifier of the vector'
+            },
+            {
+                name: 'index',
+                type: 'Expresion',
+                description: 'Index of the vector'
+            },
+            {
+                name: 'op',
+                type: 'string',
+                description: 'Operator of the assignment'
+            },
+            {
+                name: 'assi',
+                type: 'Expresion',
+                description: 'Expression to assign'
+            }
+        ]
     }
 ]
 
