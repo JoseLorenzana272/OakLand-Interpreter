@@ -1091,4 +1091,53 @@ export class MatrixAccess  {
     }
 }
     
-export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, returnNode, SwitchNode, VectorDeclaration, CallNode, ArrayAccess, IndexOf, Join, Length, VectorAssign, MatrixDeclaration, MatrixAccess }
+export class MatrixAssign  {
+
+    /**
+    * @param {Object} options
+    * @param {string} options.id Identifier of the matrix
+ * @param {Array<Expresion>} options.indexes List of indices for accessing the matrix
+ * @param {string} options.op Operator of the assignment
+ * @param {Expresion} options.assi Expression to assign
+    */
+    constructor({ id, indexes, op, assi }) {
+        
+        
+        /**
+         * Identifier of the matrix
+         * @type {string}
+        */
+        this.id = id;
+
+
+        /**
+         * List of indices for accessing the matrix
+         * @type {Array<Expresion>}
+        */
+        this.indexes = indexes;
+
+
+        /**
+         * Operator of the assignment
+         * @type {string}
+        */
+        this.op = op;
+
+
+        /**
+         * Expression to assign
+         * @type {Expresion}
+        */
+        this.assi = assi;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitMatrixAssign(this);
+    }
+}
+    
+export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, returnNode, SwitchNode, VectorDeclaration, CallNode, ArrayAccess, IndexOf, Join, Length, VectorAssign, MatrixDeclaration, MatrixAccess, MatrixAssign }

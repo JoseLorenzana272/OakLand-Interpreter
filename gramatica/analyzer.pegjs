@@ -32,6 +32,7 @@
       'VectorAssign': nodos.VectorAssign,
       'MatrixDeclaration': nodos.MatrixDeclaration,
       'MatrixAccess': nodos.MatrixAccess,
+      'MatrixAssign': nodos.MatrixAssign
     }
 
     const node = new type[typeNode](props);
@@ -106,7 +107,9 @@ MatrixElement = MatrixValue/Operations
 Operations = Assignment
 
 Assignment = id:Id _ op:("="/"+="/"-=") _ assi:Assignment{ return createNode('VariableAssign', {id, op, assi})}
+            /id:Id indexes:Indexes _ op:("=") _ assi:Assignment{ return createNode('MatrixAssign', {id, indexes, op, assi})}
             /id:Id "[" _ index:Operations _ "]" _ op:("=") _ assi:Assignment{ return createNode('VectorAssign', {id, index, op, assi})} 
+            
             /TernaryOp
 
 TernaryOp = condition:LogicalOperations _ "?" _ trueExp:TernaryOp _ ":" _ falseExp:TernaryOp { return createNode('TernaryOp', { condition, trueExp, falseExp }); }

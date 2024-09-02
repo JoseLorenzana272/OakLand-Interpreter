@@ -93,7 +93,7 @@ for (int t = 0; t < 4; t++) {
         } else {
             System.out.println("Counter is odd: ", counter);
         }
-        counter-= 1;
+        counter -= 1;
     }
 }
 
@@ -148,3 +148,112 @@ System.out.println("Parsed float: " + toString(numFloat));
 
 string mixedCase = "hello WoRld";
 System.out.println("Uppercase string: " + toUpperCase(mixedCase));
+
+// Arrays
+int[] numbers = {10, 20, 30, 40, 50};
+string[] words = {"apple", "banana", "cherry"};
+
+System.out.println("First number: ", numbers[0]);
+System.out.println("Second word: ", words[1]);
+
+// Copiar un array
+int[] copiedNumbers = new int[numbers.length];
+for(int i = 0; i < numbers.length; i++) {
+    copiedNumbers[i] = numbers[i];
+}
+
+System.out.println("Copied array: ", copiedNumbers.join());
+
+// Array functions
+System.out.println("Array length: ", numbers.length);
+
+int index = words.indexOf("banana");
+System.out.println("Index of 'banana': ", index);
+
+// Accessing a value from an array
+int thirdNumber = numbers[2];
+System.out.println("Third number: ", thirdNumber);
+
+// Join function
+string joinedWords = words.join();
+System.out.println("Joined words: ", joinedWords);
+
+System.out.println("Final array values:");
+for (int i = 0; i < copiedNumbers.length; i++) {
+    System.out.println(copiedNumbers[i]);
+}
+
+int[][][] mtx3D = {
+    {
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 8, 9}
+    },
+    {
+        {10, 11, 12},
+        {13, 14, 15},
+        {16, 17, 18}
+    }
+};
+
+// Transponer la primera submatriz (dimensión [0])
+int[][] transpuesta = new int[3][3];
+for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
+        transpuesta[i][j] = mtx3D[0][j][i];
+    }
+}
+
+// Verificar la transposición
+System.out.println(transpuesta[0][0]);  // Debería devolver 1
+System.out.println(transpuesta[0][1]);  // Debería devolver 4
+System.out.println(transpuesta[0][2]);  // Debería devolver 7
+
+bool[][][][][] boolMatrix5D = {
+    {
+        {
+            {
+                {true, false},
+                {false, true}
+            },
+            {
+                {true, true},
+                {false, false}
+            }
+        },
+        {
+            {
+                {false, true},
+                {true, false}
+            },
+            {
+                {true, true},
+                {true, false}
+            }
+        }
+    },
+    {
+        {
+            {
+                {false, false},
+                {true, true}
+            },
+            {
+                {true, false},
+                {false, true}
+            }
+        },
+        {
+            {
+                {true, false},
+                {false, true}
+            },
+            {
+                {false, true},
+                {true, true}
+            }
+        }
+    }
+};
+
+System.out.println(boolMatrix5D[0][1][0][1][0]);

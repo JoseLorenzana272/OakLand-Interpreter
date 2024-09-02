@@ -557,6 +557,32 @@ const configuracionNodos = [
                 description: 'List of indices for accessing the matrix'
             }
         ]
+    },
+    {
+        name: 'MatrixAssign',
+        extends: 'Expresion',
+        props: [
+            {
+                name: 'id',
+                type: 'string',
+                description: 'Identifier of the matrix'
+            },
+            {
+                name: 'indexes',
+                type: 'Array<Expresion>',
+                description: 'List of indices for accessing the matrix'
+            },
+            {
+                name: 'op',
+                type: 'string',
+                description: 'Operator of the assignment'
+            },
+            {
+                name: 'assi',
+                type: 'Expresion',
+                description: 'Expression to assign'
+            }
+        ]
     }
 ]
 

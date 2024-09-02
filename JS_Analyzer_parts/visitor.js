@@ -93,6 +93,9 @@
 
  * @typedef {import('./nodos').MatrixAccess} MatrixAccess
 
+
+ * @typedef {import('./nodos').MatrixAssign} MatrixAssign
+
  */
 
 
@@ -379,6 +382,15 @@ export class BaseVisitor {
      */
     visitMatrixAccess(node) {
         throw new Error('Metodo visitMatrixAccess no implementado');
+    }
+    
+
+    /**
+     * @param {MatrixAssign} node
+     * @returns {any}
+     */
+    visitMatrixAssign(node) {
+        throw new Error('Metodo visitMatrixAssign no implementado');
     }
     
 }

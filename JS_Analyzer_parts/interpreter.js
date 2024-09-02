@@ -875,6 +875,32 @@ export class InterpreterVisitor extends BaseVisitor {
         return current;
     }
 
+    /**
+     * @type [BaseVisitor['visitMatrixAccess']]
+    */
+    visitMatrixAssign(node) {
+        console.log(node);
+        const variable = this.entornoActual.getVariable(node.id);
+        if (!variable) {
+            throw new Error(`Variable ${node.id} no definida`);
+        }
+
+        const indexes = node.indexes.map(index => index.accept(this));
+        const value = node.assi.accept(this);
+        console.log("Valor a asignar: ", value);
+        if (!Array.isArray(variable.value.value)) {
+            throw new Error(`Variable ${node.id} no es una matriz`);
+        }
+
+        let current = variable.value.value;
+        indexes.slice(0, -1).forEach(index => {
+            current = current[index.value];
+        });
+
+        current[indexes[indexes.length - 1].value] = value;
+        return value;
+    }
+
     
 
 }
