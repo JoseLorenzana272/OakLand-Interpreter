@@ -792,12 +792,53 @@ export class InterpreterVisitor extends BaseVisitor {
                     throw new Error(`La matriz ${variableName} tiene filas de diferentes longitudes. Se esperaba ${numColumns} columnas, pero se encontró una fila con ${variableValues[i].length} columnas.`);
                 }
             }
+
+            // Función recursiva para verificar tipos
+        const validateMatrixTypes = (matrix, expectedType, invalidValues = []) => {
+            if (Array.isArray(matrix)) {
+                matrix.forEach(element => validateMatrixTypes(element, expectedType, invalidValues));
+            } else {
+                if (!checkTypeCompatibility(matrix, expectedType)) {
+                    invalidValues.push(matrix);
+                }
+            }
+            return invalidValues;
+        };
+
+        // Función para verificar la compatibilidad de tipos
+        const checkTypeCompatibility = (element, expectedType) => {
+            const value = element.value;
+            switch (expectedType) {
+                case 'int':
+                    return typeof value === 'number' && Number.isInteger(value);
+                case 'float':
+                    return typeof value === 'number';
+                case 'bool':
+                    return typeof value === 'boolean';
+                case 'string':
+                    return typeof value === 'string';
+                case 'char':
+                    return typeof value === 'string' && value.length === 1;
+                default:
+                    throw new Error(`Tipo de dato desconocido: ${expectedType}`);
+            }
+        };
+
+        // Validar los tipos de la matriz
+        const invalidValues = validateMatrixTypes(variableValues, variableType);
+
+        if (invalidValues.length > 0) {
+            throw new Error(`Se esperaba un tipo ${variableType}, pero se encontraron los siguientes valores inválidos: ${JSON.stringify(invalidValues)}`);
+        }
+
             //en el else if, se verifica si es un nuevo vector con tamaño y se agregan valores por defecto
         }else if (node.newDimensions){
             const dimensions = node.newDimensions.map(dim => dim.accept(this).value);
             variableValues = crearMatriz(dimensions, typeMaps[variableType]);
-            // En el otro else if, copiar copiar los valores de otro vector
         }
+
+        //Verificar tipos para la matriz
+        
     
         this.entornoActual.setVariable(variableType, variableName, new Literal({ value: variableValues, type: variableType }));
     }
@@ -813,29 +854,25 @@ export class InterpreterVisitor extends BaseVisitor {
         if (!variable) {
             throw new Error(`Variable ${node.id} no definida`);
         }
-    
-        let currentValue = variable.value.value;
-        for (let i = 0; i < node.indices.length; i++) {
-            const index = node.indices[i].accept(this);
-    
-            if (!(index instanceof Literal)) {
-                throw new Error('Los índices deben ser literales');
-            }
-    
-            if (!Array.isArray(currentValue)) {
-                throw new Error(`Acceso inválido en el nivel ${i}: ${node.id} no es una matriz`);
-            }
-    
-            if (index.value < 0 || index.value >= currentValue.length) {
-                console.error(`Índice fuera de rango en el nivel ${i}: ${index.value}`);
-                return null;
-            }
-    
-            currentValue = currentValue[index.value];
+
+        const indexes = node.indexes.map(index => index.accept(this));
+        console.log("Indices: ", indexes);
+        if (!Array.isArray(variable.value.value)) {
+            throw new Error(`Variable ${node.id} no es una matriz`);
         }
-    
-        console.log("Valor accedido: ", currentValue);
-        return currentValue;
+
+        let current = variable.value.value;
+        indexes.forEach(index => {
+            current = current[index.value];
+        });
+
+        //si se acceso a una posición fuera de rango, se devuelve null y se lanza un error
+        if(current === undefined){
+            console.error("Posición fuera de rango");
+            return new Literal({ value: null, type: null });
+        }
+
+        return current;
     }
 
     

@@ -292,15 +292,10 @@ DataType = "(" _ exp:Operations _ ")" {return createNode('Grouping', { exp })}
 
 ArrayAccess = id:Id "[" _ index:Operations _ "]" { return createNode('ArrayAccess', { id, index }) }
 
-MatrixAccess
-  = id:Id "[" _ index:Operations _ "]" index2:MatrixIndexes {
-      return createNode('MatrixAccess', { id, indices: [index, ...index2] });
-  }
+MatrixAccess = id:Id indexes:Indexes { return createNode('MatrixAccess', { id, indexes }) }
 
-// Índices adicionales
-MatrixIndexes
-  = "[" _ index:Operations _ "]" MatrixIndexes { return [index, ...MatrixIndexes]; }
-  / "[" _ index:Operations _ "]" { return [index]; }
+Indexes = "[" _ index:Operations _ "]" indexes:Indexes { return [index, ...indexes] }
+        / "[" _ index:Operations _ "]" { return [index] }
 
 IndexOf = id:Id "." "indexOf" "(" _ exp:Operations _ ")" { return createNode('IndexOf', { id, exp }) }
 

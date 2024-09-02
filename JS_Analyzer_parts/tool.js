@@ -552,7 +552,7 @@ const configuracionNodos = [
                 description: 'Identifier of the matrix'
             },
             {
-                name: 'indices',
+                name: 'indexes',
                 type: 'Array<Expresion>',
                 description: 'List of indices for accessing the matrix'
             }

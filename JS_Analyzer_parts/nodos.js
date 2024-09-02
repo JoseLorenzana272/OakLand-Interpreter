@@ -1063,9 +1063,9 @@ export class MatrixAccess  {
     /**
     * @param {Object} options
     * @param {string} options.id Identifier of the matrix
- * @param {Array<Expresion>} options.indices List of indices for accessing the matrix
+ * @param {Array<Expresion>} options.indexes List of indices for accessing the matrix
     */
-    constructor({ id, indices }) {
+    constructor({ id, indexes }) {
         
         
         /**
@@ -1079,7 +1079,7 @@ export class MatrixAccess  {
          * List of indices for accessing the matrix
          * @type {Array<Expresion>}
         */
-        this.indices = indices;
+        this.indexes = indexes;
 
     }
 
