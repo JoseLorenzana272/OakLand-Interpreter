@@ -1001,4 +1001,94 @@ export class VectorAssign  {
     }
 }
     
-export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, returnNode, SwitchNode, VectorDeclaration, CallNode, ArrayAccess, IndexOf, Join, Length, VectorAssign }
+export class MatrixDeclaration  {
+
+    /**
+    * @param {Object} options
+    * @param {string} options.type Type of the matrix
+ * @param {number} options.dimensions Dimensions of the matrix
+ * @param {string} options.id Identifier of the matrix
+ * @param {Expresion[]} options.values Values of the matrix
+ * @param {number} options.newDimensions New dimensions of the matrix
+    */
+    constructor({ type, dimensions, id, values, newDimensions }) {
+        
+        
+        /**
+         * Type of the matrix
+         * @type {string}
+        */
+        this.type = type;
+
+
+        /**
+         * Dimensions of the matrix
+         * @type {number}
+        */
+        this.dimensions = dimensions;
+
+
+        /**
+         * Identifier of the matrix
+         * @type {string}
+        */
+        this.id = id;
+
+
+        /**
+         * Values of the matrix
+         * @type {Expresion[]}
+        */
+        this.values = values;
+
+
+        /**
+         * New dimensions of the matrix
+         * @type {number}
+        */
+        this.newDimensions = newDimensions;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitMatrixDeclaration(this);
+    }
+}
+    
+export class MatrixAccess  {
+
+    /**
+    * @param {Object} options
+    * @param {string} options.id Identifier of the matrix
+ * @param {Array<Expresion>} options.indices List of indices for accessing the matrix
+    */
+    constructor({ id, indices }) {
+        
+        
+        /**
+         * Identifier of the matrix
+         * @type {string}
+        */
+        this.id = id;
+
+
+        /**
+         * List of indices for accessing the matrix
+         * @type {Array<Expresion>}
+        */
+        this.indices = indices;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitMatrixAccess(this);
+    }
+}
+    
+export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, returnNode, SwitchNode, VectorDeclaration, CallNode, ArrayAccess, IndexOf, Join, Length, VectorAssign, MatrixDeclaration, MatrixAccess }

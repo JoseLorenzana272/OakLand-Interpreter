@@ -87,6 +87,12 @@
 
  * @typedef {import('./nodos').VectorAssign} VectorAssign
 
+
+ * @typedef {import('./nodos').MatrixDeclaration} MatrixDeclaration
+
+
+ * @typedef {import('./nodos').MatrixAccess} MatrixAccess
+
  */
 
 
@@ -355,6 +361,24 @@ export class BaseVisitor {
      */
     visitVectorAssign(node) {
         throw new Error('Metodo visitVectorAssign no implementado');
+    }
+    
+
+    /**
+     * @param {MatrixDeclaration} node
+     * @returns {any}
+     */
+    visitMatrixDeclaration(node) {
+        throw new Error('Metodo visitMatrixDeclaration no implementado');
+    }
+    
+
+    /**
+     * @param {MatrixAccess} node
+     * @returns {any}
+     */
+    visitMatrixAccess(node) {
+        throw new Error('Metodo visitMatrixAccess no implementado');
     }
     
 }

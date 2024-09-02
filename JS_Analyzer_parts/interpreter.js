@@ -61,25 +61,33 @@ export class InterpreterVisitor extends BaseVisitor {
     /**
      * @type [BaseVisitor['visitPrint']]
      */
-    visitPrint(node){
+    visitPrint(node) {
         let resultados = '';
-
+    
         console.log("Imprimiendo: ", node);
-
+    
         for (let i = 0; i < node.exp.length; i++) {
             const valor = node.exp[i].accept(this);
-
-            if (Array.isArray(valor.value)) {
-                resultados += '[' + valor.value.map(v => v.value).join(', ') + ']';
-            }else{
-                resultados += valor.value;
-            }
-            
+            resultados += this.formatValue(valor) + ' ';
         }
-
-        this.salida += resultados + '\n' ;
+    
+        this.salida += resultados.trim() + '\n';
         console.log(resultados);
     }
+    
+    formatValue(valor) {
+        if (Array.isArray(valor)) {
+            // Si es un array (matriz), manejarlo recursivamente
+            return '[' + valor.map(v => this.formatValue(v)).join(', ') + ']';
+        } else if (valor && typeof valor === 'object' && 'value' in valor) {
+            // Si es un objeto con la propiedad 'value', acceder a ella
+            return this.formatValue(valor.value);
+        } else {
+            // En caso de ser un valor literal directo
+            return valor;
+        }
+    }
+    
 
     /**
      * @type [BaseVisitor['visitArithmetic']]
@@ -724,5 +732,133 @@ export class InterpreterVisitor extends BaseVisitor {
         return value;
     }
 
+     /**
+     * @type [BaseVisitor['visitMatrixDeclaration']]
+     */
+     visitMatrixDeclaration(node) {
+        console.log(node);
+        const variableName = node.id;
+        const variableType = node.type;
+        let variableValues = [];
+    
+        // Verificar si es un vector con valores
+        if (Array.isArray(node.values)) {
+            // Función recursiva para las dimensiones
+            const getDimensions = (matrix) => {
+                let dimensions = [];
+                let current = matrix;
+                while (Array.isArray(current)) {
+                    dimensions.push(current.length);
+                    current = current[0];
+                }
+                return dimensions;
+            };
+    
+            // Verificar que las dimensiones sean correctas :o
+            const checkDimensions = (matrix, expectedDimensions) => {
+                if (!Array.isArray(matrix)) {
+                    return;
+                }
+                if (matrix.length !== expectedDimensions[0]) {
+                    throw new Error(`La matriz ${variableName} tiene filas de diferentes longitudes. Se esperaba ${expectedDimensions[0]} filas, pero se encontró una fila con ${matrix.length} elementos.`);
+                }
+                matrix.forEach(row => {
+                    if (expectedDimensions.length > 1) {
+                        checkDimensions(row, expectedDimensions.slice(1));
+                    }
+                });
+            };
+    
+            variableValues = node.values.map(value => {
+                if (typeof value.accept === 'function') {
+                    return value.accept(this);
+                } else {
+                    return value;
+                }
+            });
+    
+            const dimensions = getDimensions(variableValues);
+            console.log("Dimensiones de la matriz: ", dimensions);
+    
+            // Verificar que las dimensiones sean las esperadas
+            checkDimensions(variableValues, dimensions);
+    
 
+    
+            // Verificar que todas las filas tengan el mismo número de columnas
+            const numColumns = variableValues[0].length;
+            for (let i = 1; i < variableValues.length; i++) {
+                if (variableValues[i].length !== numColumns) {
+                    throw new Error(`La matriz ${variableName} tiene filas de diferentes longitudes. Se esperaba ${numColumns} columnas, pero se encontró una fila con ${variableValues[i].length} columnas.`);
+                }
+            }
+            //en el else if, se verifica si es un nuevo vector con tamaño y se agregan valores por defecto
+        }else if (node.newDimensions){
+            const dimensions = node.newDimensions.map(dim => dim.accept(this).value);
+            variableValues = crearMatriz(dimensions, typeMaps[variableType]);
+            // En el otro else if, copiar copiar los valores de otro vector
+        }
+    
+        this.entornoActual.setVariable(variableType, variableName, new Literal({ value: variableValues, type: variableType }));
+    }
+    
+
+
+    /**
+     * @type [BaseVisitor['visitMatrixAccess']]
+     */
+    visitMatrixAccess(node) {
+        const variable = this.entornoActual.getVariable(node.id);
+        console.log(node);
+        if (!variable) {
+            throw new Error(`Variable ${node.id} no definida`);
+        }
+    
+        let currentValue = variable.value.value;
+        for (let i = 0; i < node.indices.length; i++) {
+            const index = node.indices[i].accept(this);
+    
+            if (!(index instanceof Literal)) {
+                throw new Error('Los índices deben ser literales');
+            }
+    
+            if (!Array.isArray(currentValue)) {
+                throw new Error(`Acceso inválido en el nivel ${i}: ${node.id} no es una matriz`);
+            }
+    
+            if (index.value < 0 || index.value >= currentValue.length) {
+                console.error(`Índice fuera de rango en el nivel ${i}: ${index.value}`);
+                return null;
+            }
+    
+            currentValue = currentValue[index.value];
+        }
+    
+        console.log("Valor accedido: ", currentValue);
+        return currentValue;
+    }
+
+    
+
+}
+
+function crearMatriz(dimensions, valorInicial) {
+    // Si solo hay una dimensión, crear y devolver un array de esa longitud
+    if (dimensions.length === 1) {
+        return new Array(dimensions[0]).fill(valorInicial);
+    }
+
+    // Extraer la primera dimensión
+    let size = dimensions[0];
+
+    // Crear un array de la longitud especificada por la primera dimensión
+    let matriz = [];
+
+    // Para cada posición en la primera dimensión, generar recursivamente
+    // una submatriz de las dimensiones restantes
+    for (let i = 0; i < size; i++) {
+        matriz.push(crearMatriz(dimensions.slice(1), valorInicial));
+    }
+
+    return matriz;
 }

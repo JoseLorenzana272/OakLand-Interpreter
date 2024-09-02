@@ -29,7 +29,9 @@
       'IndexOf': nodos.IndexOf,
       'Join': nodos.Join,
       'Length': nodos.Length,
-      'VectorAssign': nodos.VectorAssign
+      'VectorAssign': nodos.VectorAssign,
+      'MatrixDeclaration': nodos.MatrixDeclaration,
+      'MatrixAccess': nodos.MatrixAccess,
     }
 
     const node = new type[typeNode](props);
@@ -43,6 +45,7 @@ Statements = Statement
 
 Statement =  _ vard:VariableDeclaration _ { return vard; }
             /_ vecd:VectorDeclaration _ { return vecd; }
+            /_ matd:MatrixDeclaration _ { return matd; }
             /_ s:Sentence _ { return s; } 
 
 /*---------------------Declaracion de variables----------------------*/
@@ -66,6 +69,37 @@ VectorDeclaration
     / type:Types _ "[]" _ id:Id _ "=" _ values:Id ";" { return createNode('VectorDeclaration', { type, id, values }); }
 
 VectorValues = head:Operations tail:(_ "," _ Operations)* { return [head, ...tail.map(t => t[3])]; }
+
+/*-----------------------------Matrices de 2 a n dimensiones-----------------------------*/
+MatrixDeclaration = type:Types _ dimensions:Dimensions _ id:Id _ "=" _ values:MatrixValue _ ";"
+  { return createNode('MatrixDeclaration', { type, dimensions, id, values }); }
+  / type:Types _ dimensions:Dimensions _ id:Id _ "=" _ "new" _ newType:Types _ newDimensions:DimensionsSize _ ";"
+    {
+        console.log("DIMENSIONS", dimensions, "cheese", newDimensions);
+        if (type === newType || (type === 'float' && newType === 'int')) {
+            if (dimensions === newDimensions.length) {
+                
+                return createNode('MatrixDeclaration', { type, id, newDimensions });
+            } else {
+                throw new Error(`Dimension mismatch. Expected ${dimensions} but got ${newDimensions}.`);
+            }
+        }
+        throw new Error(`Type mismatch. Expected ${type} but got ${newType}.`);
+    }
+
+Dimensions = dimension:("[]" _)+ { return dimension.length; }
+
+DimensionsSize = dimension:("[" _ size:Operations _ "]" {return size})+ { return dimension; }
+
+MatrixValue
+  = "{" _ elements:MatrixElements _ "}"
+  { return elements; }
+
+MatrixElements
+  = head:MatrixElement tail:(_ "," _ MatrixElement)*
+  { return [head, ...tail.map(t => t[3])]; }
+
+MatrixElement = MatrixValue/Operations
 
 /*-------------------------------------------------------------------*/
 
@@ -248,6 +282,7 @@ DataType = "(" _ exp:Operations _ ")" {return createNode('Grouping', { exp })}
             /dato:Boolean { return dato; }
             /dato:String { return dato; }
             /dato:Char { return dato; }
+            /dato:MatrixAccess { return dato; }
             /dato:ArrayAccess { return dato; }
             /dato:IndexOf { return dato; }
             /dato:Join { return dato; }
@@ -256,6 +291,16 @@ DataType = "(" _ exp:Operations _ ")" {return createNode('Grouping', { exp })}
             /id:Id { return createNode('VariableValue', { id }) }
 
 ArrayAccess = id:Id "[" _ index:Operations _ "]" { return createNode('ArrayAccess', { id, index }) }
+
+MatrixAccess
+  = id:Id "[" _ index:Operations _ "]" index2:MatrixIndexes {
+      return createNode('MatrixAccess', { id, indices: [index, ...index2] });
+  }
+
+// Índices adicionales
+MatrixIndexes
+  = "[" _ index:Operations _ "]" MatrixIndexes { return [index, ...MatrixIndexes]; }
+  / "[" _ index:Operations _ "]" { return [index]; }
 
 IndexOf = id:Id "." "indexOf" "(" _ exp:Operations _ ")" { return createNode('IndexOf', { id, exp }) }
 

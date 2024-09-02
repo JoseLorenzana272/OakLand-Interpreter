@@ -510,6 +510,53 @@ const configuracionNodos = [
                 description: 'Expression to assign'
             }
         ]
+    },
+    {
+        name: 'MatrixDeclaration',
+        extends: 'Expresion',
+        props: [
+            {
+                name: 'type',
+                type: 'string',
+                description: 'Type of the matrix'
+            },
+            {
+                name: 'dimensions',
+                type: 'number',
+                description: 'Dimensions of the matrix'
+            },
+            {
+                name: 'id',
+                type: 'string',
+                description: 'Identifier of the matrix'
+            },
+            {
+                name: 'values',
+                type: 'Expresion[]',
+                description: 'Values of the matrix'
+            },
+            {
+                name: 'newDimensions',
+                type: 'number',
+                description: 'New dimensions of the matrix'
+            }
+        ]
+    },
+    {
+        name: 'MatrixAccess',
+        extends: 'Expresion',
+        props: [
+            {
+                name: 'id',
+                type: 'string',
+                description: 'Identifier of the matrix'
+            },
+            {
+                name: 'indices',
+                type: 'Array<Expresion>',
+                description: 'List of indices for accessing the matrix'
+            }
+        ]
     }
 ]
 
