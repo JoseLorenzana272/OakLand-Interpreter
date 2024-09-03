@@ -358,7 +358,7 @@ const configuracionNodos = [
         props: []
     },
     {
-        name: 'returnNode',
+        name: 'ReturnNode',
         extends: 'Expresion',
         props: [
             {
@@ -581,6 +581,32 @@ const configuracionNodos = [
                 name: 'assi',
                 type: 'Expresion',
                 description: 'Expression to assign'
+            }
+        ]
+    },
+    {
+        name: 'FuncDeclaration',
+        extends: 'Expresion',
+        props: [
+            {
+                name: 'type',
+                type: 'string',
+                description: 'Type of the function'
+            },
+            {
+                name: 'id',
+                type: 'string',
+                description: 'Identifier of the function'
+            },
+            {
+                name: 'params',
+                type: 'Expresion[]',
+                description: 'Parameters of the function'
+            },
+            {
+                name: 'block',
+                type: 'Expresion',
+                description: 'Body of the function'
             }
         ]
     }

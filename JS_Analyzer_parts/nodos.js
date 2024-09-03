@@ -688,7 +688,7 @@ export class ContinueNode  {
     }
 }
     
-export class returnNode  {
+export class ReturnNode  {
 
     /**
     * @param {Object} options
@@ -709,7 +709,7 @@ export class returnNode  {
      * @param {BaseVisitor} visitor
      */
     accept(visitor) {
-        return visitor.visitreturnNode(this);
+        return visitor.visitReturnNode(this);
     }
 }
     
@@ -1140,4 +1140,53 @@ export class MatrixAssign  {
     }
 }
     
-export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, returnNode, SwitchNode, VectorDeclaration, CallNode, ArrayAccess, IndexOf, Join, Length, VectorAssign, MatrixDeclaration, MatrixAccess, MatrixAssign }
+export class FuncDeclaration  {
+
+    /**
+    * @param {Object} options
+    * @param {string} options.type Type of the function
+ * @param {string} options.id Identifier of the function
+ * @param {Expresion[]} options.params Parameters of the function
+ * @param {Expresion} options.block Body of the function
+    */
+    constructor({ type, id, params, block }) {
+        
+        
+        /**
+         * Type of the function
+         * @type {string}
+        */
+        this.type = type;
+
+
+        /**
+         * Identifier of the function
+         * @type {string}
+        */
+        this.id = id;
+
+
+        /**
+         * Parameters of the function
+         * @type {Expresion[]}
+        */
+        this.params = params;
+
+
+        /**
+         * Body of the function
+         * @type {Expresion}
+        */
+        this.block = block;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitFuncDeclaration(this);
+    }
+}
+    
+export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, ReturnNode, SwitchNode, VectorDeclaration, CallNode, ArrayAccess, IndexOf, Join, Length, VectorAssign, MatrixDeclaration, MatrixAccess, MatrixAssign, FuncDeclaration }

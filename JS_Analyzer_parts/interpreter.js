@@ -7,6 +7,7 @@ import { LogicalOp } from "../Expressions/LogicalOp.js";
 import { BreakException, ContinueException, ReturnException } from "../Instructions/transference.js";
 import { Summonable } from "../Instructions/summonable.js";
 import { embedded } from "../Instructions/embedded.js";
+import { FuncionForanea } from "../Instructions/foreign.js";
 
 const typeMaps = {
     "string": "",
@@ -482,7 +483,7 @@ export class InterpreterVisitor extends BaseVisitor {
     /**
      * @type [BaseVisitor['visitreturnNode']]
      */
-    visitreturnNode(node) {
+    visitReturnNode(node) {
         let valor = null
         if (node.exp) {
             valor = node.exp.accept(this);
@@ -609,11 +610,12 @@ export class InterpreterVisitor extends BaseVisitor {
      */
     visitCallNode(node) {
         console.log("Llamada a función: ", node);
+        console.log("FunciónAHHHHHHHHHHHHHHHh:", node.callee);
         const funcion = node.callee.accept(this);
 
         const argumentos = node.args.map(arg => arg.accept(this));
 
-        console.log("Función: ", funcion);
+        console.log("FunciónCARAJOOOOOOO: ", funcion);
         if (!(funcion instanceof Summonable)) {
             throw new Error('No es invocable');
         }
@@ -899,6 +901,17 @@ export class InterpreterVisitor extends BaseVisitor {
 
         current[indexes[indexes.length - 1].value] = value;
         return value;
+    }
+
+
+    /**
+     * @type [BaseVisitor['visitFuncDeclaration']]
+    */
+    visitFuncDeclaration(node) {
+        console.log(node);
+        const funcion = new FuncionForanea(node, this.entornoActual);
+        console.log("Función: ", funcion);
+        this.entornoActual.setVariable('int', node.id, funcion);
     }
 
     

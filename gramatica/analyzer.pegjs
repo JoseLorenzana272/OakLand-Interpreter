@@ -32,7 +32,8 @@
       'VectorAssign': nodos.VectorAssign,
       'MatrixDeclaration': nodos.MatrixDeclaration,
       'MatrixAccess': nodos.MatrixAccess,
-      'MatrixAssign': nodos.MatrixAssign
+      'MatrixAssign': nodos.MatrixAssign,
+      'FuncDeclaration': nodos.FuncDeclaration
     }
 
     const node = new type[typeNode](props);
@@ -45,8 +46,10 @@ Program = _ statements:Statements* _ { return statements; }
 Statements = Statement
 
 Statement =  _ vard:VariableDeclaration _ { return vard; }
+            /_ fund:FunctionDeclaration _ { return fund; }
             /_ vecd:VectorDeclaration _ { return vecd; }
             /_ matd:MatrixDeclaration _ { return matd; }
+            
             /_ s:Sentence _ { return s; } 
 
 /*---------------------Declaracion de variables----------------------*/
@@ -101,6 +104,14 @@ MatrixElements
   { return [head, ...tail.map(t => t[3])]; }
 
 MatrixElement = MatrixValue/Operations
+
+/*---------------------Funciones----------------------*/
+
+FunctionDeclaration = type:Types _ id:Id _ "(" _ params:Parameters? _ ")" _ block:Block { return createNode('FuncDeclaration', { type, id, params: params || [], block }) }
+
+//Los parametros deben de venir asi: (tipo id, tipo id, tipo id)
+Parameters =  type:Types _ id:Id _ "," _ params:Parameters { return [{ type, id }, ...params]; }
+            / type:Types _ id:Id { return [{ type, id }]; }
 
 /*-------------------------------------------------------------------*/
 
@@ -231,7 +242,7 @@ Break = "break" _ ";" { return createNode('BreakNode', {}); }
 
 Continue = "continue" _ ";" { return createNode('ContinueNode', {}); }
 
-Return = "return" _ exp:Operations? _ ";" { return crearNodo('ReturnNode', { exp }) }
+Return = "return" _ exp:Operations? _ ";" { return createNode('ReturnNode', { exp }) }
 
 Switch = "switch" _ "(" _ exp:Operations _ ")" _ "{" _ 
              cases:SwitchCase* 
@@ -260,13 +271,13 @@ ExpressionPrint = head:Operations tail:(_ "," _ Operations)* { return [head, ...
 Block = "{" _ stmt:Statements* _ "}" { return createNode('Block', { statements: stmt }); }
 
 /*-------------------------------------------------------- */
-Unary = "-" _ un:Unary { return createNode('Unario', { op: '-', exp: un }); }
+Unary = "-" _ un:Unary { console.log("desgracia", un); return createNode('Unario', { op: '-', exp: un }); }
       / "!" _ un:Unary { return createNode('Unario', { op: '!', exp: un }); }
       /FCall
 
 /*----------------------Llamadas a funciones----------------------*/
 
-FCall = callee:DataType " "* args:Arguments   { return createNode('CallNode', { callee, args: args}) }
+FCall = callee:(id:"typeof" { return createNode('VariableValue', { id }) }) " "* args:Arguments   { return createNode('CallNode', { callee, args: args}) }
 /callee:DataType _ params:("(" args:Arguments? ")" { return args })* {
   return params.reduce(
     (callee, args) => {

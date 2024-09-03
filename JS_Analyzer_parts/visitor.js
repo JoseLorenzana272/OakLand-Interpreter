@@ -61,7 +61,7 @@
  * @typedef {import('./nodos').ContinueNode} ContinueNode
 
 
- * @typedef {import('./nodos').returnNode} returnNode
+ * @typedef {import('./nodos').ReturnNode} ReturnNode
 
 
  * @typedef {import('./nodos').SwitchNode} SwitchNode
@@ -95,6 +95,9 @@
 
 
  * @typedef {import('./nodos').MatrixAssign} MatrixAssign
+
+
+ * @typedef {import('./nodos').FuncDeclaration} FuncDeclaration
 
  */
 
@@ -287,11 +290,11 @@ export class BaseVisitor {
     
 
     /**
-     * @param {returnNode} node
+     * @param {ReturnNode} node
      * @returns {any}
      */
-    visitreturnNode(node) {
-        throw new Error('Metodo visitreturnNode no implementado');
+    visitReturnNode(node) {
+        throw new Error('Metodo visitReturnNode no implementado');
     }
     
 
@@ -391,6 +394,15 @@ export class BaseVisitor {
      */
     visitMatrixAssign(node) {
         throw new Error('Metodo visitMatrixAssign no implementado');
+    }
+    
+
+    /**
+     * @param {FuncDeclaration} node
+     * @returns {any}
+     */
+    visitFuncDeclaration(node) {
+        throw new Error('Metodo visitFuncDeclaration no implementado');
     }
     
 }
