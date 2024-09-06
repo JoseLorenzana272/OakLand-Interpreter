@@ -914,6 +914,34 @@ export class InterpreterVisitor extends BaseVisitor {
         this.entornoActual.setVariable('int', node.id, funcion);
     }
 
+
+    /**
+     * @type [BaseVisitor['visitForEach']]
+     */
+    visitForEach(node) {
+        //ForEach = "for" _ "(" _ type:Types _ id:Id _ ":" _ id2:Id _ ")" _ stmt:Sentence { return createNode('ForEach', { type, id, id2, stmt }) }
+
+        const arrayVariable = this.entornoActual.getVariable(node.id2);
+
+        if (!arrayVariable) {
+            throw new Error(`Variable ${node.id2} no está definida`);
+        }
+
+        const variableValues = arrayVariable.value.value;
+
+        const previousScope = this.entornoActual;
+
+        variableValues.forEach(value => {
+            this.entornoActual = new Entorno(previousScope);
+
+            this.entornoActual.setVariable(node.type, node.id, value);
+
+            node.stmt.accept(this);
+        });
+
+        this.entornoActual = previousScope;
+    }
+
     
 
 }

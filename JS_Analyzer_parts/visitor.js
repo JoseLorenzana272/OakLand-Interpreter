@@ -99,6 +99,9 @@
 
  * @typedef {import('./nodos').FuncDeclaration} FuncDeclaration
 
+
+ * @typedef {import('./nodos').ForEach} ForEach
+
  */
 
 
@@ -403,6 +406,15 @@ export class BaseVisitor {
      */
     visitFuncDeclaration(node) {
         throw new Error('Metodo visitFuncDeclaration no implementado');
+    }
+    
+
+    /**
+     * @param {ForEach} node
+     * @returns {any}
+     */
+    visitForEach(node) {
+        throw new Error('Metodo visitForEach no implementado');
     }
     
 }

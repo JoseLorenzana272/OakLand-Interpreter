@@ -609,6 +609,32 @@ const configuracionNodos = [
                 description: 'Body of the function'
             }
         ]
+    },
+    {
+        name: 'ForEach',
+        extends: 'Expresion',
+        props: [
+            {
+                name: 'type',
+                type: 'string',
+                description: 'Type of the for each'
+            },
+            {
+                name: 'id',
+                type: 'string',
+                description: 'Identifier of the for each'
+            },
+            {
+                name: 'id2',
+                type: 'string',
+                description: 'Identifier of the for each'
+            },
+            {
+                name: 'stmt',
+                type: 'Expresion',
+                description: 'Body of the for each'
+            }
+        ]
     }
 ]
 

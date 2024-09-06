@@ -1189,4 +1189,53 @@ export class FuncDeclaration  {
     }
 }
     
-export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, ReturnNode, SwitchNode, VectorDeclaration, CallNode, ArrayAccess, IndexOf, Join, Length, VectorAssign, MatrixDeclaration, MatrixAccess, MatrixAssign, FuncDeclaration }
+export class ForEach  {
+
+    /**
+    * @param {Object} options
+    * @param {string} options.type Type of the for each
+ * @param {string} options.id Identifier of the for each
+ * @param {string} options.id2 Identifier of the for each
+ * @param {Expresion} options.stmt Body of the for each
+    */
+    constructor({ type, id, id2, stmt }) {
+        
+        
+        /**
+         * Type of the for each
+         * @type {string}
+        */
+        this.type = type;
+
+
+        /**
+         * Identifier of the for each
+         * @type {string}
+        */
+        this.id = id;
+
+
+        /**
+         * Identifier of the for each
+         * @type {string}
+        */
+        this.id2 = id2;
+
+
+        /**
+         * Body of the for each
+         * @type {Expresion}
+        */
+        this.stmt = stmt;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitForEach(this);
+    }
+}
+    
+export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, ReturnNode, SwitchNode, VectorDeclaration, CallNode, ArrayAccess, IndexOf, Join, Length, VectorAssign, MatrixDeclaration, MatrixAccess, MatrixAssign, FuncDeclaration, ForEach }

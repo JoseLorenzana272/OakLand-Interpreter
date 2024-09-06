@@ -33,7 +33,8 @@
       'MatrixDeclaration': nodos.MatrixDeclaration,
       'MatrixAccess': nodos.MatrixAccess,
       'MatrixAssign': nodos.MatrixAssign,
-      'FuncDeclaration': nodos.FuncDeclaration
+      'FuncDeclaration': nodos.FuncDeclaration,
+      'ForEach': nodos.ForEach
     }
 
     const node = new type[typeNode](props);
@@ -235,6 +236,7 @@ Sentence = p:Print { return p; }
           /i: If { return i; }
           /w: While { return w; }
           /f: ForLoop { return f; }
+          /fe: ForEach { return fe; }
           /sw: Switch { return sw; }
           /br: Break { return br; }
           /c: Continue { return c; }
@@ -266,6 +268,8 @@ While = "while" _ "(" _ cond:Operations _ ")" _ stmt:Sentence { return createNod
 ForLoop = "for" _ "("_ init:Statement _ cond:TernaryOp _ ";" _ inc:(IncrementDecrement/Assignment) _ ")" _ stmt:Sentence { return createNode('ForLoop', { init, cond, inc, stmt }) }
 
 IncrementDecrement = id:Id _ op:("++" / "--") { return createNode('IncrementDecrement', { id, op }); }
+
+ForEach = "for" _ "(" _ type:Types _ id:Id _ ":" _ id2:Id _ ")" _ stmt:Sentence { return createNode('ForEach', { type, id, id2, stmt }) }
 
 Print = "System.out.println" _ "(" _ expressions:ExpressionPrint  _ ")" _ ";"  { return createNode('Print', {exp: expressions}); }
 
