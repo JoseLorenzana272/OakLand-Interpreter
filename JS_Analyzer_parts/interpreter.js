@@ -213,7 +213,7 @@ export class InterpreterVisitor extends BaseVisitor {
         console.log("Valor de la variable: ", variableValue.value);
         console.log("Tipo de la variable: ", variableType);
         console.log("-----------------------------------");
-
+        
         //verificar tipos
         switch (variableType) {
             case 'int':

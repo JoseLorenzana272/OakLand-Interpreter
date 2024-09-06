@@ -340,7 +340,7 @@ SimpleComment = "//" [^\r\n]*
 MultilineComment = "/*" (!"*/" .)* "*/"
  /*-------------------------------------------------------------*/
 
-Types = ("int" / "float" / "string" / "char" / "bool") { return text(); }
+Types = ("int" / "float" / "string" / "char" / "bool" / "void") { return text(); }
 
 Id = [a-zA-Z_][a-zA-Z0-9_]* { return text(); }
 

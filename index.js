@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     openFileButton.addEventListener('click', () => {
         const input = document.createElement('input');
         input.type = 'file';
-        input.accept = '.txt';
+        input.accept = '.oak';
         input.style.display = 'none';
 
         input.addEventListener('change', (event) => {
