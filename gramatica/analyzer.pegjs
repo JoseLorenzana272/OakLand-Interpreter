@@ -107,11 +107,14 @@ MatrixElement = MatrixValue/Operations
 
 /*---------------------Funciones----------------------*/
 
-FunctionDeclaration = type:Types _ id:Id _ "(" _ params:Parameters? _ ")" _ block:Block { return createNode('FuncDeclaration', { type, id, params: params || [], block }) }
+FunctionDeclaration = type:(Types/"void") _ id:Id _ "(" _ params:Parameters? _ ")" _ block:Block { return createNode('FuncDeclaration', { type, id, params: params || [], block }) }
 
-//Los parametros deben de venir asi: (tipo id, tipo id, tipo id)
-Parameters =  type:Types _ id:Id _ "," _ params:Parameters { return [{ type, id }, ...params]; }
-            / type:Types _ id:Id { return [{ type, id }]; }
+// Aceptar tanto parámetros simples como arrays.
+Parameters = type:Types _ arrayDecl:ArrayDecl? _ id:Id _ "," _ params:Parameters { return [{ type, id, array: arrayDecl || false }, ...params]; }
+           / type:Types _ arrayDecl:ArrayDecl? _ id:Id { return [{ type, id, array: arrayDecl || false }]; }
+
+// Declaración de arrays en parámetros
+ArrayDecl = "[" _ "]" { return true; }
 
 /*-------------------------------------------------------------------*/
 
@@ -340,7 +343,7 @@ SimpleComment = "//" [^\r\n]*
 MultilineComment = "/*" (!"*/" .)* "*/"
  /*-------------------------------------------------------------*/
 
-Types = ("int" / "float" / "string" / "char" / "bool" / "void") { return text(); }
+Types = ("int" / "float" / "string" / "char" / "bool") { return text(); }
 
 Id = [a-zA-Z_][a-zA-Z0-9_]* { return text(); }
 
