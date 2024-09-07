@@ -16,7 +16,32 @@
  * @typedef {import('./visitor').BaseVisitor} BaseVisitor
  */
 
-export class Literal  {
+export class Expresion  {
+
+    /**
+    * @param {Object} options
+    * @param {Location|null} options.location Ubicacion del nodo en el codigo fuente
+    */
+    constructor() {
+        
+        
+        /**
+         * Ubicacion del nodo en el codigo fuente
+         * @type {Location|null}
+        */
+        this.location = null;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitExpresion(this);
+    }
+}
+    
+export class Literal extends Expresion {
 
     /**
     * @param {Object} options
@@ -24,7 +49,7 @@ export class Literal  {
  * @param {string} options.type Type of the literal
     */
     constructor({ value, type }) {
-        
+        super();
         
         /**
          * Value of the literal
@@ -49,14 +74,14 @@ export class Literal  {
     }
 }
     
-export class Print  {
+export class Print extends Expresion {
 
     /**
     * @param {Object} options
     * @param {Expresion} options.exp Expression to print
     */
     constructor({ exp }) {
-        
+        super();
         
         /**
          * Expression to print
@@ -74,7 +99,7 @@ export class Print  {
     }
 }
     
-export class Arithmetic  {
+export class Arithmetic extends Expresion {
 
     /**
     * @param {Object} options
@@ -83,7 +108,7 @@ export class Arithmetic  {
  * @param {string} options.op Operador de la operacion
     */
     constructor({ izq, der, op }) {
-        
+        super();
         
         /**
          * Expresion izquierda de la operacion
@@ -115,14 +140,14 @@ export class Arithmetic  {
     }
 }
     
-export class Grouping  {
+export class Grouping extends Expresion {
 
     /**
     * @param {Object} options
     * @param {Expresion} options.exp Expresion agrupada
     */
     constructor({ exp }) {
-        
+        super();
         
         /**
          * Expresion agrupada
@@ -140,7 +165,7 @@ export class Grouping  {
     }
 }
     
-export class Relational  {
+export class Relational extends Expresion {
 
     /**
     * @param {Object} options
@@ -149,7 +174,7 @@ export class Relational  {
  * @param {string} options.op Operador de la operacion
     */
     constructor({ izq, der, op }) {
-        
+        super();
         
         /**
          * Expresion izquierda de la operacion
@@ -181,7 +206,7 @@ export class Relational  {
     }
 }
     
-export class Igualation  {
+export class Igualation extends Expresion {
 
     /**
     * @param {Object} options
@@ -190,7 +215,7 @@ export class Igualation  {
  * @param {string} options.op Operador de la operacion
     */
     constructor({ izq, der, op }) {
-        
+        super();
         
         /**
          * Expresion izquierda de la operacion
@@ -222,7 +247,7 @@ export class Igualation  {
     }
 }
     
-export class Logical  {
+export class Logical extends Expresion {
 
     /**
     * @param {Object} options
@@ -231,7 +256,7 @@ export class Logical  {
  * @param {string} options.op Operador de la operacion
     */
     constructor({ izq, der, op }) {
-        
+        super();
         
         /**
          * Expresion izquierda de la operacion
@@ -263,7 +288,7 @@ export class Logical  {
     }
 }
     
-export class Unario  {
+export class Unario extends Expresion {
 
     /**
     * @param {Object} options
@@ -271,7 +296,7 @@ export class Unario  {
  * @param {string} options.op Operador unario
     */
     constructor({ exp, op }) {
-        
+        super();
         
         /**
          * Expresion a la que se le aplica el operador unario
@@ -296,14 +321,14 @@ export class Unario  {
     }
 }
     
-export class VariableValue  {
+export class VariableValue extends Expresion {
 
     /**
     * @param {Object} options
     * @param {string} options.id Identifier of the variable
     */
     constructor({ id }) {
-        
+        super();
         
         /**
          * Identifier of the variable
@@ -321,7 +346,7 @@ export class VariableValue  {
     }
 }
     
-export class VariableDeclaration  {
+export class VariableDeclaration extends Expresion {
 
     /**
     * @param {Object} options
@@ -330,7 +355,7 @@ export class VariableDeclaration  {
  * @param {Expresion} options.value Value of the variable
     */
     constructor({ id, type, value }) {
-        
+        super();
         
         /**
          * Identifier of the variable
@@ -362,14 +387,14 @@ export class VariableDeclaration  {
     }
 }
     
-export class Block  {
+export class Block extends Expresion {
 
     /**
     * @param {Object} options
     * @param {Expresion[]} options.statements Statements/Sentences of the block
     */
     constructor({ statements }) {
-        
+        super();
         
         /**
          * Statements/Sentences of the block
@@ -387,14 +412,14 @@ export class Block  {
     }
 }
     
-export class OpSentence  {
+export class OpSentence extends Expresion {
 
     /**
     * @param {Object} options
     * @param {Expresion} options.o Operation to execute
     */
     constructor({ o }) {
-        
+        super();
         
         /**
          * Operation to execute
@@ -412,16 +437,16 @@ export class OpSentence  {
     }
 }
     
-export class VariableAssign  {
+export class VariableAssign extends Expresion {
 
     /**
     * @param {Object} options
     * @param {string} options.id Identifier of the variable
  * @param {string} options.op Operator of the assignment
- * @param {Expresion} options.assi Expression to assign
+ * @param {Expresion} options.assi Expresion to assign
     */
     constructor({ id, op, assi }) {
-        
+        super();
         
         /**
          * Identifier of the variable
@@ -438,7 +463,7 @@ export class VariableAssign  {
 
 
         /**
-         * Expression to assign
+         * Expresion to assign
          * @type {Expresion}
         */
         this.assi = assi;
@@ -453,7 +478,7 @@ export class VariableAssign  {
     }
 }
     
-export class TernaryOp  {
+export class TernaryOp extends Expresion {
 
     /**
     * @param {Object} options
@@ -462,7 +487,7 @@ export class TernaryOp  {
  * @param {Expresion} options.falseExp Expression to return if the condition is false
     */
     constructor({ condition, trueExp, falseExp }) {
-        
+        super();
         
         /**
          * Condition to evaluate
@@ -494,7 +519,7 @@ export class TernaryOp  {
     }
 }
     
-export class IfNode  {
+export class IfNode extends Expresion {
 
     /**
     * @param {Object} options
@@ -503,7 +528,7 @@ export class IfNode  {
  * @param {Expresion|undefined} options.stmtFalse Cuerpo del else
     */
     constructor({ cond, stmtTrue, stmtFalse }) {
-        
+        super();
         
         /**
          * Condicion del if
@@ -535,7 +560,7 @@ export class IfNode  {
     }
 }
     
-export class WhileNode  {
+export class WhileNode extends Expresion {
 
     /**
     * @param {Object} options
@@ -543,7 +568,7 @@ export class WhileNode  {
  * @param {Expresion} options.stmt Cuerpo del while
     */
     constructor({ cond, stmt }) {
-        
+        super();
         
         /**
          * Condicion del while
@@ -568,7 +593,7 @@ export class WhileNode  {
     }
 }
     
-export class IncrementDecrement  {
+export class IncrementDecrement extends Expresion {
 
     /**
     * @param {Object} options
@@ -576,7 +601,7 @@ export class IncrementDecrement  {
  * @param {string} options.op Operator of the increment/decrement
     */
     constructor({ id, op }) {
-        
+        super();
         
         /**
          * Identifier of the variable
@@ -601,7 +626,7 @@ export class IncrementDecrement  {
     }
 }
     
-export class ForLoop  {
+export class ForLoop extends Expresion {
 
     /**
     * @param {Object} options
@@ -611,7 +636,7 @@ export class ForLoop  {
  * @param {Expresion} options.stmt Body of the for
     */
     constructor({ init, cond, inc, stmt }) {
-        
+        super();
         
         /**
          * Inicialization of the for
@@ -650,14 +675,14 @@ export class ForLoop  {
     }
 }
     
-export class BreakNode  {
+export class BreakNode extends Expresion {
 
     /**
     * @param {Object} options
     * 
     */
     constructor() {
-        
+        super();
         
     }
 
@@ -669,14 +694,14 @@ export class BreakNode  {
     }
 }
     
-export class ContinueNode  {
+export class ContinueNode extends Expresion {
 
     /**
     * @param {Object} options
     * 
     */
     constructor() {
-        
+        super();
         
     }
 
@@ -688,14 +713,14 @@ export class ContinueNode  {
     }
 }
     
-export class ReturnNode  {
+export class ReturnNode extends Expresion {
 
     /**
     * @param {Object} options
     * @param {Expresion|undefined} options.exp Expresion a retornar
     */
     constructor({ exp }) {
-        
+        super();
         
         /**
          * Expresion a retornar
@@ -713,7 +738,7 @@ export class ReturnNode  {
     }
 }
     
-export class SwitchNode  {
+export class SwitchNode extends Expresion {
 
     /**
     * @param {Object} options
@@ -722,7 +747,7 @@ export class SwitchNode  {
  * @param {Expresion} options.def Caso por defecto
     */
     constructor({ exp, cases, def }) {
-        
+        super();
         
         /**
          * Expresion a evaluar
@@ -754,7 +779,7 @@ export class SwitchNode  {
     }
 }
     
-export class VectorDeclaration  {
+export class VectorDeclaration extends Expresion {
 
     /**
     * @param {Object} options
@@ -764,7 +789,7 @@ export class VectorDeclaration  {
  * @param {Expresion[]} options.values Values of the vector
     */
     constructor({ id, type, size, values }) {
-        
+        super();
         
         /**
          * Identifier of the vector
@@ -803,7 +828,7 @@ export class VectorDeclaration  {
     }
 }
     
-export class CallNode  {
+export class CallNode extends Expresion {
 
     /**
     * @param {Object} options
@@ -811,7 +836,7 @@ export class CallNode  {
  * @param {Expresion[]} options.args Arguments of the function
     */
     constructor({ callee, args }) {
-        
+        super();
         
         /**
          * Call to the function
@@ -836,7 +861,7 @@ export class CallNode  {
     }
 }
     
-export class ArrayAccess  {
+export class ArrayAccess extends Expresion {
 
     /**
     * @param {Object} options
@@ -844,7 +869,7 @@ export class ArrayAccess  {
  * @param {Expresion} options.index Index of the vector
     */
     constructor({ id, index }) {
-        
+        super();
         
         /**
          * Identifier of the vector
@@ -869,7 +894,7 @@ export class ArrayAccess  {
     }
 }
     
-export class IndexOf  {
+export class IndexOf extends Expresion {
 
     /**
     * @param {Object} options
@@ -877,7 +902,7 @@ export class IndexOf  {
  * @param {Expresion} options.exp Value to search
     */
     constructor({ id, exp }) {
-        
+        super();
         
         /**
          * Identifier of the vector
@@ -902,14 +927,14 @@ export class IndexOf  {
     }
 }
     
-export class Join  {
+export class Join extends Expresion {
 
     /**
     * @param {Object} options
     * @param {string} options.id Identifier of the vector
     */
     constructor({ id }) {
-        
+        super();
         
         /**
          * Identifier of the vector
@@ -927,14 +952,14 @@ export class Join  {
     }
 }
     
-export class Length  {
+export class Length extends Expresion {
 
     /**
     * @param {Object} options
     * @param {string} options.id Identifier of the vector
     */
     constructor({ id }) {
-        
+        super();
         
         /**
          * Identifier of the vector
@@ -952,7 +977,7 @@ export class Length  {
     }
 }
     
-export class VectorAssign  {
+export class VectorAssign extends Expresion {
 
     /**
     * @param {Object} options
@@ -962,7 +987,7 @@ export class VectorAssign  {
  * @param {Expresion} options.assi Expression to assign
     */
     constructor({ id, index, op, assi }) {
-        
+        super();
         
         /**
          * Identifier of the vector
@@ -1001,7 +1026,7 @@ export class VectorAssign  {
     }
 }
     
-export class MatrixDeclaration  {
+export class MatrixDeclaration extends Expresion {
 
     /**
     * @param {Object} options
@@ -1012,7 +1037,7 @@ export class MatrixDeclaration  {
  * @param {number} options.newDimensions New dimensions of the matrix
     */
     constructor({ type, dimensions, id, values, newDimensions }) {
-        
+        super();
         
         /**
          * Type of the matrix
@@ -1058,7 +1083,7 @@ export class MatrixDeclaration  {
     }
 }
     
-export class MatrixAccess  {
+export class MatrixAccess extends Expresion {
 
     /**
     * @param {Object} options
@@ -1066,7 +1091,7 @@ export class MatrixAccess  {
  * @param {Array<Expresion>} options.indexes List of indices for accessing the matrix
     */
     constructor({ id, indexes }) {
-        
+        super();
         
         /**
          * Identifier of the matrix
@@ -1091,7 +1116,7 @@ export class MatrixAccess  {
     }
 }
     
-export class MatrixAssign  {
+export class MatrixAssign extends Expresion {
 
     /**
     * @param {Object} options
@@ -1101,7 +1126,7 @@ export class MatrixAssign  {
  * @param {Expresion} options.assi Expression to assign
     */
     constructor({ id, indexes, op, assi }) {
-        
+        super();
         
         /**
          * Identifier of the matrix
@@ -1140,7 +1165,7 @@ export class MatrixAssign  {
     }
 }
     
-export class FuncDeclaration  {
+export class FuncDeclaration extends Expresion {
 
     /**
     * @param {Object} options
@@ -1150,7 +1175,7 @@ export class FuncDeclaration  {
  * @param {Expresion} options.block Body of the function
     */
     constructor({ type, id, params, block }) {
-        
+        super();
         
         /**
          * Type of the function
@@ -1189,7 +1214,7 @@ export class FuncDeclaration  {
     }
 }
     
-export class ForEach  {
+export class ForEach extends Expresion {
 
     /**
     * @param {Object} options
@@ -1199,7 +1224,7 @@ export class ForEach  {
  * @param {Expresion} options.stmt Body of the for each
     */
     constructor({ type, id, id2, stmt }) {
-        
+        super();
         
         /**
          * Type of the for each
@@ -1238,7 +1263,7 @@ export class ForEach  {
     }
 }
     
-export class StructNode  {
+export class StructNode extends Expresion {
 
     /**
     * @param {Object} options
@@ -1246,7 +1271,7 @@ export class StructNode  {
  * @param {Expresion[]} options.fields Fields of the struct
     */
     constructor({ id, fields }) {
-        
+        super();
         
         /**
          * Identifier of the struct
@@ -1271,7 +1296,7 @@ export class StructNode  {
     }
 }
     
-export class StructInstance  {
+export class StructInstance extends Expresion {
 
     /**
     * @param {Object} options
@@ -1281,7 +1306,7 @@ export class StructInstance  {
  * @param {Expresion[]} options.values Values of the struct
     */
     constructor({ id, id2, IdStruct, values }) {
-        
+        super();
         
         /**
          * Identifier of the struct
@@ -1320,7 +1345,7 @@ export class StructInstance  {
     }
 }
     
-export class StructAccess  {
+export class StructAccess extends Expresion {
 
     /**
     * @param {Object} options
@@ -1328,7 +1353,7 @@ export class StructAccess  {
  * @param {string} options.id2 Identifier of the struct
     */
     constructor({ id, id2 }) {
-        
+        super();
         
         /**
          * Identifier of the struct
@@ -1353,7 +1378,7 @@ export class StructAccess  {
     }
 }
     
-export class StructAssign  {
+export class StructAssign extends Expresion {
 
     /**
     * @param {Object} options
@@ -1363,7 +1388,7 @@ export class StructAssign  {
  * @param {Expresion} options.assi Expression to assign
     */
     constructor({ id, attribute, op, assi }) {
-        
+        super();
         
         /**
          * Identifier of the struct
@@ -1402,4 +1427,4 @@ export class StructAssign  {
     }
 }
     
-export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, ReturnNode, SwitchNode, VectorDeclaration, CallNode, ArrayAccess, IndexOf, Join, Length, VectorAssign, MatrixDeclaration, MatrixAccess, MatrixAssign, FuncDeclaration, ForEach, StructNode, StructInstance, StructAccess, StructAssign }
+export default { Expresion, Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, ReturnNode, SwitchNode, VectorDeclaration, CallNode, ArrayAccess, IndexOf, Join, Length, VectorAssign, MatrixDeclaration, MatrixAccess, MatrixAssign, FuncDeclaration, ForEach, StructNode, StructInstance, StructAccess, StructAssign }

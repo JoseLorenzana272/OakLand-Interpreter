@@ -265,7 +265,7 @@ export class InterpreterVisitor extends BaseVisitor {
 
         this.entornoActual.setVariable(variableType, variableName, variableValue);
         //Agregar a la lista de simbolos, ID, Tipo símbolo, Tipo dato
-        this.listaSimbolos.push({ID: variableName, Tipo: 'Variable', TipoDato: variableType});
+        this.listaSimbolos.push({ID: variableName, Tipo: 'Variable', TipoDato: variableType, Row: node.location.end.line, Column: node.location.end.column});
     }
 
 
@@ -613,7 +613,7 @@ export class InterpreterVisitor extends BaseVisitor {
         this.entornoActual.setVariable(variableType, variableName, new Literal({ value: variableValues, type: variableType }));
 
         //Agregar a la lista de simbolos, ID, Tipo símbolo, Tipo dato
-        this.listaSimbolos.push({ID: variableName, Tipo: 'Array', TipoDato: variableType});
+        this.listaSimbolos.push({ID: variableName, Tipo: 'Array', TipoDato: variableType, Row: node.location.end.line, Column: node.location.end.column});
         
     }
     
@@ -857,7 +857,7 @@ export class InterpreterVisitor extends BaseVisitor {
     
         this.entornoActual.setVariable(variableType, variableName, new Literal({ value: variableValues, type: variableType }));
         //Agregar a la lista de simbolos, ID, Tipo símbolo, Tipo dato
-        this.listaSimbolos.push({ID: variableName, Tipo: 'Array', TipoDato: variableType});
+        this.listaSimbolos.push({ID: variableName, Tipo: 'Array', TipoDato: variableType, Row: node.location.end.line, Column: node.location.end.column});
     }
     
 
@@ -928,7 +928,7 @@ export class InterpreterVisitor extends BaseVisitor {
         console.log("Función: ", funcion);
         this.entornoActual.setVariable(node.type, node.id, funcion);
         //Agregar a la lista de simbolos, ID, Tipo símbolo, Tipo dato
-        this.listaSimbolos.push({ID: node.id, Tipo: 'Función', TipoDato: node.type});
+        this.listaSimbolos.push({ID: node.id, Tipo: 'Function', TipoDato: node.type, Row: node.location.end.line, Column: node.location.end.column});
     }
 
 
@@ -1005,8 +1005,8 @@ export class InterpreterVisitor extends BaseVisitor {
 
         this.entornoActual.setVariable(node.type, node.id2, new Literal({ value: generalStruct, type: node.id }));
         console.log(this.entornoActual.valores);
-        //Agregar a la lista de simbolos, ID, Tipo símbolo, Tipo dato
-        this.listaSimbolos.push({ID: node.id2, Tipo: 'Struct', TipoDato: node.id});
+        //Agregar a la lista de simbolos, ID, Tipo símbolo, Tipo dato, Row, Column
+        this.listaSimbolos.push({ID: node.id2, Tipo: 'Struct', TipoDato: node.id, Row: node.location.end.line, Column: node.location.end.column});
     }
     
 

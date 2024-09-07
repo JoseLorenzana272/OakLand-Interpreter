@@ -5291,6 +5291,7 @@ function peg$parse(input, options) {
     }
 
     const node = new type[typeNode](props);
+    node.location = location();
     return node;
   }
 

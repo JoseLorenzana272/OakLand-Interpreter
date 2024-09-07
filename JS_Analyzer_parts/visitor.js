@@ -1,6 +1,9 @@
 
 /**
 
+ * @typedef {import('./nodos').Expresion} Expresion
+
+
  * @typedef {import('./nodos').Literal} Literal
 
 
@@ -124,6 +127,15 @@
 export class BaseVisitor {
 
     
+    /**
+     * @param {Expresion} node
+     * @returns {any}
+     */
+    visitExpresion(node) {
+        throw new Error('Metodo visitExpresion no implementado');
+    }
+    
+
     /**
      * @param {Literal} node
      * @returns {any}

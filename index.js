@@ -16,26 +16,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Función para ejecutar el código en la textarea
     runButton.addEventListener('click', () => {
-        try{
+        consoleOutput.innerHTML = ''; // Limpiar la consola antes de ejecutar
+        const interpreter = new InterpreterVisitor();
+        try {
             const expresions = parse(textarea.value);
             console.log(expresions);
-            const interpreter = new InterpreterVisitor();
+    
             expresions.forEach(exp => {
-                const result = exp.accept(interpreter);
+                try {
+                    const result = exp.accept(interpreter);
+                } catch (e) {
+                    const errorMessage = `<span style="color: red;">Error in expression: ${e.message}</span>`;
+                    console.error(e);
+                    consoleOutput.innerHTML += `${errorMessage}<br>`;
+                }
             });
+    
             const output = interpreter.salida.replace(/\n/g, '<br>'); 
-            consoleOutput.innerHTML = output;
+            consoleOutput.innerHTML += output;
+    
             // Guardar la tabla de símbolos
             if (Array.isArray(interpreter.listaSimbolos)) {
                 symbolTable = interpreter.listaSimbolos;
             }
+    
         } catch (e) {
             const errorMessage = `<span style="color: red;">Error: ${e.message}</span>`;
             console.error(e);
-            consoleOutput.innerHTML = errorMessage;
+            consoleOutput.innerHTML += errorMessage;
         }
-
     });
+    
 
     // Función para generar los reportes
     reportButton.addEventListener('click', () => {
@@ -169,6 +180,8 @@ function generateSymbolTableHTML(symbolList) {
                     <th>ID</th>
                     <th>Type</th>
                     <th>Data Type</th>
+                    <th>Row</th>
+                    <th>Column</th>
                 </tr>
     `;
 
@@ -178,6 +191,8 @@ function generateSymbolTableHTML(symbolList) {
                 <td>${symbol.ID}</td>
                 <td>${symbol.Tipo}</td>
                 <td>${symbol.TipoDato}</td>
+                <td>${symbol.Row}</td>
+                <td>${symbol.Column}</td>
             </tr>
         `;
     });

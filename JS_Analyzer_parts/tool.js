@@ -34,6 +34,19 @@ const types = [
 ]
 
 const configuracionNodos = [
+
+    {
+        name: 'Expresion',
+        base: true,
+        props: [
+            {
+                name: 'location',
+                type: 'Location|null',
+                description: 'Ubicacion del nodo en el codigo fuente',
+                default: 'null'
+            }
+        ]
+    },
     {
         name: 'Literal',
         extends: 'Expresion',
@@ -52,7 +65,7 @@ const configuracionNodos = [
     },
     {
         name: 'Print',
-        extends: 'Expression',
+        extends: 'Expresion',
         props: [
             {
                 name: 'exp',
@@ -63,7 +76,7 @@ const configuracionNodos = [
     },
     {
         name: 'Arithmetic',
-        extends: 'Expression',
+        extends: 'Expresion',
         props: [
             {
                 name: 'izq',
@@ -84,7 +97,7 @@ const configuracionNodos = [
     },
     {
         name: 'Grouping',
-        extends: 'Expression',
+        extends: 'Expresion',
         props: [
             {
                 name: 'exp',
@@ -95,7 +108,7 @@ const configuracionNodos = [
     },
     {
         name: 'Relational',
-        extends: 'Expression',
+        extends: 'Expresion',
         props: [
             {
                 name: 'izq',
@@ -116,7 +129,7 @@ const configuracionNodos = [
     },
     {
         name: 'Igualation',
-        extends: 'Expression',
+        extends: 'Expresion',
         props: [
             {
                 name: 'izq',
@@ -137,7 +150,7 @@ const configuracionNodos = [
     },
     {
         name: 'Logical',
-        extends: 'Expression',
+        extends: 'Expresion',
         props: [
             {
                 name: 'izq',
@@ -158,7 +171,7 @@ const configuracionNodos = [
     },
     {
         name: 'Unario',
-        extends: 'Expression',
+        extends: 'Expresion',
         props: [
             {
                 name: 'exp',
@@ -174,7 +187,7 @@ const configuracionNodos = [
     },
     {
         name: 'VariableValue',
-        extends: 'Expression',
+        extends: 'Expresion',
         props: [
             {
                 name: 'id',
@@ -185,7 +198,7 @@ const configuracionNodos = [
     },
     {
         name: 'VariableDeclaration',
-        extends: 'Expression',
+        extends: 'Expresion',
         props: [
             {
                 name: 'id',
@@ -206,7 +219,7 @@ const configuracionNodos = [
     },
     {
         name: 'Block',
-        extends: 'Expression',
+        extends: 'Expresion',
         props: [
             {
                 name: 'statements',
@@ -217,7 +230,7 @@ const configuracionNodos = [
     },
     {
         name: 'OpSentence',
-        extends: 'Expression',
+        extends: 'Expresion',
         props: [
             {
                 name: 'o',
@@ -228,7 +241,7 @@ const configuracionNodos = [
     },
     {
         name: 'VariableAssign',
-        extends: 'Expression',
+        extends: 'Expresion',
         props: [
             {
                 name: 'id',
@@ -243,13 +256,13 @@ const configuracionNodos = [
             {
                 name: 'assi',
                 type: 'Expresion',
-                description: 'Expression to assign'
+                description: 'Expresion to assign'
             }
         ]
     },
     {
         name: 'TernaryOp',
-        extends: 'Expression',
+        extends: 'Expresion',
         props: [
             {
                 name: 'condition',
