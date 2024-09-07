@@ -257,3 +257,476 @@ bool[][][][][] boolMatrix5D = {
 };
 
 System.out.println(boolMatrix5D[0][1][0][1][0]);
+
+System.out.println("********** Declaración Structs **********");
+
+struct Persona {
+    string nombre;
+    int edad;
+    float estatura;
+};
+
+
+System.out.println("Ok");
+System.out.println("");
+
+System.out.println("********** Instancias **********");
+
+System.out.println("1. Con var");
+
+var persona1 = Persona{
+    nombre: "Juan",
+    edad: 20,
+    estatura: 1.70
+};
+System.out.println("Ok");
+System.out.println("");
+
+System.out.println("2. Usando por tipo el nombre del Struct");
+Persona persona2 = Persona{
+    nombre: "Maria",
+    edad: 25,
+    estatura: 1.60
+};
+System.out.println("Ok");
+System.out.println("");
+
+System.out.println("********** Asignacion de propiedades primivitas **********");
+
+persona1.nombre = "Juanito";
+persona1.edad = 21;
+
+persona2.nombre = "Maria";
+persona2.edad = 26;
+
+
+System.out.println("Ok");
+System.out.println("");
+
+System.out.println("********** Acceso a propiedades primivitas **********");
+
+System.out.println(persona1.nombre);
+System.out.println(persona1.edad);
+System.out.println(persona1.estatura);
+
+System.out.println(persona2.nombre);
+System.out.println(persona2.edad);
+System.out.println(persona2.estatura);
+
+System.out.println("");
+
+// ------------------------------------------------------------
+
+System.out.println("********** Funciones no recursivas sin parámetros **********");
+
+System.out.println("1. void");
+
+void saludar() {
+    System.out.println("Hola");
+}
+
+saludar();
+System.out.println("");
+
+System.out.println("2. Con retorno");
+
+int sumar() {
+    return 10 + 20;
+}
+
+System.out.println(sumar());
+
+// ------------------------------------------------------------
+
+System.out.println("********** Funciones no recursivas con parámetros **********");
+
+System.out.println("1. void");
+
+void saludar2(string nombre) {
+    System.out.println("Hola " + nombre);
+}
+
+saludar2("mundo");
+
+System.out.println("");
+
+System.out.println("2. Con retorno");
+
+int sumar2(int a, int b) {
+    return a + b;
+}
+
+System.out.println(sumar2(10, 20));
+
+// ------------------------------------------------------------
+
+System.out.println("********** Funciones recursivas **********");
+
+System.out.println("1. Factorial");
+
+int factorial(int n) {
+    if (n == 0) {
+        return 1;
+    } else {
+        return n * factorial(n - 1);
+    }
+}
+
+System.out.println(factorial(5));
+System.out.println("");
+
+System.out.println("2. Fibonacci");
+
+int fibonacci(int n) {
+    if (n == 0 || n == 1) {
+        return n;
+    } else {
+        return fibonacci(n - 1) + fibonacci(n - 2);
+    }
+}
+
+System.out.println(fibonacci(10));
+System.out.println("");
+
+System.out.println("3. Hanoi");
+
+void hanoi(int n, string origen, string auxiliar, string destino) {
+    if (n == 1) {
+        System.out.println("Mover disco 1 de ", origen, " a ", destino);
+    } else {
+        hanoi(n - 1, origen, destino, auxiliar);
+        System.out.println("Mover disco ", n, " de ", origen, " a ", destino);
+        hanoi(n - 1, auxiliar, origen, destino);
+    }
+}
+
+hanoi(3, "A", "B", "C");
+
+// ------------------------------------------------------------
+
+System.out.println("********** Función definida dentro de bloque **********");
+
+int total(int a, int b) {
+    
+    int c = 10;
+
+    int sumar4() {
+        return a + b + c;
+    }
+
+    return sumar4();
+}
+
+System.out.println(total(10, 20)); // 40
+
+
+// ------------------------------------------------------------
+
+System.out.println("********** Declaracion de variables **********");
+
+System.out.println("1. Manejo de entornos");
+
+
+System.out.println("1.1 Variable redeclarada en el mismo entorno");
+int a = 10;
+
+// ERROR: La variable a ya fue declarada. Comentar la linea.
+int a = 20;
+
+System.out.println(a); // 10
+System.out.println("");
+
+System.out.println("1.2 Variable redeclarada en un entorno diferente");
+
+int b = 10;
+
+if (true) {
+    // No hay error porque se encuentra en un entorno diferente.
+    int b = 20;
+    System.out.println(b); // 20
+}
+
+System.out.println(b); // 10
+System.out.println("");
+
+System.out.println("1.3 Uso de variable en un entorno superior");
+
+int c = 10;
+int d = 10;
+
+if (true) {
+    int d = 20;
+    System.out.println(c); // 10
+    System.out.println(d); // 20
+
+    c = 30;
+    d = 30;
+}
+
+System.out.println(c); // 30
+System.out.println(d); // 10
+System.out.println("");
+
+// ------------------------------------------------------------
+
+System.out.println("********** IF **********");
+
+System.out.println("1. IF simple");
+
+if (true) {
+    System.out.println("Hola mundo");
+}
+
+System.out.println("");
+
+System.out.println("2. IF-ELSE");
+
+if (true) {
+    System.out.println("Hola mundo");
+} else {
+    System.out.println("Adios mundo");
+}
+
+if (false) {
+    System.out.println("Hola mundo");
+} else {
+    System.out.println("Adios mundo");
+}
+System.out.println("");
+
+System.out.println("3. IF-ELSEIF-ELSE");
+
+if (true) {
+    System.out.println("Hola mundo");
+} else if (true) {
+    System.out.println("Adios mundo");
+} else {
+    System.out.println("Hasta luego mundo");
+}
+
+if (false) {
+    System.out.println("Hola mundo");
+} else if (true) {
+    System.out.println("Adios mundo");
+} else {
+    System.out.println("Hasta luego mundo");
+}
+
+if (false) {
+    System.out.println("Hola mundo");
+} else if (false) {
+    System.out.println("Adios mundo");
+} else {
+    System.out.println("Hasta luego mundo");
+}
+
+System.out.println("");
+
+System.out.println("4. IF anidado");
+
+if (true) {
+    if (true) {
+        System.out.println("Hola mundo");
+    }
+}
+System.out.println("");
+
+// ------------------------------------------------------------
+System.out.println("********** While **********");
+
+
+System.out.println("1. While simple");
+
+int i = 0;
+while (i < 5) {
+    System.out.println(i);
+    i = i + 1;
+}
+
+System.out.println("");
+
+System.out.println("2. While anidado");
+
+int n = 5;
+int x = 0;
+
+while (x < n) {
+    int j = 0;
+
+    string spaces = "";
+    
+    while (j < n) {
+        if (x == j || x + j == n - 1) {
+            spaces = spaces + "*";
+        } else {
+            spaces = spaces + " ";
+        }
+        j = j + 1;
+    }
+
+    System.out.println(spaces);
+    x = x + 1;
+}
+
+System.out.println("");
+
+// ------------------------------------------------------------
+
+System.out.println("********** For **********");
+
+System.out.println("1. For simple");
+
+for (int i = 0; i < 5; i = i + 1) {
+    System.out.println(i);
+}
+
+System.out.println("");
+
+System.out.println("2. Foreach");
+
+int[] arr = {1, 2, 3, 4, 5};
+
+for (int elemento : arr) {
+    System.out.println(elemento);
+}
+
+System.out.println("");
+
+
+
+// ------------------------------------------------------------
+
+System.out.println("********** Switch **********");
+
+System.out.println("1. Switch simple");
+
+int dia = 1;
+
+switch (dia) {
+    case 1:
+        System.out.println("Lunes");
+        break;
+    case 2:
+        System.out.println("Martes");
+        break;
+    case 3:
+        System.out.println("Miercoles");
+        break;
+    case 4:
+        System.out.println("Jueves");
+        break;
+    case 5:
+        System.out.println("Viernes");
+        break;
+    case 6:
+        System.out.println("Sabado");
+        break;
+    case 7:
+        System.out.println("Domingo");
+        break;
+    default:
+        System.out.println("Dia invalido");
+}
+System.out.println("");
+
+System.out.println("2. Switch que ejecuta varios casos");
+
+int dia2 = 1;
+
+switch (dia2) {
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+        System.out.println("Dia laboral");
+        break;
+    case 6:
+    case 7:
+        System.out.println("Fin de semana");
+        break;
+    default:
+        System.out.println("Dia invalido");
+}
+System.out.println("");
+
+
+// ------------------------------------------------------------
+
+System.out.println("********** Break **********");
+
+System.out.println("1. Break en while");
+
+int cs = 0;
+
+while (true) {
+    System.out.println(cs);
+    cs = cs + 1;
+    
+    if (cs == 5) {
+        break;
+    }
+}
+
+System.out.println("");
+
+System.out.println("2. Break en for");
+
+for (int i = 0; i < 5; i = i + 1) {
+    System.out.println(i);
+    
+    if (i == 2) {
+        break;
+    }
+}
+
+System.out.println("");
+
+// ------------------------------------------------------------
+
+System.out.println("********** Continue **********");
+
+System.out.println("1. Continue en while");
+
+int cs2 = 0;
+
+while (cs2 < 11) {
+    
+    if (cs2 % 2 == 0) {
+        cs2 = cs2 + 1;
+        continue;
+    }
+
+    System.out.println(cs2);
+    cs2 = cs2 + 1;
+}
+System.out.println("");
+
+System.out.println("2. Continue en for");
+
+for (int i = 0; i < 5; i = i + 1) {
+    
+    if (i == 2) {
+        continue;
+    }
+    
+    System.out.println(i);
+}
+
+System.out.println("-------------------------------------");
+
+int[] obtenerNumeros() {
+return [1, 2, 3, 4, 5];
+}
+
+System.out.println("Array de números: ", obtenerNumeros());
+
+System.out.println("-------------------------------------");
+
+int obtenerNumArr(int[] arr, int index){
+return arr[index];
+}
+
+int[] piano = {45,10,2,89,5};
+
+System.out.println(obtenerNumArr(piano, 3));

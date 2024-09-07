@@ -39,6 +39,9 @@ export class InterpreterVisitor extends BaseVisitor {
 
         this.structlist = {};
 
+        //Lista para reporte de Tabla de Simbolos
+        this.listaSimbolos = [];
+
         /**
          * @type {Expresion | null}
         */
@@ -261,6 +264,8 @@ export class InterpreterVisitor extends BaseVisitor {
 
 
         this.entornoActual.setVariable(variableType, variableName, variableValue);
+        //Agregar a la lista de simbolos, ID, Tipo símbolo, Tipo dato
+        this.listaSimbolos.push({ID: variableName, Tipo: 'Variable', TipoDato: variableType});
     }
 
 
@@ -607,7 +612,8 @@ export class InterpreterVisitor extends BaseVisitor {
         console.log(`[${valueString}]`);
         this.entornoActual.setVariable(variableType, variableName, new Literal({ value: variableValues, type: variableType }));
 
-
+        //Agregar a la lista de simbolos, ID, Tipo símbolo, Tipo dato
+        this.listaSimbolos.push({ID: variableName, Tipo: 'Array', TipoDato: variableType});
         
     }
     
@@ -850,6 +856,8 @@ export class InterpreterVisitor extends BaseVisitor {
         
     
         this.entornoActual.setVariable(variableType, variableName, new Literal({ value: variableValues, type: variableType }));
+        //Agregar a la lista de simbolos, ID, Tipo símbolo, Tipo dato
+        this.listaSimbolos.push({ID: variableName, Tipo: 'Array', TipoDato: variableType});
     }
     
 
@@ -918,7 +926,9 @@ export class InterpreterVisitor extends BaseVisitor {
         console.log(node);
         const funcion = new FuncionForanea(node, this.entornoActual);
         console.log("Función: ", funcion);
-        this.entornoActual.setVariable('int', node.id, funcion);
+        this.entornoActual.setVariable(node.type, node.id, funcion);
+        //Agregar a la lista de simbolos, ID, Tipo símbolo, Tipo dato
+        this.listaSimbolos.push({ID: node.id, Tipo: 'Función', TipoDato: node.type});
     }
 
 
@@ -995,6 +1005,8 @@ export class InterpreterVisitor extends BaseVisitor {
 
         this.entornoActual.setVariable(node.type, node.id2, new Literal({ value: generalStruct, type: node.id }));
         console.log(this.entornoActual.valores);
+        //Agregar a la lista de simbolos, ID, Tipo símbolo, Tipo dato
+        this.listaSimbolos.push({ID: node.id2, Tipo: 'Struct', TipoDato: node.id});
     }
     
 

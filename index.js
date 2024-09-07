@@ -8,9 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const textarea = document.querySelector('#editor textarea');
     const consoleOutput = document.querySelector('#salida');
     const tabsContainer = document.querySelector('.tabs');
+    const reportButton = document.querySelector('#reports');
 
     let currentTabId = 0;
     const tabs = {};
+    let symbolTable = [];
 
     // Función para ejecutar el código en la textarea
     runButton.addEventListener('click', () => {
@@ -23,12 +25,25 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const output = interpreter.salida.replace(/\n/g, '<br>'); 
             consoleOutput.innerHTML = output;
+            // Guardar la tabla de símbolos
+            if (Array.isArray(interpreter.listaSimbolos)) {
+                symbolTable = interpreter.listaSimbolos;
+            }
         } catch (e) {
             const errorMessage = `<span style="color: red;">Error: ${e.message}</span>`;
             console.error(e);
             consoleOutput.innerHTML = errorMessage;
         }
 
+    });
+
+    // Función para generar los reportes
+    reportButton.addEventListener('click', () => {
+        if (symbolTable.length > 0) {
+            openSymbolTableReport(symbolTable);
+        } else {
+            alert('No symbol table available. Please run the code first.');
+        }
     });
 
     // Función para limpiar la textarea y la consola
@@ -96,3 +111,90 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
+function generateSymbolTableHTML(symbolList) {
+    let tableHTML = `
+        <html>
+        <head>
+            <title>Symbol Table Report</title>
+            <style>
+                body {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    background-color: #f8f9fa;
+                    color: #343a40;
+                    padding: 20px;
+                    margin: 0;
+                }
+                h1 {
+                    text-align: center;
+                    color: #495057;
+                    margin-bottom: 20px;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    background-color: #fff;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                    overflow: hidden;
+                }
+                th, td {
+                    padding: 15px;
+                    text-align: left;
+                }
+                th {
+                    background-color: #007bff;
+                    color: #fff;
+                    font-weight: 600;
+                }
+                td {
+                    border-bottom: 1px solid #dee2e6;
+                    color: #495057;
+                }
+                tr:last-child td {
+                    border-bottom: none;
+                }
+                tr:nth-child(even) {
+                    background-color: #f2f2f2;
+                }
+                tr:hover {
+                    background-color: #e9ecef;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>Symbol Table Report</h1>
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Type</th>
+                    <th>Data Type</th>
+                </tr>
+    `;
+
+    symbolList.forEach(symbol => {
+        tableHTML += `
+            <tr>
+                <td>${symbol.ID}</td>
+                <td>${symbol.Tipo}</td>
+                <td>${symbol.TipoDato}</td>
+            </tr>
+        `;
+    });
+
+    tableHTML += `
+            </table>
+        </body>
+        </html>
+    `;
+
+    return tableHTML;
+}
+
+function openSymbolTableReport(symbolList) {
+    const reportHTML = generateSymbolTableHTML(symbolList);
+    const reportWindow = window.open('', '_blank');
+    reportWindow.document.write(reportHTML);
+    reportWindow.document.close();
+}
+

@@ -369,6 +369,8 @@ MultilineComment = "/*" (!"*/" .)* "*/"
 
 Types = ("int" / "float" / "string" / "char" / "bool") { return text(); }
 
-Id = !Types [a-zA-Z_][a-zA-Z0-9_]* { return text(); }
+Id = !TypesChar [a-zA-Z_][a-zA-Z0-9_]* { return text(); }
+
+TypesChar = Types ![a-zA-Z0-9_]
 
 _ = [ \t\n\r]* Comments* [ \t\n\r]*
