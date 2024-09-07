@@ -113,7 +113,7 @@ MatrixElement = MatrixValue/Operations
 
 /*---------------------Funciones----------------------*/
 
-FunctionDeclaration = type:(Types/"void") _ id:Id _ "(" _ params:Parameters? _ ")" _ block:Block { return createNode('FuncDeclaration', { type, id, params: params || [], block }) }
+FunctionDeclaration = type:((AType:Types _ "[]" { return AType+"[]" })/Types/"void") _ id:Id _ "(" _ params:Parameters? _ ")" _ block:Block { return createNode('FuncDeclaration', { type, id, params: params || [], block }) }
 
 // Aceptar tanto parámetros simples como arrays.
 Parameters = type:Types _ arrayDecl:ArrayDecl? _ id:Id _ "," _ params:Parameters { return [{ type, id, array: arrayDecl || false }, ...params]; }
