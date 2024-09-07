@@ -487,7 +487,12 @@ export class InterpreterVisitor extends BaseVisitor {
     visitReturnNode(node) {
         let valor = null
         if (node.exp) {
-            valor = node.exp.accept(this);
+            if (Array.isArray(node.exp)){
+                valor = node.exp.map(exp => exp.accept(this));
+            }else{
+                valor = node.exp.accept(this);
+            }
+            
         }
         throw new ReturnException(valor);
 
@@ -1004,6 +1009,31 @@ export class InterpreterVisitor extends BaseVisitor {
         }
 
         return atributeValue
+    }
+
+    /**
+     * @type [BaseVisitor['visitStructAssign']]
+     */
+    visitStructAssign(node) {
+
+        const structVariable = this.entornoActual.getVariable(node.id);
+        if (!structVariable) {
+            throw new Error(`Variable ${node.id} no definida`);
+        }
+
+        const atributeValue = structVariable.value.value[node.attribute];
+        if (!atributeValue) {
+            throw new Error(`Atributo ${node.attribute} no definido en el Struct ${node.id}`);
+        }
+
+        //verificar si el tipo asignado es el mismo que el del atributo
+        if (atributeValue.type !== node.assi.type) {
+            throw new Error(`El tipo de dato ${node.assi.type} no coincide con el tipo de dato del atributo ${atributeValue.type}`);
+        }
+
+        const value = node.assi.accept(this);
+        atributeValue.value = value.value;
+        return value;
     }
 
 }

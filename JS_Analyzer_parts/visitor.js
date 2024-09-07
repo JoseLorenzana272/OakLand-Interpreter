@@ -111,6 +111,9 @@
 
  * @typedef {import('./nodos').StructAccess} StructAccess
 
+
+ * @typedef {import('./nodos').StructAssign} StructAssign
+
  */
 
 
@@ -451,6 +454,15 @@ export class BaseVisitor {
      */
     visitStructAccess(node) {
         throw new Error('Metodo visitStructAccess no implementado');
+    }
+    
+
+    /**
+     * @param {StructAssign} node
+     * @returns {any}
+     */
+    visitStructAssign(node) {
+        throw new Error('Metodo visitStructAssign no implementado');
     }
     
 }

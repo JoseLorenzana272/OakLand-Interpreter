@@ -55,6 +55,18 @@ export class FuncionForanea extends Summonable {
                     return;
                 }
 
+                if(Array.isArray(error.value)){
+                    if(this.nodo.type.includes('[]')){
+                        this.nodo.type = this.nodo.type.replace('[]', '');
+                        error.value.forEach(element => {
+                            if(element.type !== this.nodo.type){
+                                throw new Error(`El tipo de retorno no coincide con el tipo de la función ${this.nodo.type}`);
+                            }
+                        });
+                        return error.value;
+                    }
+                }
+
                 if(error.value.type === this.nodo.type){
                     return error.value
                 }else{

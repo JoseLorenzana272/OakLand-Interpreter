@@ -694,6 +694,32 @@ const configuracionNodos = [
                 description: 'Identifier of the struct'
             }
         ]
+    },
+    {
+        name: 'StructAssign',
+        extends: 'Expresion',
+        props: [
+            {
+                name: 'id',
+                type: 'string',
+                description: 'Identifier of the struct'
+            },
+            {
+                name: 'attribute',
+                type: 'string',
+                description: 'Attribute of the struct'
+            },
+            {
+                name: 'op',
+                type: 'string',
+                description: 'Operator of the assignment'
+            },
+            {
+                name: 'assi',
+                type: 'Expresion',
+                description: 'Expression to assign'
+            }
+        ]
     }
 ]
 

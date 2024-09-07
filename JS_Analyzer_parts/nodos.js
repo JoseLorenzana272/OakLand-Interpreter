@@ -1353,4 +1353,53 @@ export class StructAccess  {
     }
 }
     
-export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, ReturnNode, SwitchNode, VectorDeclaration, CallNode, ArrayAccess, IndexOf, Join, Length, VectorAssign, MatrixDeclaration, MatrixAccess, MatrixAssign, FuncDeclaration, ForEach, StructNode, StructInstance, StructAccess }
+export class StructAssign  {
+
+    /**
+    * @param {Object} options
+    * @param {string} options.id Identifier of the struct
+ * @param {string} options.attribute Attribute of the struct
+ * @param {string} options.op Operator of the assignment
+ * @param {Expresion} options.assi Expression to assign
+    */
+    constructor({ id, attribute, op, assi }) {
+        
+        
+        /**
+         * Identifier of the struct
+         * @type {string}
+        */
+        this.id = id;
+
+
+        /**
+         * Attribute of the struct
+         * @type {string}
+        */
+        this.attribute = attribute;
+
+
+        /**
+         * Operator of the assignment
+         * @type {string}
+        */
+        this.op = op;
+
+
+        /**
+         * Expression to assign
+         * @type {Expresion}
+        */
+        this.assi = assi;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitStructAssign(this);
+    }
+}
+    
+export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, ReturnNode, SwitchNode, VectorDeclaration, CallNode, ArrayAccess, IndexOf, Join, Length, VectorAssign, MatrixDeclaration, MatrixAccess, MatrixAssign, FuncDeclaration, ForEach, StructNode, StructInstance, StructAccess, StructAssign }
