@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Función para ejecutar el código en la textarea
     runButton.addEventListener('click', () => {
+        try{
             const expresions = parse(textarea.value);
             console.log(expresions);
             const interpreter = new InterpreterVisitor();
@@ -21,7 +22,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = exp.accept(interpreter);
             });
             const output = interpreter.salida.replace(/\n/g, '<br>'); 
-        consoleOutput.innerHTML = output;
+            consoleOutput.innerHTML = output;
+        } catch (e) {
+            const errorMessage = `<span style="color: red;">Error: ${e.message}</span>`;
+            console.error(e);
+            consoleOutput.innerHTML = errorMessage;
+        }
 
     });
 

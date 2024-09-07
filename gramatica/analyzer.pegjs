@@ -113,7 +113,7 @@ MatrixElement = MatrixValue/Operations
 
 /*---------------------Funciones----------------------*/
 
-FunctionDeclaration = type:((AType:Types _ "[]" { return AType+"[]" })/Types/"void") _ id:Id _ "(" _ params:Parameters? _ ")" _ block:Block { return createNode('FuncDeclaration', { type, id, params: params || [], block }) }
+FunctionDeclaration = type:(Types/"void") _ id:Id _ "(" _ params:Parameters? _ ")" _ block:Block { return createNode('FuncDeclaration', { type, id, params: params || [], block }) }
 
 // Aceptar tanto parámetros simples como arrays.
 Parameters = type:Types _ arrayDecl:ArrayDecl? _ id:Id _ "," _ params:Parameters { return [{ type, id, array: arrayDecl || false }, ...params]; }
@@ -128,7 +128,7 @@ Structs = "struct" _ id:Id _ "{" _ fields:StructFields* _ "}" _ ";" { return cre
 
 StructFields = type:Types _ id:Id _ ";" _ { return { type, id } }
 
-StructInstance = id:Id _ id2:Id _ "=" _ IdStruct:Id _ "{" _ values:StructValues* _ "}" _ ";" { return createNode('StructInstance', { id, id2, IdStruct, values }) }
+StructInstance = id:(Id/"var") _ id2:Id _ "=" _ IdStruct:Id _ "{" _ values:StructValues* _ "}" _ ";" { return createNode('StructInstance', { id, id2, IdStruct, values }) }
 
 StructValues = name:Id _ ":" _ value:Operations _ ","? _ { return { name, value}; }
 
@@ -315,7 +315,7 @@ Arguments = arg:Operations _ args:("," _ exp:Operations { return exp })* { retur
 /*----------- Tipos de datos ---------------------------- */
 
 DataType = "(" _ exp:Operations _ ")" {return createNode('Grouping', { exp })}
-            /dato:AccessStruct { return dato; }
+            
             /dato:Number { return dato; }
             /dato:Boolean { return dato; }
             /dato:String { return dato; }
@@ -325,6 +325,7 @@ DataType = "(" _ exp:Operations _ ")" {return createNode('Grouping', { exp })}
             /dato:IndexOf { return dato; }
             /dato:Join { return dato; }
             /dato:Length { return dato; }
+            /dato:AccessStruct { return dato; }
             /Null
             /id:Id { return createNode('VariableValue', { id }) }
 
@@ -368,6 +369,6 @@ MultilineComment = "/*" (!"*/" .)* "*/"
 
 Types = ("int" / "float" / "string" / "char" / "bool") { return text(); }
 
-Id = [a-zA-Z_][a-zA-Z0-9_]* { return text(); }
+Id = !Types [a-zA-Z_][a-zA-Z0-9_]* { return text(); }
 
 _ = [ \t\n\r]* Comments* [ \t\n\r]*

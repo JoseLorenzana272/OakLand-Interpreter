@@ -219,36 +219,31 @@ export class InterpreterVisitor extends BaseVisitor {
         switch (variableType) {
             case 'int':
                 if (typeof variableValue.value !== 'number' || !Number.isInteger(variableValue.value)) {
-                    console.error(`An ${variableType} was expected, but received: `, typeof variableValue.value);
-                    return new Literal({ value: variableValue.value, type: null });
+                    throw new Error(`An ${variableType} was expected, but received:  ${typeof variableValue.value}`);
                 }
                 break;
 
             case 'float':
                 if (typeof variableValue.value !== 'number') {
-                    console.error(`An ${variableType} was expected, but received: `, typeof variableValue.value);
-                    return new Literal({ value: variableValue.value, type: null });
+                    throw new Error(`An ${variableType} was expected, but received:  ${typeof variableValue.value}`);
                 }
                 break;
 
             case 'bool':
                 if (typeof variableValue.value !== 'boolean') {
-                    console.error(`An ${variableType} was expected, but received: `, typeof variableValue.value);
-                    return new Literal({ value: variableValue.value, type: null });
+                    throw new Error(`An ${variableType} was expected, but received:  ${typeof variableValue.value}`);
                 }
                 break;
 
             case 'string':
                 if (typeof variableValue.value !== 'string') {
-                    console.error(`An ${variableType} was expected, but received: `, typeof variableValue.value);
-                    return new Literal({ value: variableValue.value, type: null });
+                    throw new Error(`An ${variableType} was expected, but received:  ${typeof variableValue.value}`);
                 }
                 break;
 
             case 'char':
                 if (typeof variableValue.value !== 'string' || variableValue.value.length !== 1) {
-                    console.error(`An ${variableType} was expected, but received: `, typeof variableValue.value);
-                    return new Literal({ value: variableValue.value, type: null });
+                    throw new Error(`An ${variableType} was expected, but received:  ${typeof variableValue.value}`);
                 }
                 break;
             case 'var':
@@ -303,6 +298,12 @@ export class InterpreterVisitor extends BaseVisitor {
         }
     
         const currentValue = this.entornoActual.getVariable(node.id).value;
+
+        //Verificar tipos
+
+        if (currentValue.type !== value.type) {
+            throw new Error(`El tipo de dato ${value.type} no coincide con el tipo de dato de la variable ${currentValue.type}`);
+        }
     
         const asignments = {
             '=': () => {
@@ -572,27 +573,27 @@ export class InterpreterVisitor extends BaseVisitor {
         switch(variableType){
             case 'int':
                 if (variableValues.some(value => typeof value.value !== 'number' || !Number.isInteger(value.value))) {
-                    throw new Error(`An ${variableType} was expected, but received: `, variableValues);
+                    throw new Error(`An ${variableType} value was expected, but received another type`);
                 }
                 break;
             case 'float':
                 if (variableValues.some(value => typeof value.value !== 'number')) {
-                    throw new Error(`An ${variableType} was expected, but received: `, variableValues);
+                    throw new Error(`An ${variableType} value was expected, but received another type`);
                 }
                 break;
             case 'bool':
                 if (variableValues.some(value => typeof value.value !== 'boolean')) {
-                    throw new Error(`An ${variableType} was expected, but received: `, variableValues);
+                    throw new Error(`An ${variableType} value was expected, but received another type`);
                 }
                 break;
             case 'string':
                 if (variableValues.some(value => typeof value.value !== 'string')) {
-                    throw new Error(`An ${variableType} was expected, but received: `, variableValues);
+                    throw new Error(`An ${variableType} value was expected, but received another type`);
                 }
                 break;
             case 'char':
                 if (variableValues.some(value => typeof value.value !== 'string' || value.value.length !== 1)) {
-                    throw new Error(`An ${variableType} was expected, but received: `, variableValues);
+                    throw new Error(`An ${variableType} value was expected, but received another type`);
                 }
                 break;
             default:
@@ -964,11 +965,15 @@ export class InterpreterVisitor extends BaseVisitor {
      */
     visitStructInstance(node) {
         console.log(node);
-        const structValues = this.structlist[node.id];
-        if (node.id !== node.IdStruct) {
-            throw new Error(`No se encontró el Struct ${node.id}`);
-        }
+        const structValues = this.structlist[node.IdStruct];
 
+        if (node.id !== "var"){
+            const structVariable = this.structlist[node.id];
+            if (!structVariable) {
+                throw new Error(`Struct ${node.id} no definido`);
+            }
+        }
+        
         const generalStruct = {};
 
         structValues.forEach(value => {
