@@ -37,6 +37,7 @@ export class InterpreterVisitor extends BaseVisitor {
 
         this.salida = '';
 
+        this.structlist = {};
 
         /**
          * @type {Expresion | null}
@@ -942,7 +943,68 @@ export class InterpreterVisitor extends BaseVisitor {
         this.entornoActual = previousScope;
     }
 
+    /**
+     * @type [BaseVisitor['visitStructNode']]
+     */
+    visitStructNode(node) {
+        console.log(node);
+        const structName = node.id;
+        const structFields = node.fields;
+        this.structlist[structName] = structFields;
+        
+    }
+
+    /**
+     * @type [BaseVisitor['visitStructInstance']]
+     */
+    visitStructInstance(node) {
+        console.log(node);
+        const structValues = this.structlist[node.id];
+        if (node.id !== node.IdStruct) {
+            throw new Error(`No se encontró el Struct ${node.id}`);
+        }
+
+        const generalStruct = {};
+
+        structValues.forEach(value => {
+            const defaulValue = typeMaps[value.type];
+            generalStruct[value.id] = new Literal({ value: defaulValue, type: value.type });
+        });
+
+        //Asignar valores a las variables del struct
+
+        node.values.forEach(value => {
+            const structVal = value.value.accept(this);
+            if (generalStruct.hasOwnProperty(value.name)) {
+                generalStruct[value.name] = structVal;
+            }else{
+                throw new Error(`No se encontró el atributo ${value.id} en el Struct ${node.id}`);
+            }
+            
+        });
+
+        this.entornoActual.setVariable(node.type, node.id2, new Literal({ value: generalStruct, type: node.id }));
+        console.log(this.entornoActual.valores);
+    }
     
+
+    /**
+     * @type [BaseVisitor['visitStructInstance']]
+     */
+    visitStructAccess(node) {
+        console.log(node);
+        const structVariable = this.entornoActual.getVariable(node.id);
+        console.log("HOLA ", structVariable);
+        if (!structVariable) {
+            throw new Error(`Variable ${node.id} no definida`);
+        }
+        const atributeValue = structVariable.value.value[node.id2];
+        if (!atributeValue) {
+            throw new Error(`Atributo ${node.id2} no definido en el Struct ${node.id}`);
+        }
+
+        return atributeValue
+    }
 
 }
 

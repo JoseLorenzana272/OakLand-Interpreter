@@ -47,6 +47,14 @@ export class FuncionForanea extends Summonable {
             interprete.entornoActual = entornoAntesDeLaLlamada;
 
             if (error instanceof ReturnException) {
+
+                if(this.nodo.type === 'void'){
+                    if (error.value !== null) {
+                        throw new Error(`La función ${this.nodo.type} no puede retornar valores`);
+                    }
+                    return;
+                }
+
                 if(error.value.type === this.nodo.type){
                     return error.value
                 }else{

@@ -34,7 +34,10 @@
       'MatrixAccess': nodos.MatrixAccess,
       'MatrixAssign': nodos.MatrixAssign,
       'FuncDeclaration': nodos.FuncDeclaration,
-      'ForEach': nodos.ForEach
+      'ForEach': nodos.ForEach,
+      'StructNode': nodos.StructNode,
+      'StructInstance': nodos.StructInstance,
+      'StructAccess': nodos.StructAccess
     }
 
     const node = new type[typeNode](props);
@@ -44,13 +47,14 @@
 
 Program = _ statements:Statements* _ { return statements; }
 
-Statements = Statement
+Statements = Structs 
+             /Statement
 
 Statement =  _ vard:VariableDeclaration _ { return vard; }
             /_ fund:FunctionDeclaration _ { return fund; }
             /_ vecd:VectorDeclaration _ { return vecd; }
             /_ matd:MatrixDeclaration _ { return matd; }
-            
+            /_ inS:StructInstance _ { return inS; }
             /_ s:Sentence _ { return s; } 
 
 /*---------------------Declaracion de variables----------------------*/
@@ -116,6 +120,17 @@ Parameters = type:Types _ arrayDecl:ArrayDecl? _ id:Id _ "," _ params:Parameters
 
 // Declaración de arrays en parámetros
 ArrayDecl = "[" _ "]" { return true; }
+
+/*---------------------Structs----------------------*/
+
+Structs = "struct" _ id:Id _ "{" _ fields:StructFields* _ "}" _ ";" { return createNode('StructNode', { id, fields }) }
+
+StructFields = type:Types _ id:Id _ ";" _ { return { type, id } }
+
+StructInstance = id:Id _ id2:Id _ "=" _ IdStruct:Id _ "{" _ values:StructValues* _ "}" _ ";" { return createNode('StructInstance', { id, id2, IdStruct, values }) }
+
+StructValues = name:Id _ ":" _ value:Operations _ ","? _ { return { name, value}; }
+
 
 /*-------------------------------------------------------------------*/
 
@@ -299,6 +314,7 @@ Arguments = arg:Operations _ args:("," _ exp:Operations { return exp })* { retur
 /*----------- Tipos de datos ---------------------------- */
 
 DataType = "(" _ exp:Operations _ ")" {return createNode('Grouping', { exp })}
+            /dato:AccessStruct { return dato; }
             /dato:Number { return dato; }
             /dato:Boolean { return dato; }
             /dato:String { return dato; }
@@ -338,6 +354,8 @@ Char = "'" [^']* "'" { return createNode('Literal', {value: text().slice(1,-1), 
 
 Null = 'null' { return createNode('Literal', {value: null, type: 'null'}); }
 
+AccessStruct = id:Id "." id2:Id { return createNode('StructAccess', { id, id2 }) }
+
 /*----------------------------------------------------- */
 /* ----------------- Comentarios ---------------------------- */
 Comments = SimpleComment / MultilineComment
@@ -350,6 +368,5 @@ MultilineComment = "/*" (!"*/" .)* "*/"
 Types = ("int" / "float" / "string" / "char" / "bool") { return text(); }
 
 Id = [a-zA-Z_][a-zA-Z0-9_]* { return text(); }
-
 
 _ = [ \t\n\r]* Comments* [ \t\n\r]*

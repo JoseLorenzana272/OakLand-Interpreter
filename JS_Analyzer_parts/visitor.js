@@ -102,6 +102,15 @@
 
  * @typedef {import('./nodos').ForEach} ForEach
 
+
+ * @typedef {import('./nodos').StructNode} StructNode
+
+
+ * @typedef {import('./nodos').StructInstance} StructInstance
+
+
+ * @typedef {import('./nodos').StructAccess} StructAccess
+
  */
 
 
@@ -415,6 +424,33 @@ export class BaseVisitor {
      */
     visitForEach(node) {
         throw new Error('Metodo visitForEach no implementado');
+    }
+    
+
+    /**
+     * @param {StructNode} node
+     * @returns {any}
+     */
+    visitStructNode(node) {
+        throw new Error('Metodo visitStructNode no implementado');
+    }
+    
+
+    /**
+     * @param {StructInstance} node
+     * @returns {any}
+     */
+    visitStructInstance(node) {
+        throw new Error('Metodo visitStructInstance no implementado');
+    }
+    
+
+    /**
+     * @param {StructAccess} node
+     * @returns {any}
+     */
+    visitStructAccess(node) {
+        throw new Error('Metodo visitStructAccess no implementado');
     }
     
 }

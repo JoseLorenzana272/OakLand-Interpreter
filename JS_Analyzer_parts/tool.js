@@ -635,6 +635,65 @@ const configuracionNodos = [
                 description: 'Body of the for each'
             }
         ]
+    },
+    {
+        name: 'StructNode',
+        extends: 'Expresion',
+        props: [
+            {
+                name: 'id',
+                type: 'string',
+                description: 'Identifier of the struct'
+            },
+            {
+                name: 'fields',
+                type: 'Expresion[]',
+                description: 'Fields of the struct'
+            }
+        ]
+    },
+    {
+        name: 'StructInstance',
+        extends: 'Expresion',
+        props: [
+            {
+                name: 'id',
+                type: 'string',
+                description: 'Identifier of the struct'
+            },
+            {
+                name: 'id2',
+                type: 'string',
+                description: 'Identifier of the struct'
+            },
+            {
+                name: 'IdStruct',
+                type: 'string',
+                description: 'Identifier of the struct'
+            },
+            {
+                name: 'values',
+                type: 'Expresion[]',
+                description: 'Values of the struct'
+            }
+
+        ]
+    },
+    {
+        name: 'StructAccess',
+        extends: 'Expresion',
+        props: [
+            {
+                name: 'id',
+                type: 'string',
+                description: 'Identifier of the struct'
+            },
+            {
+                name: 'id2',
+                type: 'string',
+                description: 'Identifier of the struct'
+            }
+        ]
     }
 ]
 

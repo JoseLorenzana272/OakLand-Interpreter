@@ -1238,4 +1238,119 @@ export class ForEach  {
     }
 }
     
-export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, ReturnNode, SwitchNode, VectorDeclaration, CallNode, ArrayAccess, IndexOf, Join, Length, VectorAssign, MatrixDeclaration, MatrixAccess, MatrixAssign, FuncDeclaration, ForEach }
+export class StructNode  {
+
+    /**
+    * @param {Object} options
+    * @param {string} options.id Identifier of the struct
+ * @param {Expresion[]} options.fields Fields of the struct
+    */
+    constructor({ id, fields }) {
+        
+        
+        /**
+         * Identifier of the struct
+         * @type {string}
+        */
+        this.id = id;
+
+
+        /**
+         * Fields of the struct
+         * @type {Expresion[]}
+        */
+        this.fields = fields;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitStructNode(this);
+    }
+}
+    
+export class StructInstance  {
+
+    /**
+    * @param {Object} options
+    * @param {string} options.id Identifier of the struct
+ * @param {string} options.id2 Identifier of the struct
+ * @param {string} options.IdStruct Identifier of the struct
+ * @param {Expresion[]} options.values Values of the struct
+    */
+    constructor({ id, id2, IdStruct, values }) {
+        
+        
+        /**
+         * Identifier of the struct
+         * @type {string}
+        */
+        this.id = id;
+
+
+        /**
+         * Identifier of the struct
+         * @type {string}
+        */
+        this.id2 = id2;
+
+
+        /**
+         * Identifier of the struct
+         * @type {string}
+        */
+        this.IdStruct = IdStruct;
+
+
+        /**
+         * Values of the struct
+         * @type {Expresion[]}
+        */
+        this.values = values;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitStructInstance(this);
+    }
+}
+    
+export class StructAccess  {
+
+    /**
+    * @param {Object} options
+    * @param {string} options.id Identifier of the struct
+ * @param {string} options.id2 Identifier of the struct
+    */
+    constructor({ id, id2 }) {
+        
+        
+        /**
+         * Identifier of the struct
+         * @type {string}
+        */
+        this.id = id;
+
+
+        /**
+         * Identifier of the struct
+         * @type {string}
+        */
+        this.id2 = id2;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitStructAccess(this);
+    }
+}
+    
+export default { Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, ReturnNode, SwitchNode, VectorDeclaration, CallNode, ArrayAccess, IndexOf, Join, Length, VectorAssign, MatrixDeclaration, MatrixAccess, MatrixAssign, FuncDeclaration, ForEach, StructNode, StructInstance, StructAccess }
