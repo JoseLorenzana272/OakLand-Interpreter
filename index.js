@@ -13,10 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentTabId = 0;
     const tabs = {};
     let symbolTable = [];
+    let errorList = [];
 
     // Función para ejecutar el código en la textarea
     runButton.addEventListener('click', () => {
         consoleOutput.innerHTML = ''; // Limpiar la consola antes de ejecutar
+        errorList = []; // Limpiar la lista de errores antes de ejecutar
         const interpreter = new InterpreterVisitor();
         try {
             const expresions = parse(textarea.value);
@@ -29,6 +31,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     const errorMessage = `<span style="color: red;">Error in expression: ${e.message}</span>`;
                     console.error(e);
                     consoleOutput.innerHTML += `${errorMessage}<br>`;
+                    errorList.push(e);
+                    // Generar reporte de errores
+                    openErrorReport(errorList);
                 }
             });
     
@@ -44,6 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const errorMessage = `<span style="color: red;">Error: ${e.message}</span>`;
             console.error(e);
             consoleOutput.innerHTML += errorMessage;
+            errorList.push(e);
+            // Generar reporte de errores
+            openErrorReport(errorList);
         }
     });
     
@@ -52,10 +60,9 @@ document.addEventListener('DOMContentLoaded', () => {
     reportButton.addEventListener('click', () => {
         if (symbolTable.length > 0) {
             openSymbolTableReport(symbolTable);
-        } else {
-            alert('No symbol table available. Please run the code first.');
         }
     });
+    
 
     // Función para limpiar la textarea y la consola
     clearButton.addEventListener('click', () => {
@@ -213,3 +220,86 @@ function openSymbolTableReport(symbolList) {
     reportWindow.document.close();
 }
 
+function generateErrorReportHTML(errorList) {
+    let tableHTML = `
+        <html>
+        <head>
+            <title>Error Report</title>
+            <style>
+                body {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    background-color: #f8f9fa;
+                    color: #343a40;
+                    padding: 20px;
+                    margin: 0;
+                }
+                h1 {
+                    text-align: center;
+                    color: #495057;
+                    margin-bottom: 20px;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    background-color: #fff;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                    overflow: hidden;
+                }
+                th, td {
+                    padding: 15px;
+                    text-align: left;
+                }
+                th {
+                    background-color: #dc3545;
+                    color: #fff;
+                    font-weight: 600;
+                }
+                td {
+                    border-bottom: 1px solid #dee2e6;
+                    color: #495057;
+                }
+                tr:last-child td {
+                    border-bottom: none;
+                }
+                tr:nth-child(even) {
+                    background-color: #f2f2f2;
+                }
+                tr:hover {
+                    background-color: #e9ecef;
+                }
+            </style>
+        </head>
+        <body>
+            <h1>Error Report</h1>
+            <table>
+                <tr>
+                    <th>Error Message</th>
+                    <th>Type</th>
+                </tr>
+    `;
+
+    errorList.forEach(error => {
+        tableHTML += `
+            <tr>
+                <td>${error.message}</td>
+                <td>${error.type || 'Syntax error'}</td>
+            </tr>
+        `;
+    });
+
+    tableHTML += `
+            </table>
+        </body>
+        </html>
+    `;
+
+    return tableHTML;
+}
+
+function openErrorReport(errorList) {
+    const reportHTML = generateErrorReportHTML(errorList);
+    const reportWindow = window.open('', '_blank');
+    reportWindow.document.write(reportHTML);
+    reportWindow.document.close();
+}

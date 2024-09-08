@@ -222,34 +222,65 @@ export class InterpreterVisitor extends BaseVisitor {
         switch (variableType) {
             case 'int':
                 if (typeof variableValue.value !== 'number' || !Number.isInteger(variableValue.value)) {
+                    this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
                     throw new Error(`An ${variableType} was expected, but received:  ${typeof variableValue.value}`);
                 }
                 break;
 
             case 'float':
                 if (typeof variableValue.value !== 'number') {
+                    this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
                     throw new Error(`An ${variableType} was expected, but received:  ${typeof variableValue.value}`);
                 }
                 break;
 
             case 'bool':
                 if (typeof variableValue.value !== 'boolean') {
+                    this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
                     throw new Error(`An ${variableType} was expected, but received:  ${typeof variableValue.value}`);
                 }
                 break;
 
             case 'string':
                 if (typeof variableValue.value !== 'string') {
+                    this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
                     throw new Error(`An ${variableType} was expected, but received:  ${typeof variableValue.value}`);
                 }
                 break;
 
             case 'char':
                 if (typeof variableValue.value !== 'string' || variableValue.value.length !== 1) {
+                    this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
                     throw new Error(`An ${variableType} was expected, but received:  ${typeof variableValue.value}`);
                 }
                 break;
             case 'var':
+
+                const typeMapping = {
+                    'int': 'number',
+                    'float': 'number',
+                    'string': 'string',
+                    'char': 'string',
+                    'bool': 'boolean'
+                };
+
+                const expectedType = typeMapping[variableValue.type];
+                const actualType = typeof variableValue.value;
+
+                if (actualType !== expectedType) {
+                    this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
+                    throw Error(`An ${variableValue.type} was expected, but received: ${actualType}`);
+                }
+
+                // Validación específica para int y float
+                if (variableValue.type === 'int' && !Number.isInteger(variableValue.value)) {
+                    throw new Error(`An int was expected, but received a float: ${variableValue.value}`);
+                }
+
+                if (variableValue.type === 'float' && Number.isInteger(variableValue.value)) {
+                    throw new Error(`A float was expected, but received an int: ${variableValue.value}`);
+                }
+
                 break;
 
             default:
@@ -307,7 +338,8 @@ export class InterpreterVisitor extends BaseVisitor {
         //Verificar tipos
 
         if (currentValue.type !== value.type) {
-            throw new Error(`El tipo de dato ${value.type} no coincide con el tipo de dato de la variable ${currentValue.type}`);
+            this.entornoActual.assignVariable(node.id, 'null');
+            throw new Error(`Se esperaba un valor de tipo ${currentValue.type}, pero se recibió un valor de tipo ${value.type}`);
         }
     
         const asignments = {
