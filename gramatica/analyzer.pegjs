@@ -125,13 +125,15 @@ ArrayDecl = "[" _ "]" { return true; }
 
 /*---------------------Structs----------------------*/
 
-Structs = "struct" _ id:Id _ "{" _ fields:StructFields* _ "}" _ ";" { return createNode('StructNode', { id, fields }) }
+Structs = "struct" _ id:Id _ "{" _ fields:StructFields* _ "}" _ ";" _ { return createNode('StructNode', { id, fields }) }
 
-StructFields = type:Types _ id:Id _ ";" _ { return { type, id } }
+StructFields = type:(Types/Id) _ id:Id _ ";" _ { return { type, id } }
 
 StructInstance = id:(Id/"var") _ id2:Id _ "=" _ IdStruct:Id _ "{" _ values:StructValues* _ "}" _ ";" { return createNode('StructInstance', { id, id2, IdStruct, values }) }
 
-StructValues = name:Id _ ":" _ value:Operations _ ","? _ { return { name, value}; }
+instanceS = IdStruct:Id _ "{" _ values:StructValues* _ "}" _ { return createNode('StructInstance', { id:null, IdStruct, values }) }
+
+StructValues = name:Id _ ":" _ value:(instanceS/Operations) _ ","? _ { return { name, value}; }
 
 
 /*-------------------------------------------------------------------*/
@@ -357,7 +359,11 @@ Char = "'" [^']* "'" { return createNode('Literal', {value: text().slice(1,-1), 
 
 Null = 'null' { return createNode('Literal', {value: null, type: 'null'}); }
 
-AccessStruct = id:Id "." id2:Id { return createNode('StructAccess', { id, id2 }) }
+//Aceptar por ejemplo variable.algo.algo2....
+AccessStruct = id:Id "." id2:RecursiveAttributes { return createNode('StructAccess', { id, id2 }) }
+
+RecursiveAttributes
+    = head:Id tail:("." Id)* { return [head, ...tail.map(([_, id]) => id)] }
 
 /*----------------------------------------------------- */
 /* ----------------- Comentarios ---------------------------- */

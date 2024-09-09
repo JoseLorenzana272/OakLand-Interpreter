@@ -1003,6 +1003,9 @@ export class InterpreterVisitor extends BaseVisitor {
         const structName = node.id;
         const structFields = node.fields;
         this.structlist[structName] = structFields;
+
+        //Agregar a la lista de simbolos, ID, Tipo símbolo, Tipo dato
+        this.listaSimbolos.push({ID: structName, Tipo: 'Struct', TipoDato: 'Struct', Row: node.location.end.line, Column: node.location.end.column});
         
     }
 
@@ -1012,37 +1015,36 @@ export class InterpreterVisitor extends BaseVisitor {
     visitStructInstance(node) {
         console.log(node);
         const structValues = this.structlist[node.IdStruct];
-
-        if (node.id !== "var"){
-            const structVariable = this.structlist[node.id];
-            if (!structVariable) {
-                throw new Error(`Struct ${node.id} no definido`);
-            }
-        }
-        
         const generalStruct = {};
-
+        
+        // Crear el struct con valores por defecto
         structValues.forEach(value => {
             const defaulValue = typeMaps[value.type];
             generalStruct[value.id] = new Literal({ value: defaulValue, type: value.type });
         });
-
-        //Asignar valores a las variables del struct
-
+    
+        // Asignar los valores proporcionados en la instancia del struct
         node.values.forEach(value => {
             const structVal = value.value.accept(this);
-            if (generalStruct.hasOwnProperty(value.name)) {
-                generalStruct[value.name] = structVal;
-            }else{
-                throw new Error(`No se encontró el atributo ${value.id} en el Struct ${node.id}`);
-            }
             
+            if (generalStruct.hasOwnProperty(value.name)) {
+                if (structVal.type in this.structlist) {
+                    // Si el valor es otro struct, necesitamos copiar sus valores
+                    generalStruct[value.name] = structVal;
+                } else {
+                    generalStruct[value.name] = structVal;
+                }
+            } else {
+                throw new Error(`No se encontró el atributo ${value.name} en el Struct ${node.IdStruct}`);
+            }
         });
-
-        this.entornoActual.setVariable(node.type, node.id2, new Literal({ value: generalStruct, type: node.id }));
-        console.log(this.entornoActual.valores);
-        //Agregar a la lista de simbolos, ID, Tipo símbolo, Tipo dato, Row, Column
-        this.listaSimbolos.push({ID: node.id2, Tipo: 'Struct', TipoDato: node.id, Row: node.location.end.line, Column: node.location.end.column});
+    
+        if (node.id !== null) {
+            this.entornoActual.setVariable(node.type, node.id2, new Literal({ value: generalStruct, type: node.IdStruct }));
+            this.listaSimbolos.push({ID: node.id2, Tipo: 'Struct', TipoDato: node.IdStruct, Row: node.location.end.line, Column: node.location.end.column});
+        } else {
+            return new Literal({ value: generalStruct, type: node.IdStruct });
+        }
     }
     
 
@@ -1052,16 +1054,22 @@ export class InterpreterVisitor extends BaseVisitor {
     visitStructAccess(node) {
         console.log(node);
         const structVariable = this.entornoActual.getVariable(node.id);
+
         console.log("HOLA ", structVariable);
+
         if (!structVariable) {
             throw new Error(`Variable ${node.id} no definida`);
         }
-        const atributeValue = structVariable.value.value[node.id2];
-        if (!atributeValue) {
-            throw new Error(`Atributo ${node.id2} no definido en el Struct ${node.id}`);
-        }
 
-        return atributeValue
+        let current = structVariable.value.value;
+        node.id2.forEach(id => {
+            if (!current.hasOwnProperty(id)) {
+                throw new Error(`Atributo ${id} no definido en el Struct ${node.id}`);
+            }
+            current = current[id].value;
+        } );
+
+        return current;
     }
 
     /**

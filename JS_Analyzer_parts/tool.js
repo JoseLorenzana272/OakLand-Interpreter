@@ -703,7 +703,7 @@ const configuracionNodos = [
             },
             {
                 name: 'id2',
-                type: 'string',
+                type: 'string[]',
                 description: 'Identifier of the struct'
             }
         ]
