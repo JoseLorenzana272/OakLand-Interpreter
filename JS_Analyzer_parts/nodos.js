@@ -1383,7 +1383,7 @@ export class StructAssign extends Expresion {
     /**
     * @param {Object} options
     * @param {string} options.id Identifier of the struct
- * @param {string} options.attribute Attribute of the struct
+ * @param {string[]} options.attribute Attribute of the struct
  * @param {string} options.op Operator of the assignment
  * @param {Expresion} options.assi Expression to assign
     */
@@ -1399,7 +1399,7 @@ export class StructAssign extends Expresion {
 
         /**
          * Attribute of the struct
-         * @type {string}
+         * @type {string[]}
         */
         this.attribute = attribute;
 
@@ -1427,4 +1427,29 @@ export class StructAssign extends Expresion {
     }
 }
     
-export default { Expresion, Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, ReturnNode, SwitchNode, VectorDeclaration, CallNode, ArrayAccess, IndexOf, Join, Length, VectorAssign, MatrixDeclaration, MatrixAccess, MatrixAssign, FuncDeclaration, ForEach, StructNode, StructInstance, StructAccess, StructAssign }
+export class ObjectKeys extends Expresion {
+
+    /**
+    * @param {Object} options
+    * @param {Expresion} options.exp Expression to get the keys
+    */
+    constructor({ exp }) {
+        super();
+        
+        /**
+         * Expression to get the keys
+         * @type {Expresion}
+        */
+        this.exp = exp;
+
+    }
+
+    /**
+     * @param {BaseVisitor} visitor
+     */
+    accept(visitor) {
+        return visitor.visitObjectKeys(this);
+    }
+}
+    
+export default { Expresion, Literal, Print, Arithmetic, Grouping, Relational, Igualation, Logical, Unario, VariableValue, VariableDeclaration, Block, OpSentence, VariableAssign, TernaryOp, IfNode, WhileNode, IncrementDecrement, ForLoop, BreakNode, ContinueNode, ReturnNode, SwitchNode, VectorDeclaration, CallNode, ArrayAccess, IndexOf, Join, Length, VectorAssign, MatrixDeclaration, MatrixAccess, MatrixAssign, FuncDeclaration, ForEach, StructNode, StructInstance, StructAccess, StructAssign, ObjectKeys }

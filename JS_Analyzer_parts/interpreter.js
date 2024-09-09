@@ -614,26 +614,31 @@ export class InterpreterVisitor extends BaseVisitor {
         switch(variableType){
             case 'int':
                 if (variableValues.some(value => typeof value.value !== 'number' || !Number.isInteger(value.value))) {
+                    this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
                     throw new Error(`An ${variableType} value was expected, but received another type`);
                 }
                 break;
             case 'float':
                 if (variableValues.some(value => typeof value.value !== 'number')) {
+                    this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
                     throw new Error(`An ${variableType} value was expected, but received another type`);
                 }
                 break;
             case 'bool':
                 if (variableValues.some(value => typeof value.value !== 'boolean')) {
+                    this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
                     throw new Error(`An ${variableType} value was expected, but received another type`);
                 }
                 break;
             case 'string':
                 if (variableValues.some(value => typeof value.value !== 'string')) {
+                    this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
                     throw new Error(`An ${variableType} value was expected, but received another type`);
                 }
                 break;
             case 'char':
                 if (variableValues.some(value => typeof value.value !== 'string' || value.value.length !== 1)) {
+                    this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
                     throw new Error(`An ${variableType} value was expected, but received another type`);
                 }
                 break;
@@ -984,6 +989,11 @@ export class InterpreterVisitor extends BaseVisitor {
 
         const previousScope = this.entornoActual;
 
+        //Verificación de que si el tipo de id es igual al tipo de dato del array
+        if (node.type !== arrayVariable.type) {
+            throw new Error(`El tipo de dato del array ${node.id2} no coincide con el tipo de dato de la variable ${node.id}`);
+        }
+
         variableValues.forEach(value => {
             this.entornoActual = new Entorno(previousScope);
 
@@ -1069,33 +1079,57 @@ export class InterpreterVisitor extends BaseVisitor {
             current = current[id].value;
         } );
 
-        return current;
+        return new Literal({ value: current, type: structVariable.type });
     }
 
     /**
      * @type [BaseVisitor['visitStructAssign']]
      */
     visitStructAssign(node) {
-
+        console.log(node);
+        
         const structVariable = this.entornoActual.getVariable(node.id);
         if (!structVariable) {
             throw new Error(`Variable ${node.id} no definida`);
         }
 
-        const atributeValue = structVariable.value.value[node.attribute];
-        if (!atributeValue) {
-            throw new Error(`Atributo ${node.attribute} no definido en el Struct ${node.id}`);
-        }
+        let attributeValue = structVariable.value.value;
+        const attributesLength = node.attribute.length;
 
-        //verificar si el tipo asignado es el mismo que el del atributo
-        if (atributeValue.type !== node.assi.type) {
-            throw new Error(`El tipo de dato ${node.assi.type} no coincide con el tipo de dato del atributo ${atributeValue.type}`);
-        }
+        node.attribute.forEach((attr, index) => {
+            if (!attributeValue.hasOwnProperty(attr)) {
+                throw new Error(`Atributo ${attr} no definido en el Struct ${node.id}`);
+            }
 
-        const value = node.assi.accept(this);
-        atributeValue.value = value.value;
-        return value;
+            if (index === attributesLength - 1) {
+                // Si es la última iteración, se realiza la asignación.
+                attributeValue[attr].value = node.assi.accept(this);
+                console.log("Valor del atributo asignado: ", attributeValue[attr].value);
+            } else {
+                // Si no es la última iteración, se sigue navegando por los atributos.
+                attributeValue = attributeValue[attr].value;
+            }
+        });
+
+        return structVariable.value;
     }
+
+    /**
+     * @type [BaseVisitor['visitObjectKeys']]
+     */
+    visitObjectKeys(node) {
+        console.log(node);
+        const object = node.exp.accept(this);
+
+        if (typeof object.value !== 'object') {
+            throw new Error('Se esperaba un objeto');
+        }
+
+        return new Literal({ value: Object.keys(object.value), type: 'string' });
+
+
+    }
+
 
 }
 

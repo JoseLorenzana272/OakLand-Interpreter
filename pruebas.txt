@@ -730,3 +730,33 @@ return arr[index];
 int[] piano = {45,10,2,89,5};
 
 System.out.println(obtenerNumArr(piano, 3));
+
+struct Juguete{
+string nombre;
+};
+
+struct Mascota {
+string nombre;
+Juguete jug;
+};
+
+struct Saiyajin {
+string nombre;
+int edad;
+Mascota mascota;
+};
+// creación de una instancia
+Saiyajin persona1 = Saiyajin{
+nombre: "Pablo",
+edad:20,
+mascota: Mascota{
+nombre: "Firulais",
+jug: Juguete{
+  nombre: "Kamehameha"
+}
+}
+};
+
+System.out.println(persona1.edad +3);
+persona1.mascota.jug.nombre = "adios";
+System.out.println(persona1.mascota.jug.nombre);

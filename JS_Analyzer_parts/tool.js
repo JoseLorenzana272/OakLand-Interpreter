@@ -719,7 +719,7 @@ const configuracionNodos = [
             },
             {
                 name: 'attribute',
-                type: 'string',
+                type: 'string[]',
                 description: 'Attribute of the struct'
             },
             {
@@ -731,6 +731,17 @@ const configuracionNodos = [
                 name: 'assi',
                 type: 'Expresion',
                 description: 'Expression to assign'
+            }
+        ]
+    },
+    {
+        name: 'ObjectKeys',
+        extends: 'Expresion',
+        props: [
+            {
+                name: 'exp',
+                type: 'Expresion',
+                description: 'Expression to get the keys'
             }
         ]
     }

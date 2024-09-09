@@ -38,7 +38,8 @@
       'StructNode': nodos.StructNode,
       'StructInstance': nodos.StructInstance,
       'StructAccess': nodos.StructAccess,
-      'StructAssign': nodos.StructAssign
+      'StructAssign': nodos.StructAssign,
+      'ObjectKeys': nodos.ObjectKeys
     }
 
     const node = new type[typeNode](props);
@@ -143,8 +144,10 @@ Operations = Assignment
 Assignment = id:Id _ op:("="/"+="/"-=") _ assi:Assignment{ return createNode('VariableAssign', {id, op, assi})}
             /id:Id indexes:Indexes _ op:("=") _ assi:Assignment{ return createNode('MatrixAssign', {id, indexes, op, assi})}
             /id:Id "[" _ index:Operations _ "]" _ op:("=") _ assi:Assignment{ return createNode('VectorAssign', {id, index, op, assi})} 
-            /id:Id "." attribute:Id _ op:("=") _ assi:Assignment{ return createNode('StructAssign', {id, attribute, op, assi})}
+            /id:Id "." attribute:RecursiveSAssign _ op:("=") _ assi:Assignment{ return createNode('StructAssign', {id, attribute, op, assi})}
             /TernaryOp
+
+RecursiveSAssign = head:Id tail:("." Id)* { return [head, ...tail.map(([_, id]) => id)] }
 
 TernaryOp = condition:LogicalOperations _ "?" _ trueExp:TernaryOp _ ":" _ falseExp:TernaryOp { return createNode('TernaryOp', { condition, trueExp, falseExp }); }
           /LogicalOperations
@@ -328,6 +331,7 @@ DataType = "(" _ exp:Operations _ ")" {return createNode('Grouping', { exp })}
             /dato:IndexOf { return dato; }
             /dato:Join { return dato; }
             /dato:Length { return dato; }
+            /dato:ObjectKeys { return dato; }
             /dato:AccessStruct { return dato; }
             /Null
             /id:Id { return createNode('VariableValue', { id }) }
@@ -342,6 +346,8 @@ Indexes = "[" _ index:Operations _ "]" indexes:Indexes { return [index, ...index
 IndexOf = id:Id "." "indexOf" "(" _ exp:Operations _ ")" { return createNode('IndexOf', { id, exp }) }
 
 Join = id:Id "." "join" "()" { return createNode('Join', { id }) }
+
+ObjectKeys = "Object.keys" "(" _ exp:Operations _ ")" { return createNode('ObjectKeys', { exp }) }
 
 Length = id:Id "." "length" { return createNode('Length', { id }) }
 

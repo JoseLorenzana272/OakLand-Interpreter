@@ -117,6 +117,9 @@
 
  * @typedef {import('./nodos').StructAssign} StructAssign
 
+
+ * @typedef {import('./nodos').ObjectKeys} ObjectKeys
+
  */
 
 
@@ -475,6 +478,15 @@ export class BaseVisitor {
      */
     visitStructAssign(node) {
         throw new Error('Metodo visitStructAssign no implementado');
+    }
+    
+
+    /**
+     * @param {ObjectKeys} node
+     * @returns {any}
+     */
+    visitObjectKeys(node) {
+        throw new Error('Metodo visitObjectKeys no implementado');
     }
     
 }
