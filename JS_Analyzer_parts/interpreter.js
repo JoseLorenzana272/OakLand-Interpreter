@@ -592,17 +592,21 @@ export class InterpreterVisitor extends BaseVisitor {
             variableValues = new Array(size.value).fill(new Literal({ value: typeMaps[variableType], type: variableType }));
             this.entornoActual.setVariable(variableType, variableName, new Literal({ value: variableValues, type: variableType }));
             // En el otro else if, copiar copiar los valores de otro vector
-        }else if (typeof node.values === 'string'){
+        } else if (typeof node.values === 'string') {
             const vector = this.entornoActual.getVariable(node.values);
-            const acceptedVector = vector.value.accept(this);
-            console.log("Vector Aceptado: ", acceptedVector.value);
             if (!vector) {
                 throw new Error(`Variable ${node.values} no definida`);
             }
+            const acceptedVector = vector.value.accept(this);
             if (!Array.isArray(acceptedVector.value)) {
                 throw new Error(`Variable ${node.values} no es un vector`);
             }
-            variableValues = acceptedVector.value;
+            
+            // Crear una copia profunda del vector
+            variableValues = acceptedVector.value.map(item => 
+                new Literal({ value: item.value, type: item.type })
+            );
+            
             this.entornoActual.setVariable(variableType, variableName, new Literal({ value: variableValues, type: variableType }));
         }
         

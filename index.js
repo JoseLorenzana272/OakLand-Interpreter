@@ -300,6 +300,12 @@ function generateErrorReportHTML(errorList) {
 function openErrorReport(errorList) {
     const reportHTML = generateErrorReportHTML(errorList);
     const reportWindow = window.open('', '_blank');
-    reportWindow.document.write(reportHTML);
-    reportWindow.document.close();
+    
+    if (reportWindow) {
+        reportWindow.document.write(reportHTML);
+        reportWindow.document.close();
+    } else {
+        console.error('Error: No se pudo abrir la ventana del reporte. Es posible que el navegador esté bloqueando las ventanas emergentes.');
+    }
 }
+

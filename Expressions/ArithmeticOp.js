@@ -12,8 +12,8 @@ export function ArithmeticOp(op, izq, der){
     let resultado;
 
     // Convertir los operandos a números
-    const leftValue = parseFloat(izq.value);
-    const rightValue = parseFloat(der.value);
+    const leftValue = izq.type !== 'string' ? parseFloat(izq.value) : izq.value;
+    const rightValue = der.type !== 'string' ? parseFloat(der.value) : der.value;
 
     switch (op) {
         case '+':
@@ -45,6 +45,12 @@ export function ArithmeticOp(op, izq, der){
             break;
         default:
             throw new Error(`Operador no soportado: ${op}`);
+    }
+    
+
+    if (typeof resultado === 'number' && isNaN(resultado)) {
+        console.warn('Resultado es NaN, se devolverá null');
+        return new Literal({ value: null, type: 'null' });
     }
 
     // Determinar el tipo de resultado
