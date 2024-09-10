@@ -1061,26 +1061,37 @@ export class InterpreterVisitor extends BaseVisitor {
     /**
      * @type [BaseVisitor['visitStructInstance']]
      */
-    visitStructAccess(node) {
-        console.log(node);
-        const structVariable = this.entornoActual.getVariable(node.id);
+    /**
+ * @type [BaseVisitor['visitStructInstance']]
+ */
+visitStructAccess(node) {
+    console.log(node);
+    const structVariable = this.entornoActual.getVariable(node.id);
 
-        console.log("HOLA ", structVariable);
+    console.log("HOLA ", structVariable);
 
-        if (!structVariable) {
-            throw new Error(`Variable ${node.id} no definida`);
-        }
-
-        let current = structVariable.value.value;
-        node.id2.forEach(id => {
-            if (!current.hasOwnProperty(id)) {
-                throw new Error(`Atributo ${id} no definido en el Struct ${node.id}`);
-            }
-            current = current[id].value;
-        } );
-
-        return new Literal({ value: current, type: structVariable.type });
+    if (!structVariable) {
+        throw new Error(`Variable ${node.id} no definida`);
     }
+
+    let current = structVariable.value.value;
+    let currentType = structVariable.value.type; // Inicialmente, el tipo del struct
+
+    node.id2.forEach(id => {
+        if (!current.hasOwnProperty(id)) {
+            throw new Error(`Atributo ${id} no definido en el Struct ${node.id}`);
+        }
+        // Actualiza el valor actual y su tipo en cada iteración
+        currentType = current[id].type; // Aquí suponemos que cada atributo tiene un campo `type`
+        current = current[id].value;
+    });
+
+    console.log("TIPO FINAL: ", currentType);
+
+    // Devuelve un nuevo Literal con el valor y el tipo primitivo encontrado
+    return new Literal({ value: current, type: currentType });
+}
+
 
     /**
      * @type [BaseVisitor['visitStructAssign']]

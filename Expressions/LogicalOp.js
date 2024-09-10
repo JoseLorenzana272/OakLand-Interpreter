@@ -10,7 +10,7 @@ import { Literal } from "../JS_Analyzer_parts/nodos.js";
 
 export function LogicalOp(op, izq, der){
     let resultado;
-
+    console.log("VALORES: ", izq, der);
     if (izq.type === 'bool' && der.type === 'bool') {
         switch (op) {
             case '&&':
