@@ -32,17 +32,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error(e);
                     consoleOutput.innerHTML += `${errorMessage}<br>`;
                     errorList.push(e);
-                    // Generar reporte de errores
-                    openErrorReport(errorList);
                 }
             });
-    
-            const output = interpreter.salida.replace(/\n/g, '<br>'); 
+            console.log(interpreter.salida);
+            const output = interpreter.salida.replace(/ /g, '&nbsp;').replace(/\n/g, '<br>');
             consoleOutput.innerHTML += output;
+
     
             // Guardar la tabla de símbolos
             if (Array.isArray(interpreter.listaSimbolos)) {
                 symbolTable = interpreter.listaSimbolos;
+            }
+
+            if (errorList.length > 0) {
+                openErrorReport(errorList);
             }
     
         } catch (e) {

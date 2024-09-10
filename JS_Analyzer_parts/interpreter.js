@@ -76,7 +76,7 @@ export class InterpreterVisitor extends BaseVisitor {
             resultados += this.formatValue(valor) + ' ';
         }
     
-        this.salida += resultados.trim() + '\n';
+        this.salida += resultados + '\n';
         console.log(resultados);
     }
     
@@ -207,7 +207,7 @@ export class InterpreterVisitor extends BaseVisitor {
         const variableName = node.id;
         // Asignacion de valor por defecto
         if (node.value === null) {
-            this.entornoActual.setVariable(node.type, variableName, new Literal({ value: typeMaps[node.type], type: node.type }));
+            this.entornoActual.setVariable(node.type, variableName, new Literal({ value: null, type: node.type }));
             return;
         }
         const variableValue = node.value.accept(this);
