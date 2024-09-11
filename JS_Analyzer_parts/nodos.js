@@ -1351,8 +1351,9 @@ export class StructAccess extends Expresion {
     * @param {Object} options
     * @param {string} options.id Identifier of the struct
  * @param {string[]} options.id2 Identifier of the struct
+ * @param {int} options.index Index of the struct
     */
-    constructor({ id, id2 }) {
+    constructor({ id, id2, index }) {
         super();
         
         /**
@@ -1367,6 +1368,13 @@ export class StructAccess extends Expresion {
          * @type {string[]}
         */
         this.id2 = id2;
+
+
+        /**
+         * Index of the struct
+         * @type {int}
+        */
+        this.index = index;
 
     }
 

@@ -705,6 +705,10 @@ const configuracionNodos = [
                 name: 'id2',
                 type: 'string[]',
                 description: 'Identifier of the struct'
+            },
+            {name: 'index',
+            type: 'int',
+            description: 'Index of the struct'
             }
         ]
     },

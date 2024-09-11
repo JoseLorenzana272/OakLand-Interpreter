@@ -65,7 +65,7 @@ VariableDeclaration = type:(Types / "var") _ id:Id _ exp:("=" _ exp:Operations {
                       { return createNode('VariableDeclaration', { type, id, value: exp || null }); }
 
 VectorDeclaration 
-  = type:Types _ "[]" _ id:Id _
+  = type:(Id/Types) _ "[]" _ id:Id _
       "=" _ "{" _ values:VectorValues _ "}" _ ";"{ 
         return createNode('VectorDeclaration', { type, id, values, size: values.length }); 
       }
@@ -118,11 +118,11 @@ MatrixElement = MatrixValue/Operations
 FunctionDeclaration = type:((AType:Types _ "[]" { return AType+"[]" })/Types/"void") _ id:Id _ "(" _ params:Parameters? _ ")" _ block:Block { return createNode('FuncDeclaration', { type, id, params: params || [], block }) }
 
 // Aceptar tanto parámetros simples como arrays.
-Parameters = type:Types _ arrayDecl:ArrayDecl? _ id:Id _ "," _ params:Parameters { return [{ type, id, array: arrayDecl || false }, ...params]; }
-           / type:Types _ arrayDecl:ArrayDecl? _ id:Id { return [{ type, id, array: arrayDecl || false }]; }
+Parameters = type:Types _ arrayDecl:ArrayDecl? _ id:Id _ "," _ params:Parameters { return [{ type: type + (arrayDecl || ""), id }, ...params]; }
+           / type:Types _ arrayDecl:ArrayDecl? _ id:Id { return [{ type: type + (arrayDecl || ""), id }]; }
 
-// Declaración de arrays en parámetros
-ArrayDecl = "[" _ "]" { return true; }
+// Declaración de arrays en parámetros de múltiples dimensiones
+ArrayDecl = "[" _ "]" dims:("[" _ "]")* { return "[]".repeat(1 + dims.length); }
 
 /*---------------------Structs----------------------*/
 
@@ -327,6 +327,7 @@ DataType = "(" _ exp:Operations _ ")" {return createNode('Grouping', { exp })}
             /dato:String { return dato; }
             /dato:Char { return dato; }
             /dato:MatrixAccess { return dato; }
+            /dato:ArrayAccessStruct { return dato; }
             /dato:ArrayAccess { return dato; }
             /dato:IndexOf { return dato; }
             /dato:Join { return dato; }
@@ -338,7 +339,10 @@ DataType = "(" _ exp:Operations _ ")" {return createNode('Grouping', { exp })}
 
 ArrayAccess = id:Id "[" _ index:Operations _ "]" { return createNode('ArrayAccess', { id, index }) }
 
+ArrayAccessStruct = id:Id "[" _ index:Operations _ "]" id2:AccessStruct2 _{ return createNode('StructAccess', { id, index, id2 }) }
+
 MatrixAccess = id:Id indexes:Indexes { return createNode('MatrixAccess', { id, indexes }) }
+
 
 Indexes = "[" _ index:Operations _ "]" indexes:Indexes { return [index, ...indexes] }
         / "[" _ index:Operations _ "]" { return [index] }
@@ -370,6 +374,8 @@ AccessStruct = id:Id "." id2:RecursiveAttributes { return createNode('StructAcce
 
 RecursiveAttributes
     = head:Id tail:("." Id)* { return [head, ...tail.map(([_, id]) => id)] }
+
+AccessStruct2 = "." id2:RecursiveAttributes { return createNode('StructAccess', { id, id2 }) }
 
 /*----------------------------------------------------- */
 /* ----------------- Comentarios ---------------------------- */
