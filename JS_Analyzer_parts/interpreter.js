@@ -31,9 +31,6 @@ export class InterpreterVisitor extends BaseVisitor {
         super();
         this.entornoActual = new Entorno();
 
-        Object.entries(embedded).forEach(([nombre, funcion]) => {
-            this.entornoActual.setVariable("string", nombre, funcion);
-        });
 
         this.salida = '';
 
@@ -607,7 +604,6 @@ export class InterpreterVisitor extends BaseVisitor {
             variableValues = acceptedVector.value.map(item => 
                 new Literal({ value: item.value, type: item.type })
             );
-            
             this.entornoActual.setVariable(variableType, variableName, new Literal({ value: variableValues, type: variableType }));
         }
         
@@ -657,7 +653,7 @@ export class InterpreterVisitor extends BaseVisitor {
         //Esto seria de ver si es para acá o para el join
         const valueString = variableValues.map(value => value.value).join(', ');
         console.log(`[${valueString}]`);
-        this.entornoActual.setVariable(variableType, variableName, new Literal({ value: variableValues, type: variableType }));
+        //this.entornoActual.setVariable(variableType, variableName, new Literal({ value: variableValues, type: variableType }));
 
         //Agregar a la lista de simbolos, ID, Tipo símbolo, Tipo dato
         this.listaSimbolos.push({ID: variableName, Tipo: 'Array', TipoDato: variableType, Row: node.location.end.line, Column: node.location.end.column});
@@ -1002,8 +998,8 @@ export class InterpreterVisitor extends BaseVisitor {
 
         variableValues.forEach(value => {
             this.entornoActual = new Entorno(previousScope);
-
-            this.entornoActual.setVariable(node.type, node.id, value);
+            console.log("NODO ID: ", node.id);
+            this.entornoActual.setOrUpdateVariable(node.type, node.id, value);
 
             node.stmt.accept(this);
         });

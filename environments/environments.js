@@ -1,6 +1,8 @@
 import { Literal } from "../JS_Analyzer_parts/nodos.js";
 import { embedded } from "../Instructions/embedded.js";
 
+const ReservedWords = {'if': 1, 'else':1, 'while':1, 'for':1, 'switch':1, 'case':1, 'break':1, 'continue':1, 'return':1, 'var':1, 'true':1, 'false':1, 'null':1, 'struct':1, 'void':1}
+
 export class Entorno {
     /**
      * @param {Entorno} padre
@@ -11,6 +13,8 @@ export class Entorno {
         Object.entries(embedded).forEach(([nombre, funcion]) => {
             this.setOrUpdateVariable("string", nombre, funcion);
         });
+
+        
     }
 
     /**
@@ -19,6 +23,16 @@ export class Entorno {
      * @param {any} valor
      */
     setVariable(tipo, nombre, valor) {
+        //Verificar si el nombre de la variable es una palabra reservada
+        if (ReservedWords.hasOwnProperty(nombre)) {
+            throw new Error(`La variable ${nombre} es una palabra reservada`);
+        }
+
+        //Verificar si la variable ya existe en el entorno
+        if (this.existsInCurrentScope(nombre)) {
+            throw new Error(`La variable ${nombre} ya ha sido declarada`);
+        }
+
         if (Array.isArray(valor)) {
             // Si es un array, se crea un nuevo Literal almacenando una copia del array
             this.valores[nombre] = new Literal({ value: [...valor], type: tipo });
@@ -80,5 +94,10 @@ export class Entorno {
             console.log(`Guardando nueva variable ${nombre} con valor: ${valor}`);
             this.setVariable(tipo, nombre, valor);
         }
+    }
+
+    existsInCurrentScope(nombre) {
+        console.log(Object.keys(this.valores));
+        return this.valores.hasOwnProperty(nombre);
     }
 }

@@ -115,11 +115,11 @@ MatrixElement = MatrixValue/Operations
 
 /*---------------------Funciones----------------------*/
 
-FunctionDeclaration = type:((AType:Types _ "[]" { return AType+"[]" })/Types/"void") _ id:Id _ "(" _ params:Parameters? _ ")" _ block:Block { return createNode('FuncDeclaration', { type, id, params: params || [], block }) }
+FunctionDeclaration = type:((AType:Types _ "[]" { return AType+"[]" })/Id/Types/"void") _ id:Id _ "(" _ params:Parameters? _ ")" _ block:Block { return createNode('FuncDeclaration', { type, id, params: params || [], block }) }
 
 // Aceptar tanto parámetros simples como arrays.
-Parameters = type:Types _ arrayDecl:ArrayDecl? _ id:Id _ "," _ params:Parameters { return [{ type: type + (arrayDecl || ""), id }, ...params]; }
-           / type:Types _ arrayDecl:ArrayDecl? _ id:Id { return [{ type: type + (arrayDecl || ""), id }]; }
+Parameters = type:(Id/Types) _ arrayDecl:ArrayDecl? _ id:Id _ "," _ params:Parameters { return [{ type: type + (arrayDecl || ""), id }, ...params]; }
+           / type:(Id/Types) _ arrayDecl:ArrayDecl? _ id:Id { return [{ type: type + (arrayDecl || ""), id }]; }
 
 // Declaración de arrays en parámetros de múltiples dimensiones
 ArrayDecl = "[" _ "]" dims:("[" _ "]")* { return "[]".repeat(1 + dims.length); }
@@ -316,6 +316,11 @@ FCall = callee:(id:"typeof" { return createNode('VariableValue', { id }) }) " "*
   )
 }
 
+FCallStruct = callee:(id:Id  { return createNode('VariableValue', { id })})_ params:("(" args:Arguments? ")" { return args })* {
+  
+      return createNode('CallNode', { callee, args: args || [] })
+}
+
 Arguments = arg:Operations _ args:("," _ exp:Operations { return exp })* { return [arg, ...args] }
 
 /*----------- Tipos de datos ---------------------------- */
@@ -370,7 +375,7 @@ Char = "'" [^']* "'" { return createNode('Literal', {value: text().slice(1,-1), 
 Null = 'null' { return createNode('Literal', {value: null, type: 'null'}); }
 
 //Aceptar por ejemplo variable.algo.algo2....
-AccessStruct = id:Id "." id2:RecursiveAttributes { return createNode('StructAccess', { id, id2 }) }
+AccessStruct = id:(Id/FCallStruct) "." id2:RecursiveAttributes { return createNode('StructAccess', { id, id2 }) }
 
 RecursiveAttributes
     = head:Id tail:("." Id)* { return [head, ...tail.map(([_, id]) => id)] }
