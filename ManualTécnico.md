@@ -1,4 +1,4 @@
-# Manual Técnico - OakLang.js - José Daniel Lorenzana Medina
+# Manual Técnico - OakLand.js - José Daniel Lorenzana Medina
 
 Este documento proporciona una visión técnica detallada del proyecto `OakLand.js`, que implementa un intérprete para un lenguaje de programación personalizado. Este intérprete fue construido usando **PEG** (Parser Expression Grammar) con la herramienta **Peggy.js**, que fue instalada utilizando **npx**.
 
@@ -219,6 +219,6 @@ El intérprete sigue una arquitectura modular basada en el patrón de diseño **
 
 ## 13. Conclusión
 
-El proyecto `OakLang.js` proporciona una base sólida para un intérprete de lenguaje personalizado. Con su diseño modular, manejo robusto de errores, y características extensibles, es una implementación adecuada para proyectos de lenguaje de programación. Sin embargo, existen áreas de mejora en cuanto a rendimiento, seguridad y extensibilidad.
+El proyecto `OakLand.js` proporciona una base sólida para un intérprete de lenguaje personalizado. Con su diseño modular, manejo robusto de errores, y características extensibles, es una implementación adecuada para proyectos de lenguaje de programación. Sin embargo, existen áreas de mejora en cuanto a rendimiento, seguridad y extensibilidad.
 
 [Documentación Detallada de Clases y Funcionamiento (Inglés) ->](./tecnico.md)
