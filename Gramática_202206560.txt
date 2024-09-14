@@ -1,0 +1,255 @@
+/-----Gramática ----- José Daniel Lorenzana Medina --------202206560 -----/
+
+Program = _ statements:Statements* _ { return statements; }
+
+Statements = Structs 
+             /Statement
+
+Statement =  _ vard:VariableDeclaration _ { return vard; }
+            /_ fund:FunctionDeclaration _ { return fund; }
+            /_ vecd:VectorDeclaration _ { return vecd; }
+            /_ matd:MatrixDeclaration _ { return matd; }
+            /_ inS:StructInstance _ { return inS; }
+            /_ s:Sentence _ { return s; }
+
+/*---------------------Declaración de variables----------------------*/
+VariableDeclaration = type:(Types / "var") _ id:Id _ exp:("=" _ exp:Operations {return exp})? _ ";" 
+
+VectorDeclaration 
+  = type:(Id/Types) _ "[]" _ id:Id _
+      "=" _ "{" _ values:VectorValues _ "}" _ ";"
+    / type:Types _ "[]" _ id:Id _ "=" _ "new" _ newType:Types _ "[" _ size:Operations _ "]" _ ";"
+    / type:Types _ "[]" _ id:Id _ "=" _ values:Id ";"
+
+VectorValues = head:Operations tail:(_ "," _ Operations)* { return [head, ...tail.map(t => t[3])]; }
+
+/*-----------------------------Matrices de 2 a n dimensiones-----------------------------*/
+MatrixDeclaration = type:Types _ dimensions:Dimensions _ id:Id _ "=" _ values:MatrixValue _ ";"
+  / type:Types _ dimensions:Dimensions _ id:Id _ "=" _ "new" _ newType:Types _ newDimensions:DimensionsSize _ ";"
+
+Dimensions = dimension:("[]" _)+ { return dimension.length; }
+
+DimensionsSize = dimension:("[" _ size:Operations _ "]" {return size})+ { return dimension; }
+
+MatrixValue
+  = "{" _ elements:MatrixElements _ "}"
+
+MatrixElements
+  = head:MatrixElement tail:(_ "," _ MatrixElement)* { return [head, ...tail.map(t => t[3])]; }
+
+MatrixElement = MatrixValue/Operations
+
+/*---------------------Funciones----------------------*/
+
+FunctionDeclaration = type:((AType:Types _ "[]" { return AType+"[]" })/Id/Types/"void") _ id:Id _ "(" _ params:Parameters? _ ")" _ block:Block
+
+Parameters = type:(Id/Types) _ arrayDecl:ArrayDecl? _ id:Id _ "," _ params:Parameters { return [{ type: type + (arrayDecl || ""), id }, ...params]; }
+           / type:(Id/Types) _ arrayDecl:ArrayDecl? _ id:Id { return [{ type: type + (arrayDecl || ""), id }]; }
+
+ArrayDecl = "[" _ "]" dims:("[" _ "]")* { return "[]".repeat(1 + dims.length); }
+
+/*---------------------Structs----------------------*/
+
+Structs = "struct" _ id:Id _ "{" _ fields:StructFields* _ "}" _ ";"
+
+StructFields = type:(Types/Id) _ id:Id _ ";"
+
+StructInstance = id:(Id/"var") _ id2:Id _ "=" _ IdStruct:Id _ "{" _ values:StructValues* _ "}" _ ";"
+
+instanceS = IdStruct:Id _ "{" _ values:StructValues* _ "}"
+
+StructValues = name:Id _ ":" _ value:(instanceS/Operations) _ ","? _
+
+/*-------------------------------------------------------------------*/
+
+Operations = Assignment
+
+Assignment = id:Id _ op:("="/"+="/"-=") _ assi:Assignment
+            /id:Id indexes:Indexes _ op:("=") _ assi:Assignment
+            /id:Id "[" _ index:Operations _ "]" _ op:("=") _ assi:Assignment
+            /id:Id "." attribute:RecursiveSAssign _ op:("=") _ assi:Assignment
+            /TernaryOp
+
+RecursiveSAssign = head:Id tail:("." Id)* { return [head, ...tail.map(([_, id]) => id)] }
+
+TernaryOp = condition:LogicalOperations _ "?" _ trueExp:TernaryOp _ ":" _ falseExp:TernaryOp
+          /LogicalOperations
+
+/*---------------------Operaciones Lógicas----------------------*/
+LogicalOperations = And/Or
+
+And = izq:Or expansion:(
+  _ op:"&&" _ der:Or
+)*
+
+Or = izq:Igualation expansion:(
+  _ op:"||" _ der:Igualation
+)*
+
+/*--------------------------------------------------------------------*/
+/*--------------------Operaciones Relacionales------------------------*/
+Igualation = izq:RelationalOperations expansion:(
+  _ op:("==" / "!=") _ der:RelationalOperations
+)*
+
+RelationalOperations = izq:ArithmeticOperations expansion:(
+  _ op:("<=" / ">=" / "<" / ">" ) _ der:ArithmeticOperations
+)*
+
+/*--------------------Operaciones Aritméticas----------------------*/
+ArithmeticOperations = Sum/Multiply/Modulus/DataType
+
+Sum = izq:Multiply expansion:(
+  _ op:("+" / "-") _ der:Multiply
+)*
+
+Multiply = izq:Modulus expansion:(
+  _ op:("*" / "/") _ der:Modulus
+)*
+
+Modulus = izq:Unary expansion:(
+  _ op:"%" _ der:Unary
+)*
+
+/*---------------------- Print & Block ---------------------------*/
+Sentence = p:Print
+          /b:Block
+          /i: If
+          /w: While
+          /f: ForLoop
+          /fe: ForEach
+          /sw: Switch
+          /br: Break
+          /c: Continue
+          /rt: Return
+          /o:Operations _ ";"
+
+Break = "break" _ ";"
+
+Continue = "continue" _ ";"
+
+Return = "return" _ exp:(Operations / ("["_ vecVal:VectorValues _ "]"))? _ ";"
+
+Switch = "switch" _ "(" _ exp:Operations _ ")" _ "{" _ 
+             cases:SwitchCase* 
+             def:DefaultCase? 
+             _ "}"
+
+SwitchCase = _ "case" _ value:Operations _ ":" _ inst:Statements*
+
+
+DefaultCase = _ "default" _ ":" _ stmts:Sentence* { return { stmts } }
+
+If = "if" _ "(" _ cond:Operations _ ")" _ stmtTrue:Sentence 
+      stmtFalse:(
+        _ "else" _ stmtFalse:Sentence { return stmtFalse } 
+      )? { return { cond, stmtTrue, stmtFalse } }
+
+While = "while" _ "(" _ cond:Operations _ ")" _ stmt:Sentence { return { cond, stmt } }
+
+ForLoop = "for" _ "("_ init:Statement _ cond:TernaryOp _ ";" _ inc:(IncrementDecrement/Assignment) _ ")" _ stmt:Sentence { return { init, cond, inc, stmt } }
+
+IncrementDecrement = id:Id _ op:("++" / "--") { return { id, op } }
+
+ForEach = "for" _ "(" _ type:Types _ id:Id _ ":" _ id2:Id _ ")" _ stmt:Sentence { return { type, id, id2, stmt } }
+
+Print = "System.out.println" _ "(" _ expressions:ExpressionPrint  _ ")" _ ";"  { return { exp: expressions } }
+
+ExpressionPrint = head:Operations tail:(_ "," _ Operations)* { return [head, ...tail.map(t => t[3])] }
+
+Block = "{" _ stmt:Statements* _ "}" { return { statements: stmt } }
+
+/*-------------------------------------------------------- */
+Unary = "-" _ un:Unary { return { op: '-', exp: un } }
+      / "!" _ un:Unary { return { op: '!', exp: un } }
+      / FCall
+
+/*----------------------Llamadas a funciones----------------------*/
+
+FCall = callee:(id:"typeof" { return { id } }) " "* args:Arguments   { return { callee, args } }
+
+callee:DataType _ params:("(" args:Arguments? ")" { return args })* {
+  return params.reduce((callee, args) => {
+    return { callee, args: args || [] }
+  }, callee)
+}
+
+FCallStruct = callee:(id:Id  { return { id } }) _ params:("(" args:Arguments? ")" { return args })* {
+  return { callee, args: args || [] }
+}
+
+Arguments = arg:Operations _ args:("," _ exp:Operations { return exp })* { return [arg, ...args] }
+
+/*----------- Tipos de datos ---------------------------- */
+
+DataType = "(" _ exp:Operations _ ")" { return { exp } }
+            / dato:Number { return dato }
+            / dato:Boolean { return dato }
+            / dato:String { return dato }
+            / dato:Char { return dato }
+            / dato:MatrixAccess { return dato }
+            / dato:ArrayAccessStruct { return dato }
+            / dato:ArrayAccess { return dato }
+            / dato:IndexOf { return dato }
+            / dato:Join { return dato }
+            / dato:Length { return dato }
+            / dato:ObjectKeys { return dato }
+            / dato:AccessStruct { return dato }
+            / Null
+            / id:Id { return { id } }
+
+ArrayAccess = id:Id "[" _ index:Operations _ "]" { return { id, index } }
+
+ArrayAccessStruct = id:Id "[" _ index:Operations _ "]" id2:AccessStruct2 _ { return { id, index, id2 } }
+
+MatrixAccess = id:Id indexes:Indexes { return { id, indexes } }
+
+Indexes = "[" _ index:Operations _ "]" indexes:Indexes { return [index, ...indexes] }
+        / "[" _ index:Operations _ "]" { return [index] }
+
+IndexOf = id:Id "." "indexOf" "(" _ exp:Operations _ ")" { return { id, exp } }
+
+Join = id:Id "." "join" "()" { return { id } }
+
+ObjectKeys = "Object.keys" "(" _ exp:Operations _ ")" { return { exp } }
+
+Length = id:Id "." "length" { return { id } }
+
+Number = Float / Integer
+
+Integer = [0-9]+ { return { value: parseInt(text()), type: 'int' } }
+
+Float = [0-9]+ "." [0-9]+ { return { value: parseFloat(text()), type: 'float' } }
+
+Boolean = ("true" / "false") { return { value: text() === "true" ? true : false, type: 'bool' } }
+
+String = "\"" [^\"]* "\"" { return { value: text().slice(1, -1), type: 'string' } }
+
+Char = "'" [^']* "'" { return { value: text().slice(1, -1), type: 'char' } }
+
+Null = "null" { return { value: null, type: 'null' } }
+
+AccessStruct = id:(Id / FCallStruct) "." id2:RecursiveAttributes { return { id, id2 } }
+
+RecursiveAttributes = head:Id tail:("." Id)* { return [head, ...tail.map(([_, id]) => id)] }
+
+AccessStruct2 = "." id2:RecursiveAttributes { return { id, id2 } }
+
+/*----------------------------------------------------- */
+/* ----------------- Comentarios ---------------------------- */
+Comments = SimpleComment / MultilineComment
+
+SimpleComment = "//" [^\r\n]*
+
+MultilineComment = "/*" (!"*/" .)* "*/"
+
+/*-------------------------------------------------------------*/
+
+Types = ("int" / "float" / "string" / "char" / "bool") { return text() }
+
+Id = !TypesChar [a-zA-Z_][a-zA-Z0-9_]* { return text() }
+
+TypesChar = Types ![a-zA-Z0-9_]
+
+_ = [ \t\n\r]* Comments* [ \t\n\r]*
+
