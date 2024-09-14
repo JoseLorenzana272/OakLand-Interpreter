@@ -15,7 +15,7 @@ export const embedded = {
     'parseInt': new NativeFunction(() => 1, (interprete, args) => {
         const parsedValue = parseInt(args[0].value);
         if (isNaN(parsedValue)) {
-            throw new Error(`No se pudo parsear el valor a int: ${args[0].value}`);
+            throw new Error(`Cannot parse value to int: ${args[0].value}`);
         }
         return new Literal({
             value: parsedValue,
@@ -25,7 +25,7 @@ export const embedded = {
     'parsefloat': new NativeFunction(() => 1, (interprete, args) => {
         const parsedValue = parseFloat(args[0].value);
         if (isNaN(parsedValue)) {
-            throw new Error(`No se pudo parsear el valor a float: ${args[0].value}`);
+            throw new Error(`Cannot parse value to float: ${args[0].value}`);
         }
         return new Literal({
             value: parsedValue,
@@ -34,7 +34,7 @@ export const embedded = {
     }),
     'toString': new NativeFunction(() => 1, (interprete, args) => {
         if (args[0] === undefined || args[0].value === null) {
-            throw new Error(`No se puede convertir a string el valor: ${args[0].value}`);
+            throw new Error(`Cannot convert value to string: ${args[0].value}`);
         }
         return new Literal({
             value: args[0].value.toString(),
@@ -43,7 +43,7 @@ export const embedded = {
     }),
     'toLowerCase': new NativeFunction(() => 1, (interprete, args) => {
         if (typeof args[0].value !== 'string') {
-            throw new Error(`El valor ${args[0].value} no es un string, no se puede convertir a minúsculas`);
+            throw new Error(`The value ${args[0].value} is not a string, cannot convert to lowercase`);
         }
         return new Literal({
             value: args[0].value.toLowerCase(),
@@ -52,7 +52,7 @@ export const embedded = {
     }),
     'toUpperCase': new NativeFunction(() => 1, (interprete, args) => {
         if (typeof args[0].value !== 'string') {
-            throw new Error(`El valor ${args[0].value} no es un string, no se puede convertir a mayúsculas`);
+            throw new Error(`The value ${args[0].value} is not a string, cannot convert to uppercase`);
         }
         return new Literal({
             value: args[0].value.toUpperCase(),

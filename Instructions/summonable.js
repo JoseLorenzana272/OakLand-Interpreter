@@ -5,7 +5,7 @@ export class Summonable {
 
 
     aridad() {
-        throw new Error('No implementado');
+        throw new Error('Not implemented');
     }
 
     /**
@@ -13,7 +13,7 @@ export class Summonable {
      * @param args {any[]}
      */
     invocar(interprete, args) {
-        throw new Error('No implementado');
+        throw new Error('Not implemented');
     }
 
 }

@@ -8,6 +8,7 @@ import { BreakException, ContinueException, ReturnException } from "../Instructi
 import { Summonable } from "../Instructions/summonable.js";
 import { embedded } from "../Instructions/embedded.js";
 import { FuncionForanea } from "../Instructions/foreign.js";
+import { Errors } from "../Errors/Errors.js";
 
 const typeMaps = {
     "string": "",
@@ -24,6 +25,7 @@ function procesarCadena(cadena) {
         .replace(/\\"/g, '"')   
         .replace(/\\\\/g, '\\');
 }
+
 
 export class InterpreterVisitor extends BaseVisitor {
 
@@ -99,7 +101,7 @@ export class InterpreterVisitor extends BaseVisitor {
         const right = node.der.accept(this);
 
         if (!(left instanceof Literal) || !(right instanceof Literal)) {
-            throw new Error('Ambas expresiones deben ser literales');
+            throw new Errors('Both expressions must be literals', node.location);
         }
 
         return ArithmeticOp(node.op, left, right);
@@ -121,7 +123,7 @@ export class InterpreterVisitor extends BaseVisitor {
         const right = node.der.accept(this);
 
         if (!(left instanceof Literal) || !(right instanceof Literal)) {
-            throw new Error('Ambas expresiones deben ser literales');
+            throw new Errors('Both expressions must be literals', node.location);
         }
 
         console.log(left, right, node.op);
@@ -138,7 +140,7 @@ export class InterpreterVisitor extends BaseVisitor {
         const right = node.der.accept(this);
 
         if (!(left instanceof Literal) || !(right instanceof Literal)) {
-            throw new Error('Ambas expresiones deben ser literales');
+            throw new Errors('Both expressions must be literals', node.location);
         }
 
         console.log(left, right, node.op);
@@ -154,7 +156,7 @@ export class InterpreterVisitor extends BaseVisitor {
         const right = node.der.accept(this);
 
         if (!(left instanceof Literal) || !(right instanceof Literal)) {
-            throw new Error('Ambas expresiones deben ser literales');
+            throw new Errors('Both expressions must be literals', node.location);
         }
 
         console.log(left, right, node.op);
@@ -169,7 +171,7 @@ export class InterpreterVisitor extends BaseVisitor {
         const valor = node.exp.accept(this);
 
         if (!(valor instanceof Literal)) {
-            throw new Error('La expresión debe ser una literal');
+            throw new Errors('The expression must be a literal', node.location);
         }
 
         switch (node.op) {
@@ -178,7 +180,7 @@ export class InterpreterVisitor extends BaseVisitor {
             case '!':
                 return new Literal({ value: !valor.value, type: valor.type });
             default:
-                throw new Error(`Operador no soportado: ${node.op}`);
+                throw new Errors(`Not supported operator: ${node.op}`, node.location);
         }
 
     }
@@ -190,7 +192,7 @@ export class InterpreterVisitor extends BaseVisitor {
         const variableName = node.id;
         const variable = this.entornoActual.getVariable(variableName);
         if (!variable) {
-            throw new Error(`Variable ${variableName} no definida`);
+            throw new Errors(`Variable ${variableName} not defined`, node.location);
         }
         
         console.log(variable);
@@ -220,35 +222,35 @@ export class InterpreterVisitor extends BaseVisitor {
             case 'int':
                 if (typeof variableValue.value !== 'number' || !Number.isInteger(variableValue.value)) {
                     this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
-                    throw new Error(`An ${variableType} was expected, but received:  ${typeof variableValue.value}`);
+                    throw new Errors(`An ${variableType} was expected, but received:  ${typeof variableValue.value}`, node.location);
                 }
                 break;
 
             case 'float':
                 if (typeof variableValue.value !== 'number') {
                     this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
-                    throw new Error(`An ${variableType} was expected, but received:  ${typeof variableValue.value}`);
+                    throw new Errors(`An ${variableType} was expected, but received:  ${typeof variableValue.value}`, node.location);
                 }
                 break;
 
             case 'bool':
                 if (typeof variableValue.value !== 'boolean') {
                     this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
-                    throw new Error(`An ${variableType} was expected, but received:  ${typeof variableValue.value}`);
+                    throw new Errors(`An ${variableType} was expected, but received:  ${typeof variableValue.value}`, node.location);
                 }
                 break;
 
             case 'string':
                 if (typeof variableValue.value !== 'string') {
                     this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
-                    throw new Error(`An ${variableType} was expected, but received:  ${typeof variableValue.value}`);
+                    throw new Errors(`An ${variableType} was expected, but received:  ${typeof variableValue.value}`, node.location);
                 }
                 break;
 
             case 'char':
                 if (typeof variableValue.value !== 'string' || variableValue.value.length !== 1) {
                     this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
-                    throw new Error(`An ${variableType} was expected, but received:  ${typeof variableValue.value}`);
+                    throw new Errors(`An ${variableType} was expected, but received:  ${typeof variableValue.value}`, node.location);
                 }
                 break;
             case 'var':
@@ -266,22 +268,22 @@ export class InterpreterVisitor extends BaseVisitor {
 
                 if (actualType !== expectedType) {
                     this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
-                    throw Error(`An ${variableValue.type} was expected, but received: ${actualType}`);
+                    throw Errors(`An ${variableValue.type} was expected, but received: ${actualType}`, node.location);
                 }
 
                 // Validación específica para int y float
                 if (variableValue.type === 'int' && !Number.isInteger(variableValue.value)) {
-                    throw new Error(`An int was expected, but received a float: ${variableValue.value}`);
+                    throw new Errors(`An int was expected, but received a float: ${variableValue.value}`, node.location);
                 }
 
                 if (variableValue.type === 'float' && Number.isInteger(variableValue.value)) {
-                    throw new Error(`A float was expected, but received an int: ${variableValue.value}`);
+                    throw new Errors(`A float was expected, but received an int: ${variableValue.value}`, node.location);
                 }
 
                 break;
 
             default:
-                throw new Error(`Tipo de dato desconocido: ${variableType}`);
+                throw new Errors(`Unknown data type: ${variableType}`, node.location);
         }
 
         if (variableType === 'float' && typeof variableValue.value === 'number' && Number.isInteger(variableValue.value)) {
@@ -327,7 +329,7 @@ export class InterpreterVisitor extends BaseVisitor {
     visitVariableAssign(node) {
         const value = node.assi.accept(this);
         if (!(value instanceof Literal)) {
-            throw new Error('La expresión debe ser una literal');
+            throw new Errors('The expression must be a literal', node.location);
         }
     
         const currentValue = this.entornoActual.getVariable(node.id).value;
@@ -336,7 +338,7 @@ export class InterpreterVisitor extends BaseVisitor {
 
         if (currentValue.type !== value.type) {
             this.entornoActual.assignVariable(node.id, 'null');
-            throw new Error(`Se esperaba un valor de tipo ${currentValue.type}, pero se recibió un valor de tipo ${value.type}`);
+            throw new Errors(`An ${currentValue.type} was expected, but received: ${value.type}`, node.location);
         }
     
         const asignments = {
@@ -371,7 +373,7 @@ export class InterpreterVisitor extends BaseVisitor {
     visitTernaryOp(node) {
         const condition = node.condition.accept(this);
         if (!(condition instanceof Literal)) {
-            throw new Error('La condición debe ser una literal');
+            throw new Errors('The condition must be a literal', node.location);
         }
     
         if (condition.value) {
@@ -388,7 +390,7 @@ export class InterpreterVisitor extends BaseVisitor {
         const cond = node.cond.accept(this);
 
     if (!(cond instanceof Literal)) {
-        throw new Error('La condición debe ser una literal');
+        throw new Errors('The condition must be a literal', node.location);
     }
 
     // Evalúa el valor de la condición almacenado en el Literal
@@ -435,11 +437,11 @@ export class InterpreterVisitor extends BaseVisitor {
     visitIncrementDecrement(node) {
         const variable = this.entornoActual.getVariable(node.id);
         if (!variable) {
-            throw new Error(`Variable ${node.id} no definida`);
+            throw new Errors(`Variable ${node.id} not defined`, node.location);
         }
 
         if (!(variable.value instanceof Literal)) {
-            throw new Error('La variable debe ser una literal');
+            throw new Errors('The variable must be a literal', node.location);
         }
 
         switch (node.op) {
@@ -456,7 +458,7 @@ export class InterpreterVisitor extends BaseVisitor {
                 });
                 break;
             default:
-                throw new Error(`Operador no soportado: ${node.op}`);
+                throw new Errors(`Not supported operator: ${node.op}`, node.location);
         }
 
         this.entornoActual.assignVariable(node.id, variable.value);
@@ -593,11 +595,11 @@ export class InterpreterVisitor extends BaseVisitor {
         } else if (typeof node.values === 'string') {
             const vector = this.entornoActual.getVariable(node.values);
             if (!vector) {
-                throw new Error(`Variable ${node.values} no definida`);
+                throw new Errors(`Variable ${node.values} not defined`, node.location);
             }
             const acceptedVector = vector.value.accept(this);
             if (!Array.isArray(acceptedVector.value)) {
-                throw new Error(`Variable ${node.values} no es un vector`);
+                throw new Errors(`Variable ${node.values} is not an array`, node.location);
             }
             
             // Crear una copia profunda del vector
@@ -612,37 +614,37 @@ export class InterpreterVisitor extends BaseVisitor {
             case 'int':
                 if (variableValues.some(value => typeof value.value !== 'number' || !Number.isInteger(value.value))) {
                     this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
-                    throw new Error(`An ${variableType} value was expected, but received another type`);
+                    throw new Errors(`An ${variableType} value was expected, but received another type`, node.location);
                 }
                 break;
             case 'float':
                 if (variableValues.some(value => typeof value.value !== 'number')) {
                     this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
-                    throw new Error(`An ${variableType} value was expected, but received another type`);
+                    throw new Errors(`An ${variableType} value was expected, but received another type`, node.location);
                 }
                 break;
             case 'bool':
                 if (variableValues.some(value => typeof value.value !== 'boolean')) {
                     this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
-                    throw new Error(`An ${variableType} value was expected, but received another type`);
+                    throw new Errors(`An ${variableType} value was expected, but received another type`, node.location);
                 }
                 break;
             case 'string':
                 if (variableValues.some(value => typeof value.value !== 'string')) {
                     this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
-                    throw new Error(`An ${variableType} value was expected, but received another type`);
+                    throw new Errors(`An ${variableType} value was expected, but received another type`, node.location);
                 }
                 break;
             case 'char':
                 if (variableValues.some(value => typeof value.value !== 'string' || value.value.length !== 1)) {
                     this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
-                    throw new Error(`An ${variableType} value was expected, but received another type`);
+                    throw new Errors(`An ${variableType} value was expected, but received another type`, node.location);
                 }
                 break;
             default:
                 if (!(variableType in this.structlist)) {
                     this.entornoActual.setVariable('null', variableName, new Literal({ value: null, type: 'null' }));
-                    throw new Error(`Tipo de dato desconocido: ${variableType}`);
+                    throw new Errors(`Unknow Datatype: ${variableType}`, node.location);
                 }
                 
                 
@@ -673,11 +675,11 @@ export class InterpreterVisitor extends BaseVisitor {
 
         console.log("FunciónCARAJOOOOOOO: ", funcion);
         if (!(funcion instanceof Summonable)) {
-            throw new Error('No es invocable');
+            throw new Errors('Not an invocable function', node.location);
         }
 
         if (funcion.aridad() !== argumentos.length) {
-            throw new Error('Aridad incorrecta');
+            throw new Errors('Incorrect number of arguments', node.location);
         }
         return funcion.invocar(this, argumentos);
     }
@@ -690,20 +692,20 @@ export class InterpreterVisitor extends BaseVisitor {
         const variable = this.entornoActual.getVariable(node.id);
         console.log("Variable: ", variable.value.value);
         if (!variable) {
-            throw new Error(`Variable ${node.id} no definida`);
+            throw new Errors(`Variable ${node.id} not defined`, node.location);
         }
 
         const index = node.index.accept(this);
         if (!(index instanceof Literal)) {
-            throw new Error('El índice debe ser una literal');
+            throw new Errors('The index must be a literal', node.location);
         }
 
         if (!Array.isArray(variable.value.value)) {
-            throw new Error(`Variable ${node.id} no es un vector`);
+            throw new Errors(`Variable ${node.id} is not an array`, node.location);
         }
 
         if (index.value < 0 || index.value >= variable.value.length) {
-            throw new Error(`Índice fuera de rango: ${index.value}`);
+            throw new Errors(`Index out of bounds: ${index.value}`, node.location);
         }
         console.log("Valor del índice: ", index.value);
         console.log("Nombre de la variable: ", node.id);
@@ -717,12 +719,12 @@ export class InterpreterVisitor extends BaseVisitor {
     visitIndexOf(node) {
         const variable = this.entornoActual.getVariable(node.id);
         if (!variable) {
-            throw new Error(`Variable ${node.id} no definida`);
+            throw new Errors(`Variable ${node.id} not defined`, node.location);
         }
 
         const value = node.exp.accept(this);
         if (!Array.isArray(variable.value.value)) {
-            throw new Error(`Variable ${node.id} no es un vector`);
+            throw new Errors(`Variable ${node.id} is not an array`, node.location);
         }
 
         const index = variable.value.value.findIndex(val => val.value === value.value);
@@ -735,11 +737,11 @@ export class InterpreterVisitor extends BaseVisitor {
     visitJoin(node) {
         const variable = this.entornoActual.getVariable(node.id);
         if (!variable) {
-            throw new Error(`Variable ${node.id} no definida`);
+            throw new Errors(`Variable ${node.id} not defined`, node.location);
         }
 
         if (!Array.isArray(variable.value.value)) {
-            throw new Error(`Variable ${node.id} no es un vector`);
+            throw new Errors(`Variable ${node.id} is not an array`, node.location);
         }
 
         const valueString = variable.value.value.map(value => value.value).join();
@@ -752,11 +754,11 @@ export class InterpreterVisitor extends BaseVisitor {
     visitLength(node) {
         const variable = this.entornoActual.getVariable(node.id);
         if (!variable) {
-            throw new Error(`Variable ${node.id} no definida`);
+            throw new Errors(`Variable ${node.id} not defined`, node.location);
         }
 
         if (!Array.isArray(variable.value.value)) {
-            throw new Error(`Variable ${node.id} no es un vector`);
+            throw new Errors(`Variable ${node.id} is not an array`, node.location);
         }
 
         console.log("Length: ", variable.value.value);
@@ -769,20 +771,20 @@ export class InterpreterVisitor extends BaseVisitor {
     visitVectorAssign(node) {
         const variable = this.entornoActual.getVariable(node.id);
         if (!variable) {
-            throw new Error(`Variable ${node.id} no definida`);
+            throw new Errors(`Variable ${node.id} not defined`, node.location);
         }
 
         if (!Array.isArray(variable.value.value)) {
-            throw new Error(`Variable ${node.id} no es un vector`);
+            throw new Errors(`Variable ${node.id} is not an array`, node.location);
         }
 
         const index = node.index.accept(this);
         if (!(index instanceof Literal)) {
-            throw new Error('El índice debe ser una literal');
+            throw new Errors('The index must be a literal', node.location);
         }
 
         if (index.value < 0 || index.value >= variable.value.length) {
-            throw new Error(`Índice fuera de rango: ${index.value}`);
+            throw new Errors(`Index out of bounds: ${index.value}`, node.location);
         }
 
         const value = node.assi.accept(this);
@@ -818,7 +820,7 @@ export class InterpreterVisitor extends BaseVisitor {
                     return;
                 }
                 if (matrix.length !== expectedDimensions[0]) {
-                    throw new Error(`La matriz ${variableName} tiene filas de diferentes longitudes. Se esperaba ${expectedDimensions[0]} filas, pero se encontró una fila con ${matrix.length} elementos.`);
+                    throw new Errors(`The matrix ${variableName} has ${matrix.length} rows, but ${expectedDimensions[0]} were expected`, node.location);
                 }
                 matrix.forEach(row => {
                     if (expectedDimensions.length > 1) {
@@ -847,7 +849,7 @@ export class InterpreterVisitor extends BaseVisitor {
             const numColumns = variableValues[0].length;
             for (let i = 1; i < variableValues.length; i++) {
                 if (variableValues[i].length !== numColumns) {
-                    throw new Error(`La matriz ${variableName} tiene filas de diferentes longitudes. Se esperaba ${numColumns} columnas, pero se encontró una fila con ${variableValues[i].length} columnas.`);
+                    throw new Errors(`The matrix ${variableName} has rows of different lengths. ${numColumns} columns were expected, but a row with ${variableValues[i].length} columns was found.`, node.location);
                 }
             }
 
@@ -878,7 +880,7 @@ export class InterpreterVisitor extends BaseVisitor {
                 case 'char':
                     return typeof value === 'string' && value.length === 1;
                 default:
-                    throw new Error(`Tipo de dato desconocido: ${expectedType}`);
+                    throw new Errors(`Unknown data type: ${expectedType}`, node.location);
             }
         };
 
@@ -886,7 +888,7 @@ export class InterpreterVisitor extends BaseVisitor {
         const invalidValues = validateMatrixTypes(variableValues, variableType);
 
         if (invalidValues.length > 0) {
-            throw new Error(`Se esperaba un tipo ${variableType}, pero se encontraron los siguientes valores inválidos: ${JSON.stringify(invalidValues)}`);
+            throw new Errors(`An ${variableType} value was expected, but the following invalid values were found: ${JSON.stringify(invalidValues)}`, node.location);
         }
 
             //en el else if, se verifica si es un nuevo vector con tamaño y se agregan valores por defecto
@@ -912,13 +914,13 @@ export class InterpreterVisitor extends BaseVisitor {
         const variable = this.entornoActual.getVariable(node.id);
         console.log(node);
         if (!variable) {
-            throw new Error(`Variable ${node.id} no definida`);
+            throw new Errors(`Variable ${node.id} not defined`, node.location);
         }
 
         const indexes = node.indexes.map(index => index.accept(this));
         console.log("Indices: ", indexes);
         if (!Array.isArray(variable.value.value)) {
-            throw new Error(`Variable ${node.id} no es una matriz`);
+            throw new Errors(`Variable ${node.id} is not a matrix`, node.location);
         }
 
         let current = variable.value.value;
@@ -942,14 +944,14 @@ export class InterpreterVisitor extends BaseVisitor {
         console.log(node);
         const variable = this.entornoActual.getVariable(node.id);
         if (!variable) {
-            throw new Error(`Variable ${node.id} no definida`);
+            throw new Errors(`Variable ${node.id} not defined`, node.location);
         }
 
         const indexes = node.indexes.map(index => index.accept(this));
         const value = node.assi.accept(this);
         console.log("Valor a asignar: ", value);
         if (!Array.isArray(variable.value.value)) {
-            throw new Error(`Variable ${node.id} no es una matriz`);
+            throw new Errors(`Variable ${node.id} is not a matrix`, node.location);
         }
 
         let current = variable.value.value;
@@ -984,7 +986,7 @@ export class InterpreterVisitor extends BaseVisitor {
         const arrayVariable = this.entornoActual.getVariable(node.id2);
 
         if (!arrayVariable) {
-            throw new Error(`Variable ${node.id2} no está definida`);
+            throw new Errors(`Variable ${node.id2} not defined`, node.location);
         }
 
         const variableValues = arrayVariable.value.value;
@@ -993,7 +995,7 @@ export class InterpreterVisitor extends BaseVisitor {
 
         //Verificación de que si el tipo de id es igual al tipo de dato del array
         if (node.type !== arrayVariable.type) {
-            throw new Error(`El tipo de dato del array ${node.id2} no coincide con el tipo de dato de la variable ${node.id}`);
+            throw new Errors(`The data type of the array ${node.id2} does not match the data type of the variable ${node.id}`, node.location);
         }
 
         variableValues.forEach(value => {
@@ -1047,7 +1049,7 @@ export class InterpreterVisitor extends BaseVisitor {
                     generalStruct[value.name] = structVal;
                 }
             } else {
-                throw new Error(`No se encontró el atributo ${value.name} en el Struct ${node.IdStruct}`);
+                throw new Errors(`Attribute ${value.name} not defined in struct ${node.IdStruct}`, node.location);
             }
         });
     
@@ -1071,7 +1073,7 @@ export class InterpreterVisitor extends BaseVisitor {
         console.log("HOLA ", structVariable);
 
         if (!structVariable) {
-            throw new Error(`Variable ${node.id} no definida`);
+            throw new Errors(`Variable ${node.id} not defined`, node.location);
         }
 
         let current;
@@ -1080,7 +1082,7 @@ export class InterpreterVisitor extends BaseVisitor {
         if (node.index){
             const index = node.index.accept(this);
             if (!(index instanceof Literal)) {
-                throw new Error('El índice debe ser una literal');
+                throw new Errors('The index must be a literal', node.location);
             }
             current = current[index.value];
             currentType = current.type;
@@ -1091,7 +1093,7 @@ export class InterpreterVisitor extends BaseVisitor {
 
         node.id2.forEach(id => {
             if (!current.hasOwnProperty(id)) {
-                throw new Error(`Atributo ${id} no definido en el Struct ${node.id}`);
+                throw new Errors(`Attribute ${id} not defined in struct ${node.id}`, node.location);
             }
             // Actualiza el valor actual y su tipo en cada iteración
             currentType = current[id].type; // Aquí suponemos que cada atributo tiene un campo `type`
@@ -1113,7 +1115,7 @@ export class InterpreterVisitor extends BaseVisitor {
         
         const structVariable = this.entornoActual.getVariable(node.id);
         if (!structVariable) {
-            throw new Error(`Variable ${node.id} no definida`);
+            throw new Errors(`Variable ${node.id} not defined`, node.location);
         }
 
         let attributeValue = structVariable.value.value;
@@ -1121,7 +1123,7 @@ export class InterpreterVisitor extends BaseVisitor {
 
         node.attribute.forEach((attr, index) => {
             if (!attributeValue.hasOwnProperty(attr)) {
-                throw new Error(`Atributo ${attr} no definido en el Struct ${node.id}`);
+                throw new Errors(`Attribute ${attr} not defined in struct ${node.id}`, node.location);
             }
 
             if (index === attributesLength - 1) {
@@ -1145,7 +1147,7 @@ export class InterpreterVisitor extends BaseVisitor {
         const object = node.exp.accept(this);
 
         if (typeof object.value !== 'object') {
-            throw new Error('Se esperaba un objeto');
+            throw new Errors('An object was expected', node.location);
         }
 
         return new Literal({ value: Object.keys(object.value), type: 'string' });

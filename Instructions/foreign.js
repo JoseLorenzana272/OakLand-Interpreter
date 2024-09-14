@@ -50,7 +50,7 @@ export class FuncionForanea extends Summonable {
 
                 if(this.nodo.type === 'void'){
                     if (error.value !== null) {
-                        throw new Error(`La función ${this.nodo.type} no puede retornar valores`);
+                        throw new Error(`The function ${this.nodo.id} is void, it cannot return a value`);
                     }
                     return;
                 }
@@ -60,7 +60,7 @@ export class FuncionForanea extends Summonable {
                         this.nodo.type = this.nodo.type.replace('[]', '');
                         error.value.forEach(element => {
                             if(element.type !== this.nodo.type){
-                                throw new Error(`El tipo de retorno no coincide con el tipo de la función ${this.nodo.type}`);
+                                throw new Error(`The type of the return does not match the type of the function ${this.nodo.type}`);
                             }
                         });
                         return error.value;
@@ -70,7 +70,7 @@ export class FuncionForanea extends Summonable {
                 if(error.value.type === this.nodo.type){
                     return error.value
                 }else{
-                    throw new Error(`El tipo de retorno no coincide con el tipo de la función ${this.nodo.type}`);
+                    throw new Error(`The type of the return does not match the type of the function ${this.nodo.type}`);
                 }
                 
             }

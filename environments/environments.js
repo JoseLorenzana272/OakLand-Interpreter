@@ -1,5 +1,6 @@
 import { Literal } from "../JS_Analyzer_parts/nodos.js";
 import { embedded } from "../Instructions/embedded.js";
+import { Errors } from "../Errors/Errors.js";
 
 const ReservedWords = {'if': 1, 'else':1, 'while':1, 'for':1, 'switch':1, 'case':1, 'break':1, 'continue':1, 'return':1, 'var':1, 'true':1, 'false':1, 'null':1, 'struct':1, 'void':1}
 
@@ -25,12 +26,12 @@ export class Entorno {
     setVariable(tipo, nombre, valor) {
         //Verificar si el nombre de la variable es una palabra reservada
         if (ReservedWords.hasOwnProperty(nombre)) {
-            throw new Error(`La variable ${nombre} es una palabra reservada`);
+            throw new Errors(`The variable ${nombre} is a reserved word`, {end : {line: 0, column: 0}});
         }
 
         //Verificar si la variable ya existe en el entorno
         if (this.existsInCurrentScope(nombre)) {
-            throw new Error(`La variable ${nombre} ya ha sido declarada`);
+            throw new Errors(`The variable ${nombre} is already defined in this scope`, {end : {line: 0, column: 0}});
         }
 
         if (Array.isArray(valor)) {
@@ -54,7 +55,7 @@ export class Entorno {
             return this.padre.getVariable(nombre);
         }
 
-        throw new Error(`Variable ${nombre} no definida`);
+        throw new Errors(`Variable ${nombre} not defined`, {end : {line: 0, column: 0}});
     }
 
     /**
@@ -74,7 +75,7 @@ export class Entorno {
             return;
         }
 
-        throw new Error(`Variable ${nombre} no definida`);
+        throw new Errors(`Variable ${nombre} not defined`, {end : {line: 0, column: 0}});
     }
 
     /**
